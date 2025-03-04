@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Filter, Menu, Search, User2 } from "@tamagui/lucide-icons";
 import { useState } from "react";
+import Slider from "@/components/Slider";
 
 export default function HomeScreen() {
   const buttonTap = () => {
@@ -129,19 +130,15 @@ export default function HomeScreen() {
           </XStack>
         </YStack>
         <YStack
-          alignItems="center"
-          justifyContent="center"
-          width={"100%"}
-          height={250}
+          // alignItems="center"
+          // justifyContent="center"
+          paddingTop={20}
+          paddingBottom={5}
+          // width={"auto"}
+          // height={250}
           // backgroundColor={"cyan"}
         >
-          <Image
-            source={{
-              uri: "https://picsum.photos/300/200",
-              width: 300,
-              height: 200,
-            }}
-          />
+          <Slider />
         </YStack>
         <YStack
           // backgroundColor={"cyan"}
