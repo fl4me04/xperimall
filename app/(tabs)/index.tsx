@@ -1,22 +1,15 @@
 import { Image, StyleSheet, Platform } from "react-native";
 
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import {
   Button,
   Input,
   ScrollView,
-  SizableStack,
   SizableText,
-  SizeTokens,
-  View,
   XStack,
   YStack,
 } from "tamagui";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Filter, Menu, Scroll, Search, User2 } from "@tamagui/lucide-icons";
+import { Filter, Menu, Search, User2 } from "@tamagui/lucide-icons";
 import { useState } from "react";
 
 export default function HomeScreen() {
@@ -25,6 +18,13 @@ export default function HomeScreen() {
   };
 
   const [searchText, setSearchText] = useState("");
+
+  const buttonImages = {
+    button1: require("../../assets/images/NowOpen1.jpg"),
+    button2: require("../../assets/images/NowOpen2.jpg"),
+    button3: require("../../assets/images/NowOpen3.jpg"),
+    button4: require("../../assets/images/NowOpen4.jpg"),
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -40,9 +40,9 @@ export default function HomeScreen() {
           <Button
             animation="bouncy"
             elevation="$4"
-            // hoverStyle={{
-            //   scale: 1.2,
-            // }}
+            hoverStyle={{
+              scale: 1.05,
+            }}
             pressStyle={{
               scale: 0.95,
             }}
@@ -52,15 +52,22 @@ export default function HomeScreen() {
             icon={Menu}
             backgroundColor="transparent"
           />
-          <SizableText style={{ justifyContent: "center" }}>
+          <SizableText
+            style={{
+              justifyContent: "center",
+              fontFamily: "LexendGiga",
+              fontSize: 17,
+              color: "white",
+            }}
+          >
             CENTRAL PARK JAKARTA
           </SizableText>
           <Button
             animation="bouncy"
             elevation="$4"
-            // hoverStyle={{
-            //   scale: 1.2,
-            // }}
+            hoverStyle={{
+              scale: 1.05,
+            }}
             pressStyle={{
               scale: 0.95,
             }}
@@ -81,7 +88,7 @@ export default function HomeScreen() {
           <SizableText
             width={"auto"}
             height={"auto"}
-            style={{ fontWeight: "bold", fontSize: 20, color: "#9BA88D" }}
+            style={{ fontSize: 20, color: "#9BA88D", fontFamily: "Poppins" }}
           >
             Good Afternoon, Guest!
           </SizableText>
@@ -103,6 +110,7 @@ export default function HomeScreen() {
               onChangeText={setSearchText}
               borderWidth={0}
               background="transparent"
+              fontFamily={"Poppins"}
             />
             <Button
               icon={Filter}
@@ -147,7 +155,7 @@ export default function HomeScreen() {
             height={"auto"}
             alignSelf="center"
             justifyContent="center"
-            style={{ fontWeight: "500", fontSize: 20, color: "#9BA88D" }}
+            style={{ fontSize: 20, color: "#9BA88D", fontFamily: "Poppins" }}
           >
             What's New on Central Park
           </SizableText>
@@ -163,12 +171,8 @@ export default function HomeScreen() {
             >
               <Image
                 resizeMode="contain"
-                blurRadius={2}
-                source={{
-                  uri: "https://picsum.photos/178/178",
-                  width: 178,
-                  height: 178,
-                }}
+                source={buttonImages["button1"]}
+                style={{ width: 178, height: 178 }}
               />
             </Button>
             <Button
@@ -182,12 +186,8 @@ export default function HomeScreen() {
             >
               <Image
                 resizeMode="contain"
-                blurRadius={2}
-                source={{
-                  uri: "https://picsum.photos/178/178",
-                  width: 178,
-                  height: 178,
-                }}
+                source={buttonImages["button2"]}
+                style={{ width: 178, height: 178 }}
               />
             </Button>
           </XStack>
@@ -203,12 +203,8 @@ export default function HomeScreen() {
             >
               <Image
                 resizeMode="contain"
-                blurRadius={2}
-                source={{
-                  uri: "https://picsum.photos/178/178",
-                  width: 178,
-                  height: 178,
-                }}
+                source={buttonImages["button3"]}
+                style={{ width: 178, height: 178 }}
               />
             </Button>
             <Button
@@ -222,13 +218,116 @@ export default function HomeScreen() {
             >
               <Image
                 resizeMode="contain"
-                blurRadius={2}
-                source={{
-                  uri: "https://picsum.photos/178/178",
-                  width: 178,
-                  height: 178,
-                }}
+                source={buttonImages["button4"]}
+                style={{ width: 178, height: 178 }}
               />
+            </Button>
+          </XStack>
+        </YStack>
+        <YStack
+          // backgroundColor={"cyan"}
+          justifyContent="center"
+          padding={20}
+          alignItems="center"
+          space={9}
+        >
+          <SizableText
+            width={"auto"}
+            height={"auto"}
+            alignSelf="center"
+            justifyContent="center"
+            style={{ fontSize: 20, color: "#9BA88D", fontFamily: "Poppins" }}
+          >
+            Directory
+          </SizableText>
+          <XStack space={10}>
+            <Button
+              height={40}
+              width={178}
+              backgroundColor={"#A7C4A0"}
+              borderRadius={"$10"}
+            >
+              <SizableText
+                color="white"
+                fontSize={"$4"}
+                style={{ fontFamily: "Poppins" }}
+              >
+                Level B1
+              </SizableText>
+            </Button>
+            <Button
+              height={40}
+              width={178}
+              backgroundColor={"#A7C4A0"}
+              borderRadius={"$10"}
+            >
+              <SizableText
+                color="white"
+                fontSize={"$4"}
+                style={{ fontFamily: "Poppins" }}
+              >
+                Ground
+              </SizableText>
+            </Button>
+          </XStack>
+          <XStack space={10}>
+            <Button
+              height={40}
+              width={178}
+              backgroundColor={"#A7C4A0"}
+              borderRadius={"$10"}
+            >
+              <SizableText
+                color="white"
+                fontSize={"$4"}
+                style={{ fontFamily: "Poppins" }}
+              >
+                Upperground
+              </SizableText>
+            </Button>
+            <Button
+              height={40}
+              width={178}
+              backgroundColor={"#A7C4A0"}
+              borderRadius={"$10"}
+            >
+              <SizableText
+                color="white"
+                fontSize={"$4"}
+                style={{ fontFamily: "Poppins" }}
+              >
+                Level 1
+              </SizableText>
+            </Button>
+          </XStack>
+          <XStack space={10}>
+            <Button
+              height={40}
+              width={178}
+              backgroundColor={"#A7C4A0"}
+              borderRadius={"$10"}
+            >
+              <SizableText
+                color="white"
+                fontSize={"$4"}
+                style={{ fontFamily: "Poppins" }}
+              >
+                Level 2
+              </SizableText>
+            </Button>
+            <Button
+              height={40}
+              width={178}
+              backgroundColor={"#A7C4A0"}
+              borderRadius={"$10"}
+            >
+              <SizableText
+                color="white"
+                fontSize={"$4"}
+                style={{ fontFamily: "Poppins" }}
+              >
+                Level 3
+              </SizableText>
             </Button>
           </XStack>
         </YStack>

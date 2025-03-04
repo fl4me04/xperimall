@@ -24,6 +24,8 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Poppins: require("../assets/fonts/Poppins-Medium.ttf"),
+    LexendGiga: require("../assets/fonts/LexendGiga-ExtraLight.ttf"),
   });
 
   useEffect(() => {
