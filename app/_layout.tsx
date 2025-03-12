@@ -1,3 +1,4 @@
+import { defaultConfig } from "@tamagui/config/v4";
 import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -5,18 +6,9 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
-import {
-  Button,
-  createTamagui,
-  SizableText,
-  TamaguiProvider,
-  XStack,
-} from "tamagui";
-import { defaultConfig } from "@tamagui/config/v4"; // for quick config install this
+import { createTamagui, TamaguiProvider } from "tamagui";
 
 const config = createTamagui(defaultConfig);
-
-import { Menu, User2 } from "@tamagui/lucide-icons";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

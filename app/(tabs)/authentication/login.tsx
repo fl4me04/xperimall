@@ -6,6 +6,7 @@ import {
   Input,
   ScrollView,
   SizableText,
+  XStack,
   YStack,
 } from "tamagui";
 import { Navbar } from "@/components/Navbar";
@@ -59,15 +60,19 @@ export default function login() {
               borderColor="black"
               borderRadius={8}
             />
-            <Anchor
-              color="black"
-              marginVertical={6}
-              href="/forgot-password" // Change this to your actual route
-              textAlign="center"
-              style={{ fontFamily: "Poppins", fontSize: 13 }}
-            >
-              Forgot your account?
-            </Anchor>
+            <XStack justifyContent="center" alignItems="center">
+              <Anchor
+                color="black"
+                width={150}
+                height={24}
+                marginVertical={6}
+                href="/forgot-password" // Change this to your actual route
+                textAlign="center"
+                style={{ fontFamily: "Poppins", fontSize: 13 }}
+              >
+                Forgot your account?
+              </Anchor>
+            </XStack>
             <Button
               marginVertical={0}
               width={120}
@@ -80,16 +85,20 @@ export default function login() {
                 Login
               </SizableText>
             </Button>
-            <Anchor
-              color={"#9BA88D"}
-              href="/register"
-              textAlign="center"
-              style={{ fontFamily: "Poppins", fontSize: 13 }}
-              marginVertical={40}
-              textDecorationLine="none"
-            >
-              Don't have an account? Register Now!
-            </Anchor>
+            <XStack justifyContent="center" alignItems="center">
+              <Anchor
+                color={"#9BA88D"}
+                width={"247.19"}
+                height={"24"}
+                href="/authentication/register"
+                textAlign="center"
+                style={{ fontFamily: "Poppins", fontSize: 13 }}
+                marginVertical={40}
+                textDecorationLine="none"
+              >
+                Don't have an account? Register Now!
+              </Anchor>
+            </XStack>
           </YStack>
         </YStack>
       </ScrollView>
