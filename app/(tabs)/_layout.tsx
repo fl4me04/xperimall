@@ -49,6 +49,10 @@ export default function TabLayout() {
         name="authentication/login"
         options={{ href: null }} // 👈 Menyembunyikan dari tab bar
       />
+      <Tabs.Screen
+        name="authentication/register"
+        options={{ href: null }} // 👈 Menyembunyikan dari tab bar
+      />
     </Tabs>
   );
 }

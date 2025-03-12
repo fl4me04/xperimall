@@ -63,7 +63,7 @@ export default function HomeScreen() {
               value={searchText}
               onChangeText={setSearchText}
               borderWidth={0}
-              background="transparent"
+              backgroundColor="transparent"
               fontFamily={"Poppins"}
             />
             <Button
