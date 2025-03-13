@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import {
   Anchor,
   Button,
@@ -10,21 +10,45 @@ import {
   YStack,
 } from "tamagui";
 import { Navbar } from "@/components/Navbar";
-import { ArrowLeft, ArrowLeftCircle } from "@tamagui/lucide-icons";
+import { ArrowLeft } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
 
-export default function login() {
+export default function Login() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/authentication/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Login successful!");
+        // Save user ID (e.g., in AsyncStorage or global state)
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      alert("Error logging in");
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Navbar />
-        <YStack
-          padding={25}
-          style={{ justifyContent: "center", alignItems: "flex-start" }}
-          borderRadius={100}
-        >
+        <YStack padding={25} alignItems="flex-start">
           <Button
             circular
             size="$2"
@@ -35,17 +59,17 @@ export default function login() {
         </YStack>
         <YStack padding={50} marginVertical={80}>
           <YStack space={10} justifyContent="center">
-            <SizableText
-              style={{ fontSize: 24, color: "#9BA88D", fontFamily: "Poppins" }}
-            >
+            <SizableText style={{ fontSize: 24, color: "#9BA88D", fontFamily: "Poppins" }}>
               Sign In
             </SizableText>
             <Input
               flex={1}
               size="$3"
               placeholder="Enter your E-mail"
-              fontFamily={"Poppins"}
-              backgroundColor={"#F7F5E6"}
+              value={email}
+              onChangeText={setEmail}
+              fontFamily="Poppins"
+              backgroundColor="#F7F5E6"
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
@@ -54,8 +78,11 @@ export default function login() {
               flex={1}
               size="$3"
               placeholder="Enter your Password"
-              fontFamily={"Poppins"}
-              backgroundColor={"#F7F5E6"}
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              fontFamily="Poppins"
+              backgroundColor="#F7F5E6"
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
@@ -66,7 +93,7 @@ export default function login() {
                 width={150}
                 height={24}
                 marginVertical={6}
-                href="/forgot-password" // Change this to your actual route
+                href="/forgot-password"
                 textAlign="center"
                 style={{ fontFamily: "Poppins", fontSize: 13 }}
               >
@@ -74,12 +101,13 @@ export default function login() {
               </Anchor>
             </XStack>
             <Button
-              marginVertical={0}
+              marginVertical={10}
               width={120}
               height={40}
               alignSelf="center"
-              backgroundColor={"#9BA88D"}
+              backgroundColor="#9BA88D"
               borderRadius={17}
+              onPress={handleLogin}
             >
               <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
                 Login
@@ -87,9 +115,7 @@ export default function login() {
             </Button>
             <XStack justifyContent="center" alignItems="center">
               <Anchor
-                color={"#9BA88D"}
-                width={"247.19"}
-                height={"24"}
+                color="#9BA88D"
                 href="/authentication/register"
                 textAlign="center"
                 style={{ fontFamily: "Poppins", fontSize: 13 }}
