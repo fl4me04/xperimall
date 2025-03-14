@@ -35,6 +35,7 @@ export default function Login() {
 
       if (response.ok) {
         alert("Login successful!");
+        router.push("/");
       } else {
         alert(data.message || "Login failed");
       }
