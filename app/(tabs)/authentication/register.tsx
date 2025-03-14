@@ -63,7 +63,7 @@ export default function register() {
     const month = match[2];
     const year = match[3];
   
-    return `${year}-${month}-${day}`; // Ubah ke format YYYY-MM-DD
+    return `${year}-${month}-${day}`; 
   }
   
   const handleRegister = async () => {
@@ -92,7 +92,7 @@ export default function register() {
           email,
           password,
           gender,
-          dob: formattedDob, // Format sudah benar
+          dob: formattedDob,
           referralCode,
         }),
       });

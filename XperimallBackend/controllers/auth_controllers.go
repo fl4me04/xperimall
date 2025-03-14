@@ -16,7 +16,7 @@ type RegisterInput struct {
 	Name         string `json:"name" binding:"required"`
 	Email        string `json:"email" binding:"required,email"`
 	Password     string `json:"password" binding:"required"`
-	Dob          string `json:"dob" binding:"required"` // YYYY-MM-DD format
+	Dob          string `json:"dob" binding:"required"` 
 	Gender       string `json:"gender" binding:"required"`
 	ReferralCode string `json:"referralCode"`
 }

@@ -35,7 +35,6 @@ export default function Login() {
 
       if (response.ok) {
         alert("Login successful!");
-        // Save user ID (e.g., in AsyncStorage or global state)
       } else {
         alert(data.message || "Login failed");
       }
