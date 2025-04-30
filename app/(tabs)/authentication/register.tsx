@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Adapt,
@@ -15,6 +15,7 @@ import {
   SelectProps,
   Sheet,
   SizableText,
+  View,
   XStack,
   YStack,
 } from "tamagui";
@@ -30,7 +31,89 @@ import { LinearGradient } from "tamagui/linear-gradient";
 
 export default function register() {
   const router = useRouter();
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [gender, setGender] = React.useState("");
+  const [dob, setDob] = React.useState(""); 
+  const [open, setOpen] = React.useState(false);
+  const [referralCode, setReferralCode] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [name, setName] = React.useState("");
 
+  const showDatePicker = useCallback(() => {
+    console.log("Opening date picker...");
+    setDatePickerVisible(true);
+  }, []);
+  
+  function formatDate(date: Date | null): string {
+    if (!date) return "";
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+  
+  function parseDate(text: string): string | null {
+    const regex = /^(\d{2})-(\d{2})-(\d{4})$/;
+    const match = text.match(regex);
+    if (!match) return null;
+  
+    const day = match[1];
+    const month = match[2];
+    const year = match[3];
+  
+    return `${year}-${month}-${day}`; 
+  }
+  
+  const handleRegister = async () => {
+    if (!name || !email || !password || !confirmPassword || !gender || !dob) {
+      setError("All fields are required!");
+      return;
+    }
+  
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+  
+    const formattedDob = parseDate(dob);
+    if (!formattedDob) {
+      setError("Invalid date format! Use DD-MM-YYYY.");
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://localhost:8080/authentication/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          gender,
+          dob: formattedDob,
+          referralCode,
+        }),
+      });
+  
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+  
+      alert("Registration Successful!");
+      router.push("/authentication/login");
+    } catch (error) {
+      console.error("Error:", error);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
+    }
+  };
+  
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -58,12 +141,26 @@ export default function register() {
             <Input
               flex={1}
               size="$3"
+              placeholder="Enter your Name"
+              fontFamily={"Poppins"}
+              backgroundColor={"#F7F5E6"}
+              borderWidth={1}
+              borderColor="black"
+              borderRadius={8}
+              value={name}
+              onChangeText={setName}
+            />
+            <Input
+              flex={1}
+              size="$3"
               placeholder="Enter your E-mail"
               fontFamily={"Poppins"}
               backgroundColor={"#F7F5E6"}
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
+              value={email}
+              onChangeText={setEmail}
             />
             <Input
               flex={1}
@@ -74,6 +171,8 @@ export default function register() {
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
+              value={password}
+              onChangeText={setPassword}
             />
             <Input
               flex={1}
@@ -84,18 +183,23 @@ export default function register() {
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
             />
             <XStack space={10}>
-              <SelectGender />
+              <SelectGender gender={gender} setGender={setGender} />
               <Input
                 flex={1}
                 size="$3"
-                placeholder="Date of Birth"
+                placeholder="Date Of Birth (DD-MM-YYYY)"
                 fontFamily={"Poppins"}
                 backgroundColor={"#F7F5E6"}
                 borderWidth={1}
                 borderColor="black"
                 borderRadius={8}
+                value={dob}
+                onChangeText={setDob}
+                keyboardType="numeric"
               />
             </XStack>
             <Input
@@ -107,10 +211,16 @@ export default function register() {
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
+              value={referralCode}
+              onChangeText={setReferralCode}
             />
             <XStack justifyContent="center" alignItems="center">
               <CheckboxWithLabel size="$3" />
             </XStack>
+            {error ? (
+              <SizableText style={{ color: "red", textAlign: "center" }}>{error}</SizableText>
+            ) : null}
+
             <Button
               marginVertical={0}
               width={120}
@@ -118,6 +228,7 @@ export default function register() {
               alignSelf="center"
               backgroundColor={"#9BA88D"}
               borderRadius={17}
+              onPress={handleRegister}
             >
               <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
                 Register
@@ -143,14 +254,15 @@ export default function register() {
     </SafeAreaView>
   );
 }
-
-export function SelectGender(props: SelectProps) {
-  const [val, setVal] = React.useState("");
-
+export function SelectGender({
+  gender,
+  setGender,
+  ...props
+}: SelectProps & { gender: string; setGender: (value: string) => void }) {
   return (
     <Select
-      value={val}
-      onValueChange={setVal}
+      value={gender}
+      onValueChange={setGender}
       disablePreventBodyScroll
       {...props}
     >
@@ -166,7 +278,7 @@ export function SelectGender(props: SelectProps) {
       >
         <Select.Value
           placeholder="Gender"
-          color={val ? "black" : "#0000006B"}
+          color={gender ? "black" : "#0000006B"} 
           style={{ fontFamily: "Poppins", fontSize: 13 }}
         />
       </Select.Trigger>
@@ -211,37 +323,22 @@ export function SelectGender(props: SelectProps) {
             borderRadius="$4"
           />
         </Select.ScrollUpButton>
-        <Select.Viewport
-          // to do animations:
-          // animation="quick"
-          // animateOnly={['transform', 'opacity']}
-          // enterStyle={{ o: 0, y: -10 }}
-          // exitStyle={{ o: 0, y: 10 }}
-          minWidth={200}
-        >
+        <Select.Viewport minWidth={200}>
           <Select.Group>
             <Select.Label>Genders</Select.Label>
-            {/* for longer lists memoizing these is useful */}
             {React.useMemo(
               () =>
-                Genders.map((item, i) => {
-                  return (
-                    <Select.Item
-                      index={i}
-                      key={item.name}
-                      value={item.name.toLowerCase()}
-                    >
-                      <Select.ItemText>{item.name}</Select.ItemText>
-                      <Select.ItemIndicator marginLeft="auto">
-                        <Check size={16} />
-                      </Select.ItemIndicator>
-                    </Select.Item>
-                  );
-                }),
+                Genders.map((item, i) => (
+                  <Select.Item index={i} key={item.name} value={item.name.toLowerCase()}>
+                    <Select.ItemText>{item.name}</Select.ItemText>
+                    <Select.ItemIndicator marginLeft="auto">
+                      <Check size={16} />
+                    </Select.ItemIndicator>
+                  </Select.Item>
+                )),
               [Genders]
             )}
           </Select.Group>
-          {/* Native gets an extra icon */}
           {props.native && (
             <YStack
               position="absolute"
@@ -305,3 +402,7 @@ export function CheckboxWithLabel({
     </XStack>
   );
 }
+function setDatePickerVisible(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
+
