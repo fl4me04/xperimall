@@ -33,11 +33,11 @@ export default function RootLayout() {
   return (
     <TamaguiProvider config={config}>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen
+        <Stack.Screen name="(drawer)" />
+        {/* <Stack.Screen
           name="authentication/login"
           options={{ presentation: "modal" }}
-        />
+        /> */}
       </Stack>
       <StatusBar style="auto" />
     </TamaguiProvider>

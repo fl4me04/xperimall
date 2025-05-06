@@ -1,11 +1,15 @@
+import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Menu, User2 } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
+import { Drawer } from "react-native-drawer-layout";
 import { Button, SizableText, XStack } from "tamagui";
 
 export function Navbar() {
   const buttonTap = () => {
     console.log("Button tapped");
   };
+
+  const navigation = useNavigation();
 
   const router = useRouter();
 
@@ -27,10 +31,10 @@ export function Navbar() {
         pressStyle={{
           scale: 0.95,
         }}
-        onPress={buttonTap}
+        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         width={"auto"}
         height={"auto"}
-        icon={Menu}
+        icon={<Menu color="white" />}
         backgroundColor="transparent"
       />
       <SizableText
@@ -55,7 +59,7 @@ export function Navbar() {
         onPress={() => router.push("/authentication/login")}
         width={"auto"}
         height={"auto"}
-        icon={User2}
+        icon={<User2 color="white" />}
         backgroundColor="transparent"
       />
     </XStack>

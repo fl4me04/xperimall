@@ -22,10 +22,10 @@ export default function HomeScreen() {
   const [searchText, setSearchText] = useState("");
 
   const buttonImages = {
-    button1: require("../../assets/images/NowOpen1.jpg"),
-    button2: require("../../assets/images/NowOpen2.jpg"),
-    button3: require("../../assets/images/NowOpen3.jpg"),
-    button4: require("../../assets/images/NowOpen4.jpg"),
+    button1: require("../../../assets/images/NowOpen1.jpg"),
+    button2: require("../../../assets/images/NowOpen2.jpg"),
+    button3: require("../../../assets/images/NowOpen3.jpg"),
+    button4: require("../../../assets/images/NowOpen4.jpg"),
   };
 
   return (
