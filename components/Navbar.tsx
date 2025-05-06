@@ -19,8 +19,9 @@ export function Navbar() {
       backgroundColor={"#A7C4A0"}
       width={"100%"}
       height={100}
-      justifyContent="space-between"
+      justifyContent="center"
       alignItems="flex-end"
+      position="relative"
     >
       <Button
         animation="bouncy"
@@ -36,10 +37,13 @@ export function Navbar() {
         height={"auto"}
         icon={<Menu color="white" />}
         backgroundColor="transparent"
+        style={{
+          position: "absolute",
+          left: 10,
+        }}
       />
       <SizableText
         style={{
-          justifyContent: "center",
           fontFamily: "LexendGiga",
           fontSize: 17,
           color: "white",
@@ -47,21 +51,6 @@ export function Navbar() {
       >
         CENTRAL PARK JAKARTA
       </SizableText>
-      <Button
-        animation="bouncy"
-        elevation="$4"
-        hoverStyle={{
-          scale: 1.05,
-        }}
-        pressStyle={{
-          scale: 0.95,
-        }}
-        onPress={() => router.push("/authentication/login")}
-        width={"auto"}
-        height={"auto"}
-        icon={<User2 color="white" />}
-        backgroundColor="transparent"
-      />
     </XStack>
   );
 }
