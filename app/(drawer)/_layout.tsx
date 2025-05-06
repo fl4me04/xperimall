@@ -6,8 +6,15 @@ import { router, usePathname } from "expo-router";
 
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { StyleSheet } from "react-native";
-import { Label, View } from "tamagui";
-import { House, Map } from "@tamagui/lucide-icons";
+import { Image, Label, SizableText, View, XStack, YStack } from "tamagui";
+import {
+  Activity,
+  BadgePercent,
+  Disc,
+  House,
+  Map,
+  Route,
+} from "@tamagui/lucide-icons";
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
   const pathName = usePathname();
@@ -18,18 +25,27 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
   return (
     <DrawerContentScrollView {...props}>
-      <View alignItems="center" justifyContent="center">
-        <Label
-          style={{
-            fontWeight: "bold",
-            color: "white",
-            paddingBottom: 20,
-            paddingTop: 50,
-            textAlign: "end",
-          }}
-        >
-          Central Park Jakarta
-        </Label>
+      <View
+        alignItems="center"
+        justifyContent="center"
+        paddingBottom={20}
+        paddingTop={20}
+      >
+        <YStack>
+          <Image
+            source={require("../../assets/images/360Club.jpg")}
+            width={100}
+            height={100}
+            alt="Logo"
+            borderRadius={50}
+          />
+        </YStack>
+        <SizableText paddingTop={3} fontWeight={"bold"} color={"white"}>
+          John Doe
+        </SizableText>
+        <SizableText marginTop={-5} fontSize={12} color={"white"}>
+          Email: johndoe@gmail.com
+        </SizableText>
       </View>
       <DrawerItem
         label={"Home"}
@@ -52,7 +68,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           { color: pathName == "/activityPlanner" ? "#9BA88D" : "#fff" },
         ]}
         icon={({ color, size }) => (
-          <Map
+          <Activity
             size={24}
             color={pathName == "/activityPlanner" ? "#9BA88D" : "#fff"}
           />
@@ -86,7 +102,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           { color: pathName == "/mallDirectory" ? "#9BA88D" : "#fff" },
         ]}
         icon={({ color, size }) => (
-          <Map
+          <Route
             size={24}
             color={pathName == "/mallDirectory" ? "#9BA88D" : "#fff"}
           />
@@ -105,7 +121,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           { color: pathName == "/promotion" ? "#9BA88D" : "#fff" },
         ]}
         icon={({ color, size }) => (
-          <Map
+          <BadgePercent
             size={24}
             color={pathName == "/promotion" ? "#9BA88D" : "#fff"}
           />
