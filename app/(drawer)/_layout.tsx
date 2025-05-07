@@ -14,6 +14,7 @@ import {
   House,
   Map,
   Route,
+  User,
 } from "@tamagui/lucide-icons";
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
@@ -62,23 +63,38 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         }}
       />
       <DrawerItem
+        label={"Profile"}
+        labelStyle={[
+          styles.navItemLabel,
+          { color: pathName == "/login" ? "#9BA88D" : "#fff" },
+        ]}
+        icon={({ color, size }) => (
+          <User size={24} color={pathName == "/login" ? "#9BA88D" : "#fff"} />
+        )}
+        style={{
+          backgroundColor: pathName == "/login" ? "#F7F5E6" : "#A7C4A0",
+        }}
+        onPress={() => {
+          router.push("/(drawer)/(tabs)/authentication/login");
+        }}
+      />
+      <DrawerItem
         label={"Activity Planner"}
         labelStyle={[
           styles.navItemLabel,
-          { color: pathName == "/activityPlanner" ? "#9BA88D" : "#fff" },
+          { color: pathName == "/budget" ? "#9BA88D" : "#fff" },
         ]}
         icon={({ color, size }) => (
           <Activity
             size={24}
-            color={pathName == "/activityPlanner" ? "#9BA88D" : "#fff"}
+            color={pathName == "/budget" ? "#9BA88D" : "#fff"}
           />
         )}
         style={{
-          backgroundColor:
-            pathName == "/activityPlanner" ? "#F7F5E6" : "#A7C4A0",
+          backgroundColor: pathName == "/budget" ? "#F7F5E6" : "#A7C4A0",
         }}
         onPress={() => {
-          router.push("/(drawer)/(tabs)/activityPlanner");
+          router.push("/(drawer)/(tabs)/budget");
         }}
       />
       <DrawerItem
