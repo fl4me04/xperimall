@@ -25,11 +25,14 @@ export default function Login() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/authentication/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/authentication/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
@@ -54,12 +57,14 @@ export default function Login() {
             size="$2"
             background="#9BA88D"
             icon={<ArrowLeft size={20} color={"white"} />}
-            onPress={() => router.back()}
+            onPress={() => router.push("/(drawer)/(tabs)")}
           />
         </YStack>
         <YStack padding={50} marginVertical={80}>
           <YStack space={10} justifyContent="center">
-            <SizableText style={{ fontSize: 24, color: "#9BA88D", fontFamily: "Poppins" }}>
+            <SizableText
+              style={{ fontSize: 24, color: "#9BA88D", fontFamily: "Poppins" }}
+            >
               Sign In
             </SizableText>
             <Input
