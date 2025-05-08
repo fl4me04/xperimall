@@ -1,5 +1,6 @@
 import { Image, StyleSheet } from "react-native";
-
+import React, { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Button,
   Input,
@@ -8,15 +9,50 @@ import {
   XStack,
   YStack,
 } from "tamagui";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Filter, Search } from "@tamagui/lucide-icons";
-import { useState } from "react";
 import Slider from "@/components/Slider";
 import { Navbar } from "@/components/Navbar";
-import { useNavigation } from "@react-navigation/native"; // 🔥 Tambahan
+
+import { useNavigation } from "@react-navigation/native"; 
 import { router } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+interface UserData {
+  name: string;
+  email: string;
+}
 
 export default function HomeScreen() {
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    loadUserData();
+    
+    // Add interval to check for user data changes
+    const checkUserData = async () => {
+      const storedUserData = await AsyncStorage.getItem('userData');
+      if (storedUserData) {
+        setUserData(JSON.parse(storedUserData));
+      } else {
+        setUserData(null);
+      }
+    };
+
+    const interval = setInterval(checkUserData, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      const storedUserData = await AsyncStorage.getItem('userData');
+      if (storedUserData) {
+        setUserData(JSON.parse(storedUserData));
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  };
+
   const buttonTap = () => {
     console.log("Button tapped");
   };
@@ -48,7 +84,7 @@ export default function HomeScreen() {
             height={"auto"}
             style={{ fontSize: 20, color: "#9BA88D", fontFamily: "Poppins" }}
           >
-            Good Afternoon, Guest!
+            Hello, {userData ? userData.name : "Guest"}!
           </SizableText>
           <XStack
             alignItems="center"

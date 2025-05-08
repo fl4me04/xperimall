@@ -35,7 +35,7 @@ export default function register() {
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [gender, setGender] = React.useState("");
-  const [dob, setDob] = React.useState(""); 
+  const [dob, setDob] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [referralCode, setReferralCode] = React.useState("");
   const [error, setError] = React.useState("");
@@ -45,7 +45,7 @@ export default function register() {
     console.log("Opening date picker...");
     setDatePickerVisible(true);
   }, []);
-  
+
   function formatDate(date: Date | null): string {
     if (!date) return "";
     const day = String(date.getDate()).padStart(2, "0");
@@ -53,55 +53,58 @@ export default function register() {
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   }
-  
+
   function parseDate(text: string): string | null {
     const regex = /^(\d{2})-(\d{2})-(\d{4})$/;
     const match = text.match(regex);
     if (!match) return null;
-  
+
     const day = match[1];
     const month = match[2];
     const year = match[3];
-  
-    return `${year}-${month}-${day}`; 
+
+    return `${year}-${month}-${day}`;
   }
-  
+
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword || !gender || !dob) {
       setError("All fields are required!");
       return;
     }
-  
+
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
       return;
     }
-  
+
     const formattedDob = parseDate(dob);
     if (!formattedDob) {
       setError("Invalid date format! Use DD-MM-YYYY.");
       return;
     }
-  
+
     try {
-      const response = await fetch("http://localhost:8080/authentication/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          gender,
-          dob: formattedDob,
-          referralCode,
-        }),
-      });
-  
+      const response = await fetch(
+        "http://localhost:8080/authentication/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+            gender,
+            dob: formattedDob,
+            referralCode,
+          }),
+        }
+      );
+
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Registration failed");
       }
-  
+
       alert("Registration Successful!");
       router.push("/authentication/login");
     } catch (error) {
@@ -113,7 +116,7 @@ export default function register() {
       }
     }
   };
-  
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -128,7 +131,7 @@ export default function register() {
             size="$2"
             background="#9BA88D"
             icon={<ArrowLeft size={20} color={"white"} />}
-            onPress={() => router.back()}
+            onPress={() => router.push("/(drawer)/(tabs)")}
           />
         </YStack>
         <YStack padding={50} marginVertical={80}>
@@ -218,7 +221,9 @@ export default function register() {
               <CheckboxWithLabel size="$3" />
             </XStack>
             {error ? (
-              <SizableText style={{ color: "red", textAlign: "center" }}>{error}</SizableText>
+              <SizableText style={{ color: "red", textAlign: "center" }}>
+                {error}
+              </SizableText>
             ) : null}
 
             <Button
@@ -278,7 +283,7 @@ export function SelectGender({
       >
         <Select.Value
           placeholder="Gender"
-          color={gender ? "black" : "#0000006B"} 
+          color={gender ? "black" : "#0000006B"}
           style={{ fontFamily: "Poppins", fontSize: 13 }}
         />
       </Select.Trigger>
@@ -329,7 +334,11 @@ export function SelectGender({
             {React.useMemo(
               () =>
                 Genders.map((item, i) => (
-                  <Select.Item index={i} key={item.name} value={item.name.toLowerCase()}>
+                  <Select.Item
+                    index={i}
+                    key={item.name}
+                    value={item.name.toLowerCase()}
+                  >
                     <Select.ItemText>{item.name}</Select.ItemText>
                     <Select.ItemIndicator marginLeft="auto">
                       <Check size={16} />
@@ -405,4 +414,3 @@ export function CheckboxWithLabel({
 function setDatePickerVisible(arg0: boolean) {
   throw new Error("Function not implemented.");
 }
-

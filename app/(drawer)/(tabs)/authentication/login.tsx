@@ -12,6 +12,7 @@ import {
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
   const router = useRouter();
@@ -25,21 +26,36 @@ export default function Login() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/authentication/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/authentication/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-        alert("Login successful!");
-        router.push("/");
+        // Store the JWT token
+        await AsyncStorage.setItem('token', data.token);
+        // Store user data
+        const userData = {
+          name: data.username,
+          email: email
+        };
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
+        
+        setTimeout(() => {
+          alert("Login successful!");
+          router.push("/");
+        }, 100);
       } else {
         alert(data.message || "Login failed");
       }
     } catch (error) {
+      console.error('Error logging in:', error);
       alert("Error logging in");
     }
   };
@@ -54,12 +70,14 @@ export default function Login() {
             size="$2"
             background="#9BA88D"
             icon={<ArrowLeft size={20} color={"white"} />}
-            onPress={() => router.back()}
+            onPress={() => router.push("/(drawer)/(tabs)")}
           />
         </YStack>
         <YStack padding={50} marginVertical={80}>
           <YStack space={10} justifyContent="center">
-            <SizableText style={{ fontSize: 24, color: "#9BA88D", fontFamily: "Poppins" }}>
+            <SizableText
+              style={{ fontSize: 24, color: "#9BA88D", fontFamily: "Poppins" }}
+            >
               Sign In
             </SizableText>
             <Input
