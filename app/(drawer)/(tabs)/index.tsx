@@ -13,11 +13,15 @@ import { Filter, Search } from "@tamagui/lucide-icons";
 import { useState } from "react";
 import Slider from "@/components/Slider";
 import { Navbar } from "@/components/Navbar";
+import { useNavigation } from "@react-navigation/native"; // 🔥 Tambahan
+import { router } from "expo-router";
 
 export default function HomeScreen() {
   const buttonTap = () => {
     console.log("Button tapped");
   };
+
+  const navigation: any = useNavigation();
 
   const [searchText, setSearchText] = useState("");
 
@@ -113,7 +117,7 @@ export default function HomeScreen() {
             <Button
               width={178}
               height={178}
-              onPress={buttonTap}
+              onPress={() => router.push("/(drawer)/(tabs)/newTenant")}
               borderRadius="$6"
               padding="$0"
               backgroundColor="transparent"
@@ -128,7 +132,7 @@ export default function HomeScreen() {
             <Button
               width={178}
               height={178}
-              onPress={buttonTap}
+              onPress={() => navigation.navigate("NewTenant")}
               borderRadius="$6"
               padding="$0"
               backgroundColor="transparent"
@@ -145,7 +149,7 @@ export default function HomeScreen() {
             <Button
               width={178}
               height={178}
-              onPress={buttonTap}
+              onPress={() => router.push("/(drawer)/(tabs)/newTenant")}
               borderRadius="$6"
               padding="$0"
               backgroundColor="transparent"
@@ -160,7 +164,7 @@ export default function HomeScreen() {
             <Button
               width={178}
               height={178}
-              onPress={buttonTap}
+              onPress={() => router.push("/(drawer)/(tabs)/newTenant")}
               borderRadius="$6"
               padding="$0"
               backgroundColor="transparent"

@@ -103,6 +103,10 @@ export default function TabLayout() {
         name="activityPlanner"
         options={{ href: null }} // 👈 Menyembunyikan dari tab bar
       />
+      <Tabs.Screen
+        name="newTenant"
+        options={{href: null}} // 👈 Menyembunyikan dari tab bar
+      />
     </Tabs>
   );
 }

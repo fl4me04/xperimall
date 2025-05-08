@@ -49,7 +49,7 @@ export default function Login() {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Navbar />
         <YStack padding={25} alignItems="flex-start">
-          <Button
+        <Button
             circular
             size="$2"
             background="#9BA88D"
