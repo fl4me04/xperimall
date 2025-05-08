@@ -12,6 +12,7 @@ import {
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
   const router = useRouter();
@@ -37,12 +38,24 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Login successful!");
-        router.push("/");
+        // Store the JWT token
+        await AsyncStorage.setItem('token', data.token);
+        // Store user data
+        const userData = {
+          name: data.username,
+          email: email
+        };
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
+        
+        setTimeout(() => {
+          alert("Login successful!");
+          router.push("/");
+        }, 100);
       } else {
         alert(data.message || "Login failed");
       }
     } catch (error) {
+      console.error('Error logging in:', error);
       alert("Error logging in");
     }
   };
