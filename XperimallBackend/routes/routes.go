@@ -2,6 +2,8 @@ package routes
 
 import (
 	"XperimallBackend/controllers"
+	"XperimallBackend/middlewares"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,5 +12,6 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		auth.POST("/register", controllers.Register)
 		auth.POST("/login", controllers.Login)
+		auth.GET("/user", middlewares.AuthMiddleware(), controllers.GetUserDetails)
 	}
 }
