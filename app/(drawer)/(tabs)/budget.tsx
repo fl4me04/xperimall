@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Button,
@@ -12,19 +12,98 @@ import {
   YStack,
   ZStack,
 } from "tamagui";
+import { ScrollView as RNScrollView } from "react-native";
 
-const categories = [
-  "Beauty & Wellness",
-  "Arcade",
-  "Dining",
-  "Fashion",
-  "Coffee Shops",
-];
+const API_URL = "http://localhost:8080/api"; 
+
+interface Category {
+  ID: number;
+  Name: string;
+}
 
 export default function activityPlanner() {
   const [inputAmount, setAmount] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(-1);
+  useEffect(() => {
+    console.log('Fetching categories from:', `${API_URL}/categories`);
+    fetch(`${API_URL}/categories`)
+      .then(res => {
+        console.log('Categories response status:', res.status);
+        return res.json();
+      })
+      .then(data => {
+        console.log('Categories data:', data);
+        setCategories(data);
+      })
+      .catch(err => {
+        console.error('Error fetching categories:', err);
+      });
+  }, []);
+
+  const toggleCategory = (categoryId: number) => {
+    setSelectedCategories(prev => {
+      if (prev.includes(categoryId)) {
+        return prev.filter(id => id !== categoryId);
+      } else {
+        return [...prev, categoryId];
+      }
+    });
+  };
+
+  const fetchRecommendations = async () => {
+    if (selectedCategories.length === 0) {
+      alert("Please select at least one category!");
+      return;
+    }
+    if (inputAmount === "") {
+      alert("Please enter your budget amount!");
+      return;
+    }
+    setLoading(true);
+    setHasSearched(true);
+    try {
+      const requestBody = {
+        category_ids: selectedCategories,
+        budget: parseInt(inputAmount)
+      };
+      
+      
+      const res = await fetch(`${API_URL}/recommendations`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+      });
+      
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error('Error response:', errorData);
+        throw new Error(`HTTP error! status: ${res.status}, message: ${JSON.stringify(errorData)}`);
+      }
+      
+      const data = await res.json();
+      console.log('Response data:', data);
+      
+      if (!Array.isArray(data)) {
+        console.error('Invalid response format:', data);
+        throw new Error('Invalid response format from server');
+      }
+      
+      setRecommendations(data);
+    } catch (err) {
+      console.error('Error details:', err);
+      alert("Failed to fetch recommendations. Please try again.");
+    }
+    setLoading(false);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -74,7 +153,6 @@ export default function activityPlanner() {
               size="$3"
               width={"100%"}
               placeholder="Insert Amount (Rp.)"
-              secureTextEntry
               value={inputAmount}
               onChangeText={setAmount}
               fontFamily="Poppins"
@@ -96,18 +174,16 @@ export default function activityPlanner() {
               2. Add activity preferences
             </SizableText>
             <YStack
-              // height={220}
-              width={"100%"}
+              alignItems="center"
+              justifyContent="center"
+              width="100%"
               backgroundColor="#F7F5E6"
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
-              alignItems="center"
-              justifyContent="center"
-              // space={5}
             >
               <ZStack
-                width={"90%"}
+                width="90%"
                 height={150}
                 backgroundColor="#fff"
                 borderWidth={1}
@@ -116,33 +192,47 @@ export default function activityPlanner() {
                 marginTop={18}
                 marginLeft={18}
                 marginRight={18}
-                marginBottom={10}
+                alignItems="center"
+                justifyContent="center"
               >
-                <XStack flexWrap="wrap" gap="$2" margin={10}>
-                  {categories.map((category, index) => (
-                    <Button
-                      key={category}
-                      size={"$3"}
-                      borderRadius={30}
-                      backgroundColor={
-                        selectedIndex === index ? "#fff" : "#9BA88D"
-                      }
-                      color={selectedIndex === index ? "#000" : "#fff"} // Adjust text color for better contrast
-                      onPress={() => setSelectedIndex(index)} // Update selectedIndex to the clicked button's index
-                      pressStyle={{
-                        backgroundColor:
-                          selectedIndex === index ? "#E8E8E8" : "#A5B89C", // Slightly lighter shade
-                        transform: [{ scale: 0.95 }], // Add a scaling effect
-                        shadowColor: "#000", // Add a subtle shadow
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 4,
-                      }}
-                    >
-                      {category}
-                    </Button>
-                  ))}
-                </XStack>
+                <RNScrollView
+                  style={{ width: "100%", maxHeight: 120 }}
+                  contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+                  showsVerticalScrollIndicator={false}
+                >
+                  <XStack
+                    flexWrap="wrap"
+                    gap="$2"
+                    margin={10}
+                    alignSelf="center"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    {categories.map((category) => (
+                      <Button
+                        key={category.ID}
+                        size={"$3"}
+                        borderRadius={30}
+                        backgroundColor={
+                          selectedCategories.includes(category.ID) ? "#fff" : "#9BA88D"
+                        }
+                        color={selectedCategories.includes(category.ID) ? "#000" : "#fff"}
+                        onPress={() => toggleCategory(category.ID)}
+                        pressStyle={{
+                          backgroundColor:
+                            selectedCategories.includes(category.ID) ? "#E8E8E8" : "#A5B89C",
+                          transform: [{ scale: 0.95 }],
+                          shadowColor: "#000",
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.2,
+                          shadowRadius: 4,
+                        }}
+                      >
+                        {category.Name}
+                      </Button>
+                    ))}
+                  </XStack>
+                </RNScrollView>
               </ZStack>
               <Button
                 size={"$2"}
@@ -153,6 +243,7 @@ export default function activityPlanner() {
                 backgroundColor="#9BA88D"
                 borderRadius={17}
                 justifyContent="center"
+                onPress={fetchRecommendations}
               >
                 <SizableText style={{ fontFamily: "Poppins", color: "#fff" }}>
                   Generate
@@ -172,159 +263,91 @@ export default function activityPlanner() {
               3. Your Recommendation
             </SizableText>
             <YStack
-              width={"100%"}
+              width="100%"
               backgroundColor="#F7F5E6"
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
               alignItems="center"
               justifyContent="center"
-              // space={5}
             >
               <ZStack
-                width={"90%"}
+                width="90%"
                 height={240}
                 backgroundColor="#fff"
                 borderWidth={1}
                 borderColor="black"
                 borderRadius={8}
                 margin={18}
+                alignItems="center"
+                justifyContent="center"
+                marginTop={20}
               >
-                {/* Ini ntar lu isi pake category */}
                 <YStack
                   justifyContent="center"
                   alignItems="center"
                   position="absolute"
-                  top={0}
+                  top={15}
                   left={0}
                   right={0}
-                  bottom={0}
+                  bottom={15}
                   space={5}
+                  style={{ maxHeight: 200 }}
                 >
-                  <SizableText
-                    marginBottom={2}
-                    style={{
-                      fontFamily: "Poppins",
-                      color: "#A7C4A0",
-                      fontSize: 14,
-                    }}
-                  >
-                    Restaurants
-                  </SizableText>
-                  <XStack
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{
-                      borderRadius: 12,
-                      backgroundColor: "#9BA88D",
-                      width: "90%",
-                    }}
-                  >
-                    <SizableText
-                      style={{
+                  {loading ? (
+                    <SizableText marginBottom={2}>Loading...</SizableText>
+                  ) : !hasSearched ? (
+                    <SizableText 
+                      style={{ 
                         fontFamily: "Poppins",
-                        color: "#fff",
-                        fontSize: 10,
+                        color: "#666",
+                        textAlign: "center",
+                        padding: 20
                       }}
                     >
-                      Remboelan - Rp 75.000 - 100.000
+                      Please select at least one category and enter your budget to get recommendations
                     </SizableText>
-                  </XStack>
-                  <XStack
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{
-                      borderRadius: 12,
-                      backgroundColor: "#9BA88D",
-                      width: "90%",
-                    }}
-                  >
-                    <SizableText
-                      style={{
+                  ) : recommendations.length === 0 ? (
+                    <SizableText 
+                      style={{ 
                         fontFamily: "Poppins",
-                        color: "#fff",
-                        fontSize: 10,
+                        color: "#666",
+                        textAlign: "center",
+                        padding: 20
                       }}
                     >
-                      Bakmi GM - Rp 25.000 - 50.000
+                      No recommendations found for your selected categories and budget. Try adjusting your budget or selecting different categories.
                     </SizableText>
-                  </XStack>
-                  <XStack
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{
-                      borderRadius: 12,
-                      backgroundColor: "#9BA88D",
-                      width: "90%",
-                    }}
-                  >
-                    <SizableText
-                      style={{
-                        fontFamily: "Poppins",
-                        color: "#fff",
-                        fontSize: 10,
-                      }}
-                    >
-                      Solaria - Rp 30.000 - 60.000
-                    </SizableText>
-                  </XStack>
-                  <XStack
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{
-                      borderRadius: 12,
-                      backgroundColor: "#9BA88D",
-                      width: "90%",
-                    }}
-                  >
-                    <SizableText
-                      style={{
-                        fontFamily: "Poppins",
-                        color: "#fff",
-                        fontSize: 10,
-                      }}
-                    >
-                      Dapur Solo - Rp 40.000 - 70.000
-                    </SizableText>
-                  </XStack>
-                  <XStack
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{
-                      borderRadius: 12,
-                      backgroundColor: "#9BA88D",
-                      width: "90%",
-                    }}
-                  >
-                    <SizableText
-                      style={{
-                        fontFamily: "Poppins",
-                        color: "#fff",
-                        fontSize: 10,
-                      }}
-                    >
-                      Ikkudo Ichi - Rp 50.000 - 100.000
-                    </SizableText>
-                  </XStack>
-                  <XStack
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{
-                      borderRadius: 12,
-                      backgroundColor: "#9BA88D",
-                      width: "90%",
-                    }}
-                  >
-                    <SizableText
-                      style={{
-                        fontFamily: "Poppins",
-                        color: "#fff",
-                        fontSize: 10,
-                      }}
-                    >
-                      Sukiya - Rp 30.000 - 70.000
-                    </SizableText>
-                  </XStack>
+                  ) : (
+                    <RNScrollView style={{ width: "100%" }}>
+                      {recommendations.map((recommendation, index) => (
+                        <XStack
+                          key={recommendation.ID || index}
+                          justifyContent="center"
+                          alignItems="center"
+                          alignSelf="center"
+                          style={{
+                            borderRadius: 12,
+                            backgroundColor: "#9BA88D",
+                            width: "90%",
+                            marginBottom: 6,
+                            marginVertical: 6,
+                            justifyContent: "center",
+                          }}
+                        >
+                          <SizableText
+                            style={{
+                              fontFamily: "Poppins",
+                              color: "#fff",
+                              fontSize: 10,
+                            }}
+                          >
+                            {recommendation.Name} - Rp {recommendation.PriceMin} - {recommendation.PriceMax}
+                          </SizableText>
+                        </XStack>
+                      ))}
+                    </RNScrollView>
+                  )}
                 </YStack>
               </ZStack>
             </YStack>

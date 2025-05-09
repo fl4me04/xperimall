@@ -14,4 +14,11 @@ func SetupRoutes(r *gin.Engine) {
 		auth.POST("/login", controllers.Login)
 		auth.GET("/user", middlewares.AuthMiddleware(), controllers.GetUserDetails)
 	}
+
+	api := r.Group("/api")
+	{
+		api.GET("/categories", controllers.GetCategories)
+		api.POST("/recommendations", controllers.GetRecommendations)
+		api.GET("/activities", controllers.GetActivities)
+	}
 }
