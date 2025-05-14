@@ -9,6 +9,8 @@ type Activity struct {
 	PriceMax   int
 	CategoryID uint
 	Category   Category
+	FloorID    uint
+	Floor      Floor
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	DeletedAt  *time.Time `gorm:"index"`
