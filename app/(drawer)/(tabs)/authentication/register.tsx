@@ -174,6 +174,7 @@ export default function register() {
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
+              secureTextEntry
               value={password}
               onChangeText={setPassword}
             />
@@ -185,6 +186,7 @@ export default function register() {
               backgroundColor={"#F7F5E6"}
               borderWidth={1}
               borderColor="black"
+              secureTextEntry
               borderRadius={8}
               value={confirmPassword}
               onChangeText={setConfirmPassword}

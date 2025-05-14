@@ -3,7 +3,7 @@ import { Drawer } from "expo-router/drawer";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { router, usePathname } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { StyleSheet } from "react-native";
@@ -30,9 +30,9 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
   useEffect(() => {
     loadUserData();
-    
+
     const checkUserData = async () => {
-      const storedUserData = await AsyncStorage.getItem('userData');
+      const storedUserData = await AsyncStorage.getItem("userData");
       if (storedUserData) {
         setUserData(JSON.parse(storedUserData));
       } else {
@@ -47,12 +47,12 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
   const loadUserData = async () => {
     try {
-      const storedUserData = await AsyncStorage.getItem('userData');
+      const storedUserData = await AsyncStorage.getItem("userData");
       if (storedUserData) {
         setUserData(JSON.parse(storedUserData));
       }
     } catch (error) {
-      console.error('Error loading user data:', error);
+      console.error("Error loading user data:", error);
     } finally {
       setIsLoading(false);
     }
@@ -60,12 +60,12 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('userData');
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("userData");
       setUserData(null);
       router.push("/(drawer)/(tabs)/authentication/login");
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error("Error logging out:", error);
     }
   };
 
@@ -111,17 +111,23 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         label={userData ? "Profile" : "Login"}
         labelStyle={[
           styles.navItemLabel,
-          { color: pathName == "/login" ? "#9BA88D" : "#fff" },
+          {
+            color: pathName == "/authentication/login" ? "#9BA88D" : "#fff",
+          },
         ]}
         icon={({ color, size }) => (
-          <User size={24} color={pathName == "/login" ? "#9BA88D" : "#fff"} />
+          <User
+            size={24}
+            color={pathName == "/authentication/login" ? "#9BA88D" : "#fff"}
+          />
         )}
         style={{
-          backgroundColor: pathName == "/login" ? "#F7F5E6" : "#A7C4A0",
+          backgroundColor:
+            pathName == "/authentication/login" ? "#F7F5E6" : "#A7C4A0",
         }}
         onPress={() => {
           if (userData) {
-            router.push("/(drawer)/(tabs)/authentication/login");
+            router.push("/(drawer)/(tabs)");
           } else {
             router.push("/(drawer)/(tabs)/authentication/login");
           }
@@ -157,7 +163,9 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             icon={({ color, size }) => (
               <Map size={24} color={pathName == "/maps" ? "#9BA88D" : "#fff"} />
             )}
-            style={{ backgroundColor: pathName == "/maps" ? "#F7F5E6" : "#A7C4A0" }}
+            style={{
+              backgroundColor: pathName == "/maps" ? "#F7F5E6" : "#A7C4A0",
+            }}
             onPress={() => {
               router.push("/(drawer)/(tabs)/maps");
             }}
@@ -175,7 +183,8 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
               />
             )}
             style={{
-              backgroundColor: pathName == "/mallDirectory" ? "#F7F5E6" : "#A7C4A0",
+              backgroundColor:
+                pathName == "/mallDirectory" ? "#F7F5E6" : "#A7C4A0",
             }}
             onPress={() => {
               router.push("/(drawer)/(tabs)/mallDirectory");
@@ -203,9 +212,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           <DrawerItem
             label={"Logout"}
             labelStyle={[styles.navItemLabel, { color: "#fff" }]}
-            icon={({ color, size }) => (
-              <User size={24} color="#fff" />
-            )}
+            icon={({ color, size }) => <User size={24} color="#fff" />}
             style={{ backgroundColor: "#A7C4A0" }}
             onPress={handleLogout}
           />
