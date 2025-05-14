@@ -7,7 +7,7 @@ import {
 } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React from "react";
-import { SafeAreaView, ScrollView, Image } from "react-native";
+import { SafeAreaView, ScrollView, Image, Dimensions } from "react-native";
 import {
   Adapt,
   Button,
@@ -23,8 +23,24 @@ import {
 } from "tamagui";
 
 export default function TabTwoScreen() {
-  const buttonTap = () => {
-    console.log("Button tapped");
+  const [selectedImage, setSelectedImage] = React.useState(
+    require("../../../assets/images/lowerGroundFloor.png")
+  );
+
+  const screenWidth = Dimensions.get("window").width;
+
+  const handleFloorChange = (floor: string) => {
+    const floorImages: Record<string, any> = {
+      "lower ground floor": require("../../../assets/images/lowerGroundFloor.png"),
+      "lower ground mezzanine floor": require("../../../assets/images/lowerGroundMezzanine.png"),
+      "ground floor": require("../../../assets/images/groundFloor.png"),
+      "upper ground floor": require("../../../assets/images/upperGroundFloor.png"),
+      "1st floor": require("../../../assets/images/1stFloor.png"),
+      "2nd floor": require("../../../assets/images/2ndFloor.png"),
+      "3rd floor": require("../../../assets/images/3rdFloor.png"),
+    };
+
+    setSelectedImage(floorImages[floor] || null);
   };
 
   return (
@@ -63,10 +79,10 @@ export default function TabTwoScreen() {
 
             <YStack justifyContent="center" alignItems="center">
               <Image
-                source={require("../../../assets/images/360Club.jpg")}
+                source={selectedImage}
                 style={{
-                  width: 300,
-                  height: 200,
+                  width: screenWidth * 0.9,
+                  height: screenWidth * 0.9 * 0.75,
                   resizeMode: "contain",
                 }}
               />
@@ -74,7 +90,10 @@ export default function TabTwoScreen() {
 
             <YStack flex={1} justifyContent="center" alignItems="center">
               <XStack width={"100%"} gap="$4">
-                <SelectDemoItem id="select-demo-1" />
+                <SelectDemoItem
+                  id="select-demo-1"
+                  onFloorChange={handleFloorChange}
+                />
               </XStack>
             </YStack>
           </YStack>
@@ -84,13 +103,20 @@ export default function TabTwoScreen() {
   );
 }
 
-export function SelectDemoItem(props: SelectProps) {
+export function SelectDemoItem(
+  props: SelectProps & { onFloorChange: (floor: string) => void }
+) {
   const [val, setVal] = React.useState("lower ground floor");
+
+  const handleValueChange = (value: string) => {
+    setVal(value);
+    props.onFloorChange(value);
+  };
 
   return (
     <Select
       value={val}
-      onValueChange={setVal}
+      onValueChange={handleValueChange}
       disablePreventBodyScroll
       {...props}
     >
@@ -147,18 +173,16 @@ export function SelectDemoItem(props: SelectProps) {
                 style={{
                   paddingVertical: 10,
                   paddingHorizontal: 15,
-                  borderRadius: 15, // Rounded corners for items
+                  borderRadius: 15,
                   backgroundColor:
-                    val === item.name.toLowerCase()
-                      ? "#A7C4A0" // Highlight selected item
-                      : "transparent",
+                    val === item.name.toLowerCase() ? "#A7C4A0" : "transparent",
                   flexDirection: "row",
                   alignItems: "center",
                 }}
               >
                 <Select.ItemText
                   style={{
-                    color: "#5A5A4D", // Text color
+                    color: "#5A5A4D",
                     fontWeight: "500",
                   }}
                 >
