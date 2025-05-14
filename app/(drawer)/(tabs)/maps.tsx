@@ -3,20 +3,14 @@ import {
   ArrowLeft,
   Check,
   ChevronDown,
-  ChevronUp,
 } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React from "react";
 import { SafeAreaView, ScrollView, Image, Dimensions } from "react-native";
 import {
-  Adapt,
   Button,
-  FontSizeTokens,
-  getFontSize,
-  Label,
   Select,
   SelectProps,
-  Sheet,
   SizableText,
   XStack,
   YStack,
@@ -27,7 +21,8 @@ export default function TabTwoScreen() {
     require("../../../assets/images/lowerGroundFloor.png")
   );
 
-  const screenWidth = Dimensions.get("window").width;
+  const screenWidth = Dimensions.get("window").width; // Get screen width
+  const screenHeight = Dimensions.get("window").height; // Get screen height
 
   const handleFloorChange = (floor: string) => {
     const floorImages: Record<string, any> = {
@@ -47,12 +42,12 @@ export default function TabTwoScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Navbar />
-        <YStack width={"auto"} height={"auto"} padding={25} flex={1}>
+        <YStack width={"100%"} height={"auto"} padding={screenWidth * 0.05} flex={1}>
           <XStack
             alignItems="flex-start"
             position="relative"
             justifyContent="center"
-            height={50}
+            height={screenHeight * 0.08}
           >
             <Button
               circular
@@ -70,7 +65,11 @@ export default function TabTwoScreen() {
             <YStack flex={1} justifyContent="center" alignItems="center">
               <YStack>
                 <SizableText
-                  style={{ fontWeight: "500", fontSize: 32, color: "#9BA88D" }}
+                  style={{
+                    fontWeight: "500",
+                    fontSize: screenWidth * 0.08, // Responsive font size
+                    color: "#9BA88D",
+                  }}
                 >
                   Map
                 </SizableText>
@@ -81,15 +80,15 @@ export default function TabTwoScreen() {
               <Image
                 source={selectedImage}
                 style={{
-                  width: screenWidth * 0.9,
-                  height: screenWidth * 0.9 * 0.75,
+                  width: screenWidth * 0.9, // 90% of screen width
+                  height: screenWidth * 0.9 * 0.75, // Maintain aspect ratio (4:3)
                   resizeMode: "contain",
                 }}
               />
             </YStack>
 
             <YStack flex={1} justifyContent="center" alignItems="center">
-              <XStack width={"100%"} gap="$4">
+              <XStack width={"100%"} gap={screenWidth * 0.02}>
                 <SelectDemoItem
                   id="select-demo-1"
                   onFloorChange={handleFloorChange}
@@ -113,6 +112,8 @@ export function SelectDemoItem(
     props.onFloorChange(value);
   };
 
+  const screenWidth = Dimensions.get("window").width; // Get screen width
+
   return (
     <Select
       value={val}
@@ -121,13 +122,13 @@ export function SelectDemoItem(
       {...props}
     >
       <Select.Trigger
-        maxWidth={220}
+        maxWidth={screenWidth * 0.6} // 60% of screen width
         iconAfter={ChevronDown}
         style={{
           backgroundColor: "#F8F6E8",
           borderRadius: 25,
-          paddingHorizontal: 15,
-          paddingVertical: 10,
+          paddingHorizontal: screenWidth * 0.04, // Responsive padding
+          paddingVertical: screenWidth * 0.02,
           borderWidth: 1,
           borderColor: "#D6D6C2",
           shadowColor: "#000",
@@ -141,7 +142,7 @@ export function SelectDemoItem(
           style={{
             color: "#5A5A4D",
             fontWeight: "600",
-            fontSize: 16,
+            fontSize: screenWidth * 0.04, // Responsive font size
           }}
         />
       </Select.Trigger>
@@ -149,7 +150,7 @@ export function SelectDemoItem(
       <Select.Content zIndex={200000}>
         <Select.Viewport
           style={{
-            padding: 10,
+            padding: screenWidth * 0.02,
             backgroundColor: "#F8F6E8",
           }}
         >
@@ -157,10 +158,10 @@ export function SelectDemoItem(
             <Select.Label
               style={{
                 backgroundColor: "transparent",
-                fontSize: 14,
+                fontSize: screenWidth * 0.035, // Responsive font size
                 fontWeight: "600",
                 color: "#fff",
-                marginBottom: 8,
+                marginBottom: screenWidth * 0.02,
               }}
             >
               Select Floor
@@ -171,8 +172,8 @@ export function SelectDemoItem(
                 key={item.name}
                 value={item.name.toLowerCase()}
                 style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 15,
+                  paddingVertical: screenWidth * 0.02,
+                  paddingHorizontal: screenWidth * 0.04,
                   borderRadius: 15,
                   backgroundColor:
                     val === item.name.toLowerCase() ? "#A7C4A0" : "transparent",
@@ -184,6 +185,7 @@ export function SelectDemoItem(
                   style={{
                     color: "#5A5A4D",
                     fontWeight: "500",
+                    fontSize: screenWidth * 0.04, // Responsive font size
                   }}
                 >
                   {item.name}
