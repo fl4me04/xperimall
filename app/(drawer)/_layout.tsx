@@ -107,32 +107,30 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           router.push("/(drawer)/(tabs)");
         }}
       />
-      <DrawerItem
-        label={userData ? "Profile" : "Login"}
-        labelStyle={[
-          styles.navItemLabel,
-          {
-            color: pathName == "/authentication/login" ? "#9BA88D" : "#fff",
-          },
-        ]}
-        icon={({ color, size }) => (
-          <User
-            size={24}
-            color={pathName == "/authentication/login" ? "#9BA88D" : "#fff"}
-          />
-        )}
-        style={{
-          backgroundColor:
-            pathName == "/authentication/login" ? "#F7F5E6" : "#A7C4A0",
-        }}
-        onPress={() => {
-          if (userData) {
-            router.push("/(drawer)/(tabs)");
-          } else {
+      {!userData && (
+        <DrawerItem
+          label={"Login"}
+          labelStyle={[
+            styles.navItemLabel,
+            {
+              color: pathName == "/authentication/login" ? "#9BA88D" : "#fff",
+            },
+          ]}
+          icon={({ color, size }) => (
+            <User
+              size={24}
+              color={pathName == "/authentication/login" ? "#9BA88D" : "#fff"}
+            />
+          )}
+          style={{
+            backgroundColor:
+              pathName == "/authentication/login" ? "#F7F5E6" : "#A7C4A0",
+          }}
+          onPress={() => {
             router.push("/(drawer)/(tabs)/authentication/login");
-          }
-        }}
-      />
+          }}
+        />
+      )}
       {userData && (
         <>
           <DrawerItem
