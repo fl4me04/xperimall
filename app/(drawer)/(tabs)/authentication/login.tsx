@@ -12,7 +12,7 @@ import {
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
   const router = useRouter();
@@ -39,14 +39,15 @@ export default function Login() {
 
       if (response.ok) {
         // Store the JWT token
-        await AsyncStorage.setItem('token', data.token);
+        await AsyncStorage.setItem("token", data.token);
         // Store user data
         const userData = {
           name: data.username,
-          email: email
+          email: email,
         };
-        await AsyncStorage.setItem('userData', JSON.stringify(userData));
-        
+        await AsyncStorage.setItem("userData", JSON.stringify(userData));
+        setEmail("");
+        setPassword("");
         setTimeout(() => {
           alert("Login successful!");
           router.push("/");
@@ -55,7 +56,7 @@ export default function Login() {
         alert(data.message || "Login failed");
       }
     } catch (error) {
-      console.error('Error logging in:', error);
+      console.error("Error logging in:", error);
       alert("Error logging in");
     }
   };
@@ -104,6 +105,7 @@ export default function Login() {
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
+              onSubmitEditing={handleLogin}
             />
             <XStack justifyContent="center" alignItems="center">
               <Anchor

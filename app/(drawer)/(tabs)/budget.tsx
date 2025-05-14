@@ -14,7 +14,7 @@ import {
 } from "tamagui";
 import { ScrollView as RNScrollView } from "react-native";
 
-const API_URL = "http://localhost:8080/api"; 
+const API_URL = "http://localhost:8080/api";
 
 interface Category {
   ID: number;
@@ -28,27 +28,35 @@ export default function activityPlanner() {
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const formatCurrency = (value: string) => {
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const handleAmountChange = (value: string) => {
+    const numericValue = value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+    setAmount(numericValue);
+  };
 
   useEffect(() => {
-    console.log('Fetching categories from:', `${API_URL}/categories`);
+    console.log("Fetching categories from:", `${API_URL}/categories`);
     fetch(`${API_URL}/categories`)
-      .then(res => {
-        console.log('Categories response status:', res.status);
+      .then((res) => {
+        console.log("Categories response status:", res.status);
         return res.json();
       })
-      .then(data => {
-        console.log('Categories data:', data);
+      .then((data) => {
+        console.log("Categories data:", data);
         setCategories(data);
       })
-      .catch(err => {
-        console.error('Error fetching categories:', err);
+      .catch((err) => {
+        console.error("Error fetching categories:", err);
       });
   }, []);
 
   const toggleCategory = (categoryId: number) => {
-    setSelectedCategories(prev => {
+    setSelectedCategories((prev) => {
       if (prev.includes(categoryId)) {
-        return prev.filter(id => id !== categoryId);
+        return prev.filter((id) => id !== categoryId);
       } else {
         return [...prev, categoryId];
       }
@@ -69,37 +77,39 @@ export default function activityPlanner() {
     try {
       const requestBody = {
         category_ids: selectedCategories,
-        budget: parseInt(inputAmount)
+        budget: parseInt(inputAmount),
       };
-      
-      
+
       const res = await fetch(`${API_URL}/recommendations`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          Accept: "application/json",
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
-      
-      
+
       if (!res.ok) {
         const errorData = await res.json();
-        console.error('Error response:', errorData);
-        throw new Error(`HTTP error! status: ${res.status}, message: ${JSON.stringify(errorData)}`);
+        console.error("Error response:", errorData);
+        throw new Error(
+          `HTTP error! status: ${res.status}, message: ${JSON.stringify(
+            errorData
+          )}`
+        );
       }
-      
+
       const data = await res.json();
-      console.log('Response data:', data);
-      
+      console.log("Response data:", data);
+
       if (!Array.isArray(data)) {
-        console.error('Invalid response format:', data);
-        throw new Error('Invalid response format from server');
+        console.error("Invalid response format:", data);
+        throw new Error("Invalid response format from server");
       }
-      
+
       setRecommendations(data);
     } catch (err) {
-      console.error('Error details:', err);
+      console.error("Error details:", err);
       alert("Failed to fetch recommendations. Please try again.");
     }
     setLoading(false);
@@ -153,8 +163,10 @@ export default function activityPlanner() {
               size="$3"
               width={"100%"}
               placeholder="Insert Amount (Rp.)"
-              value={inputAmount}
-              onChangeText={setAmount}
+              value={`Rp ${formatCurrency(inputAmount)}`}
+              onChangeText={(value) =>
+                handleAmountChange(value.replace(/^Rp\s?/, ""))
+              }
               fontFamily="Poppins"
               backgroundColor="#F7F5E6"
               borderWidth={1}
@@ -181,10 +193,10 @@ export default function activityPlanner() {
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
+              space={10}
             >
               <ZStack
                 width="90%"
-                height={150}
                 backgroundColor="#fff"
                 borderWidth={1}
                 borderColor="black"
@@ -194,10 +206,18 @@ export default function activityPlanner() {
                 marginRight={18}
                 alignItems="center"
                 justifyContent="center"
+                style={{
+                  padding: 140,
+                }}
               >
                 <RNScrollView
-                  style={{ width: "100%", maxHeight: 120 }}
-                  contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+                  style={{ width: "100%" }}
+                  contentContainerStyle={{
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                    gap: 10,
+                    padding: 10,
+                  }}
                   showsVerticalScrollIndicator={false}
                 >
                   <XStack
@@ -211,17 +231,32 @@ export default function activityPlanner() {
                     {categories.map((category) => (
                       <Button
                         key={category.ID}
-                        size={"$3"}
+                        size={"$4"}
                         borderRadius={30}
                         backgroundColor={
-                          selectedCategories.includes(category.ID) ? "#fff" : "#9BA88D"
+                          selectedCategories.includes(category.ID)
+                            ? "#E8E8E8"
+                            : "#9BA88D"
                         }
-                        color={selectedCategories.includes(category.ID) ? "#000" : "#fff"}
+                        color={
+                          selectedCategories.includes(category.ID)
+                            ? "#000"
+                            : "#fff"
+                        }
                         onPress={() => toggleCategory(category.ID)}
                         pressStyle={{
-                          backgroundColor:
-                            selectedCategories.includes(category.ID) ? "#E8E8E8" : "#A5B89C",
+                          backgroundColor: selectedCategories.includes(
+                            category.ID
+                          )
+                            ? "#E8E8E8"
+                            : "#A5B89C",
                           transform: [{ scale: 0.95 }],
+                        }}
+                        style={{
+                          minWidth: 120,
+                          paddingVertical: 10,
+                          margin: 5,
+                          fontWeight: "bold",
                           shadowColor: "#000",
                           shadowOffset: { width: 0, height: 2 },
                           shadowOpacity: 0.2,
@@ -297,29 +332,44 @@ export default function activityPlanner() {
                   {loading ? (
                     <SizableText marginBottom={2}>Loading...</SizableText>
                   ) : !hasSearched ? (
-                    <SizableText 
-                      style={{ 
+                    <SizableText
+                      style={{
                         fontFamily: "Poppins",
                         color: "#666",
                         textAlign: "center",
-                        padding: 20
+                        padding: 20,
                       }}
                     >
-                      Please select at least one category and enter your budget to get recommendations
+                      Please select at least one category and enter your budget
+                      to get recommendations
                     </SizableText>
                   ) : recommendations.length === 0 ? (
-                    <SizableText 
-                      style={{ 
+                    <SizableText
+                      style={{
                         fontFamily: "Poppins",
                         color: "#666",
                         textAlign: "center",
-                        padding: 20
+                        padding: 20,
                       }}
                     >
-                      No recommendations found for your selected categories and budget. Try adjusting your budget or selecting different categories.
+                      No recommendations found for your selected categories and
+                      budget. Try adjusting your budget or selecting different
+                      categories.
                     </SizableText>
                   ) : (
                     <RNScrollView style={{ width: "100%" }}>
+                      <SizableText
+                        marginBottom={2}
+                        style={{
+                          fontFamily: "Poppins",
+                          color: "#A7C4A0",
+                          fontSize: 16,
+                          alignSelf: "center",
+                          paddingBottom: 10,
+                        }}
+                      >
+                        Recommendation
+                      </SizableText>
                       {recommendations.map((recommendation, index) => (
                         <XStack
                           key={recommendation.ID || index}
@@ -339,10 +389,16 @@ export default function activityPlanner() {
                             style={{
                               fontFamily: "Poppins",
                               color: "#fff",
-                              fontSize: 10,
+                              fontSize: 13,
+                              textWrap: "wrap",
+                              textAlign: "center",
                             }}
                           >
-                            {recommendation.Name} - Rp {recommendation.PriceMin} - {recommendation.PriceMax}
+                            {recommendation.Name} (Rp{" "}
+                            {formatCurrency(recommendation.PriceMin.toString())}{" "}
+                            - Rp{" "}
+                            {formatCurrency(recommendation.PriceMax.toString())}
+                            )
                           </SizableText>
                         </XStack>
                       ))}
