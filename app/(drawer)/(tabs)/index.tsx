@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from "react-native";
+import { Dimensions, Image, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -12,22 +12,24 @@ import {
 import { Filter, Search } from "@tamagui/lucide-icons";
 import Slider from "@/components/Slider";
 import { Navbar } from "@/components/Navbar";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface UserData {
   name: string;
   email: string;
 }
 
+const { width, height } = Dimensions.get("window");
+
 export default function HomeScreen() {
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     loadUserData();
-    
+
     // Add interval to check for user data changes
     const checkUserData = async () => {
-      const storedUserData = await AsyncStorage.getItem('userData');
+      const storedUserData = await AsyncStorage.getItem("userData");
       if (storedUserData) {
         setUserData(JSON.parse(storedUserData));
       } else {
@@ -41,12 +43,12 @@ export default function HomeScreen() {
 
   const loadUserData = async () => {
     try {
-      const storedUserData = await AsyncStorage.getItem('userData');
+      const storedUserData = await AsyncStorage.getItem("userData");
       if (storedUserData) {
         setUserData(JSON.parse(storedUserData));
       }
     } catch (error) {
-      console.error('Error loading user data:', error);
+      console.error("Error loading user data:", error);
     }
   };
 
@@ -70,27 +72,31 @@ export default function HomeScreen() {
         <YStack
           width={"auto"}
           height={"auto"}
-          padding={28}
-          space={5}
-          paddingBottom={2}
+          padding={width * 0.07}
+          space={width * 0.03}
+          paddingBottom={width * 0.01}
         >
           <SizableText
             width={"auto"}
             height={"auto"}
-            style={{ fontSize: 20, color: "#9BA88D", fontFamily: "Poppins" }}
+            style={{
+              fontSize: width * 0.05,
+              color: "#9BA88D",
+              fontFamily: "Poppins",
+            }}
           >
             Hello, {userData ? userData.name : "Guest"}!
           </SizableText>
           <XStack
             alignItems="center"
-            padding="$2"
-            borderRadius="$4"
+            padding={width * 0.02}
+            borderRadius={width * 0.02}
             borderWidth={1}
             borderColor="$borderColor"
-            space={5}
+            space={width * 0.02}
             backgroundColor={"#F7F5E6"}
           >
-            <Search color="gray" size={"$1"} />
+            <Search color="gray" size={width * 0.04} />
             <Input
               flex={1}
               size="$3"
@@ -100,6 +106,7 @@ export default function HomeScreen() {
               borderWidth={0}
               backgroundColor="transparent"
               fontFamily={"Poppins"}
+              style={{ fontSize: width * 0.03 }}
             />
             <Button
               icon={Filter}
@@ -107,9 +114,6 @@ export default function HomeScreen() {
               backgroundColor={"#A7C4A0"}
               animation="bouncy"
               elevation="$4"
-              // hoverStyle={{
-              //   scale: 1.2,
-              // }}
               pressStyle={{
                 scale: 0.95,
               }}
@@ -117,39 +121,34 @@ export default function HomeScreen() {
             />
           </XStack>
         </YStack>
-        <YStack
-          // alignItems="center"
-          // justifyContent="center"
-          paddingTop={20}
-          paddingBottom={5}
-          // width={"auto"}
-          // height={250}
-          // backgroundColor={"cyan"}
-        >
+        <YStack paddingTop={width * 0.03}>
           <Slider />
         </YStack>
         <YStack
-          // backgroundColor={"cyan"}
           justifyContent="center"
           alignItems="center"
-          space={5}
-          padding={10}
+          space={width * 0.03}
+          padding={width * 0.05}
         >
           <SizableText
             width={"auto"}
             height={"auto"}
             alignSelf="center"
             justifyContent="center"
-            style={{ fontSize: 20, color: "#9BA88D", fontFamily: "Poppins" }}
+            style={{
+              fontSize: width * 0.05,
+              color: "#9BA88D",
+              fontFamily: "Poppins",
+            }}
           >
             What's New on Central Park
           </SizableText>
-          <XStack space={4}>
+          <XStack space={width * 0.03}>
             <Button
-              width={178}
-              height={178}
+              width={width * 0.4}
+              height={width * 0.4}
               onPress={buttonTap}
-              borderRadius="$6"
+              borderRadius={width * 0.02}
               padding="$0"
               backgroundColor="transparent"
               overflow="hidden"
@@ -157,14 +156,14 @@ export default function HomeScreen() {
               <Image
                 resizeMode="contain"
                 source={buttonImages["button1"]}
-                style={{ width: 178, height: 178 }}
+                style={{ width: "100%", height: "100%" }}
               />
             </Button>
             <Button
-              width={178}
-              height={178}
+              width={width * 0.4}
+              height={width * 0.4}
               onPress={buttonTap}
-              borderRadius="$6"
+              borderRadius={width * 0.02}
               padding="$0"
               backgroundColor="transparent"
               overflow="hidden"
@@ -172,16 +171,16 @@ export default function HomeScreen() {
               <Image
                 resizeMode="contain"
                 source={buttonImages["button2"]}
-                style={{ width: 178, height: 178 }}
+                style={{ width: "100%", height: "100%" }}
               />
             </Button>
           </XStack>
-          <XStack space={5}>
+          <XStack space={width * 0.03}>
             <Button
-              width={178}
-              height={178}
+              width={width * 0.4}
+              height={width * 0.4}
               onPress={buttonTap}
-              borderRadius="$6"
+              borderRadius={width * 0.02}
               padding="$0"
               backgroundColor="transparent"
               overflow="hidden"
@@ -189,14 +188,14 @@ export default function HomeScreen() {
               <Image
                 resizeMode="contain"
                 source={buttonImages["button3"]}
-                style={{ width: 178, height: 178 }}
+                style={{ width: "100%", height: "100%" }}
               />
             </Button>
             <Button
-              width={178}
-              height={178}
+              width={width * 0.4}
+              height={width * 0.4}
               onPress={buttonTap}
-              borderRadius="$6"
+              borderRadius={width * 0.02}
               padding="$0"
               backgroundColor="transparent"
               overflow="hidden"
@@ -204,111 +203,114 @@ export default function HomeScreen() {
               <Image
                 resizeMode="contain"
                 source={buttonImages["button4"]}
-                style={{ width: 178, height: 178 }}
+                style={{ width: "100%", height: "100%" }}
               />
             </Button>
           </XStack>
         </YStack>
         <YStack
-          // backgroundColor={"cyan"}
           justifyContent="center"
-          padding={20}
           alignItems="center"
-          space={9}
+          space={width * 0.03}
+          padding={width * 0.05}
         >
           <SizableText
             width={"auto"}
             height={"auto"}
             alignSelf="center"
             justifyContent="center"
-            style={{ fontSize: 20, color: "#9BA88D", fontFamily: "Poppins" }}
+            style={{
+              fontSize: width * 0.05,
+              color: "#9BA88D",
+              fontFamily: "Poppins",
+            }}
           >
             Directory
           </SizableText>
-          <XStack space={10}>
+          <XStack space={width * 0.03}>
             <Button
-              height={40}
-              width={178}
+              height={height * 0.05}
+              width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={"$4"}
+                fontSize={width * 0.03}
                 style={{ fontFamily: "Poppins" }}
               >
                 Level B1
               </SizableText>
             </Button>
             <Button
-              height={40}
-              width={178}
+              height={height * 0.05}
+              width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={"$4"}
+                fontSize={width * 0.03}
                 style={{ fontFamily: "Poppins" }}
               >
                 Ground
               </SizableText>
             </Button>
           </XStack>
-          <XStack space={10}>
+          <XStack space={width * 0.03}>
             <Button
-              height={40}
-              width={178}
+              height={height * 0.05}
+              width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={"$4"}
+                fontSize={width * 0.03}
                 style={{ fontFamily: "Poppins" }}
               >
                 Upperground
               </SizableText>
             </Button>
             <Button
-              height={40}
-              width={178}
+              height={height * 0.05}
+              width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={"$4"}
+                fontSize={width * 0.03}
                 style={{ fontFamily: "Poppins" }}
               >
                 Level 1
               </SizableText>
             </Button>
           </XStack>
-          <XStack space={10}>
+          <XStack space={width * 0.03}>
             <Button
-              height={40}
-              width={178}
+              height={height * 0.05}
+              width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={"$4"}
+                fontSize={width * 0.03}
                 style={{ fontFamily: "Poppins" }}
               >
                 Level 2
               </SizableText>
             </Button>
             <Button
-              height={40}
-              width={178}
+              height={height * 0.05}
+              width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={"$4"}
+                fontSize={width * 0.03}
                 style={{ fontFamily: "Poppins" }}
               >
                 Level 3
