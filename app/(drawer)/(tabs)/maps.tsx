@@ -7,7 +7,7 @@ import {
 } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, Image, Dimensions } from "react-native";
+import { SafeAreaView, ScrollView, Image, Dimensions, ActivityIndicator } from "react-native";
 import {
   Adapt,
   Button,
@@ -20,6 +20,7 @@ import {
   SizableText,
   XStack,
   YStack,
+  Spinner,
 } from "tamagui";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 
@@ -50,6 +51,7 @@ export default function TabTwoScreen() {
   const [floors, setFloors] = useState<Floor[]>([]);
   const [selectedFloor, setSelectedFloor] = useState<Floor | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const screenWidth = Dimensions.get("window").width;
 
   useEffect(() => {
@@ -58,6 +60,7 @@ export default function TabTwoScreen() {
 
   const fetchFloors = async () => {
     try {
+      setIsLoading(true);
       console.log("Fetching floors...");
       const response = await fetch('http://localhost:8080/api/floors');
       const data = await response.json();
@@ -70,15 +73,18 @@ export default function TabTwoScreen() {
       setFloors(mappedFloors);
       if (mappedFloors.length > 0) {
         setSelectedFloor(mappedFloors[0]);
-        fetchActivitiesByFloor(mappedFloors[0].id);
+        await fetchActivitiesByFloor(mappedFloors[0].id);
       }
     } catch (error) {
       console.error('Error fetching floors:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const fetchActivitiesByFloor = async (floorId: number) => {
     try {
+      setIsLoading(true);
       console.log("Fetching activities for floor:", floorId);
       const response = await fetch(`http://localhost:8080/api/floors/${floorId}/activities`);
       const data = await response.json();
@@ -101,6 +107,8 @@ export default function TabTwoScreen() {
       setActivities(mappedActivities);
     } catch (error) {
       console.error('Error fetching activities:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -155,73 +163,82 @@ export default function TabTwoScreen() {
               Mall Map
             </SizableText>
           </XStack>
-          <YStack alignItems="center" justifyContent="center" space={4}>
-            {selectedFloor && (
-              <Image
-                source={floorImageMap[selectedFloor.name]}
-                style={{
-                  width: screenWidth * 0.9,
-                  height: screenWidth * 0.9 * 0.75,
-                  resizeMode: "contain",
-                  borderRadius: 20,
-                  borderWidth: 2,
-                  borderColor: "#D6D6C2",
-                  backgroundColor: "#fff",
-                  marginBottom: 10,
-                }}
-              />
-            )}
-            <XStack width={"100%"} gap="$4" justifyContent="center" marginBottom={10}>
-              <SelectDemoItem
-                id="select-demo-1"
-                floors={floors}
-                selectedFloorId={selectedFloor?.id}
-                onFloorChange={handleFloorChange}
-              />
-            </XStack>
-          </YStack>
-          <YStack marginTop={10}>
-            <SizableText style={{ fontFamily: "Poppins", fontWeight: "700", fontSize: 20, color: "#9BA88D", marginBottom: 10 }}>
-              Activities
-            </SizableText>
-            {activities.length === 0 && (
-              <SizableText style={{ fontFamily: "Poppins", color: "#5A5A4D", textAlign: "center", padding: 20, backgroundColor: "#fff", borderRadius: 12, borderWidth: 1, borderColor: "#D6D6C2" }}>
-                Tidak ada activity di lantai ini.
-              </SizableText>
-            )}
-            {activities.map((activity) => (
-              <XStack
-                key={activity.id}
-                justifyContent="center"
-                alignItems="center"
-                alignSelf="center"
-                style={{
-                  borderRadius: 12,
-                  backgroundColor: "#9BA88D",
-                  width: "95%",
-                  marginBottom: 8,
-                  marginVertical: 6,
-                  padding: 12,
-                  borderWidth: 1,
-                  borderColor: "#D6D6C2",
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.08,
-                  shadowRadius: 4,
-                }}
-              >
-                <YStack flex={1}>
-                  <SizableText style={{ fontFamily: "Poppins", fontWeight: "600", color: "#fff", fontSize: 16 }}>{activity.name}</SizableText>
-                  <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
-                    Min: {activity.priceMin} | Max: {activity.priceMax}
+          {isLoading ? (
+            <YStack flex={1} justifyContent="center" alignItems="center" padding={20}>
+              <Spinner size="large" color="#9BA88D" />
+              <SizableText style={{ marginTop: 10, color: "#9BA88D" }}>Loading...</SizableText>
+            </YStack>
+          ) : (
+            <>
+              <YStack alignItems="center" justifyContent="center" space={4}>
+                {selectedFloor && (
+                  <Image
+                    source={floorImageMap[selectedFloor.name]}
+                    style={{
+                      width: screenWidth * 0.9,
+                      height: screenWidth * 0.9 * 0.75,
+                      resizeMode: "contain",
+                      borderRadius: 20,
+                      borderWidth: 2,
+                      borderColor: "#D6D6C2",
+                      backgroundColor: "#fff",
+                      marginBottom: 10,
+                    }}
+                  />
+                )}
+                <XStack width={"100%"} gap="$4" justifyContent="center" marginBottom={10}>
+                  <SelectDemoItem
+                    id="select-demo-1"
+                    floors={floors}
+                    selectedFloorId={selectedFloor?.id}
+                    onFloorChange={handleFloorChange}
+                  />
+                </XStack>
+              </YStack>
+              <YStack marginTop={10}>
+                <SizableText style={{ fontFamily: "Poppins", fontWeight: "700", fontSize: 20, color: "#9BA88D", marginBottom: 10 }}>
+                  Activities
+                </SizableText>
+                {activities.length === 0 && (
+                  <SizableText style={{ fontFamily: "Poppins", color: "#5A5A4D", textAlign: "center", padding: 20, backgroundColor: "#fff", borderRadius: 12, borderWidth: 1, borderColor: "#D6D6C2" }}>
+                    Tidak ada activity di lantai ini.
                   </SizableText>
-                  <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
-                    Category: {activity.category?.name}
-                  </SizableText>
-                </YStack>
-              </XStack>
-            ))}
-          </YStack>
+                )}
+                {activities.map((activity) => (
+                  <XStack
+                    key={activity.id}
+                    justifyContent="center"
+                    alignItems="center"
+                    alignSelf="center"
+                    style={{
+                      borderRadius: 12,
+                      backgroundColor: "#9BA88D",
+                      width: "95%",
+                      marginBottom: 8,
+                      marginVertical: 6,
+                      padding: 12,
+                      borderWidth: 1,
+                      borderColor: "#D6D6C2",
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.08,
+                      shadowRadius: 4,
+                    }}
+                  >
+                    <YStack flex={1}>
+                      <SizableText style={{ fontFamily: "Poppins", fontWeight: "600", color: "#fff", fontSize: 16 }}>{activity.name}</SizableText>
+                      <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
+                        Min: {activity.priceMin} | Max: {activity.priceMax}
+                      </SizableText>
+                      <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
+                        Category: {activity.category?.name}
+                      </SizableText>
+                    </YStack>
+                  </XStack>
+                ))}
+              </YStack>
+            </>
+          )}
         </YStack>
       </ScrollView>
     </SafeAreaViewContext>

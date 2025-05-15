@@ -18,6 +18,7 @@ import {
   View,
   XStack,
   YStack,
+  Dialog,
 } from "tamagui";
 import { Navbar } from "@/components/Navbar";
 import {
@@ -40,6 +41,8 @@ export default function register() {
   const [referralCode, setReferralCode] = React.useState("");
   const [error, setError] = React.useState("");
   const [name, setName] = React.useState("");
+  const [termsAccepted, setTermsAccepted] = React.useState(false);
+  const [showTerms, setShowTerms] = React.useState(false);
 
   const showDatePicker = useCallback(() => {
     console.log("Opening date picker...");
@@ -67,6 +70,11 @@ export default function register() {
   }
 
   const handleRegister = async () => {
+    if (!termsAccepted) {
+      setError("Please accept the Terms & Conditions");
+      return;
+    }
+
     if (!name || !email || !password || !confirmPassword || !gender || !dob) {
       setError("All fields are required!");
       return;
@@ -116,6 +124,81 @@ export default function register() {
       }
     }
   };
+
+  const TermsAndConditionsModal = () => (
+    <Dialog modal open={showTerms} onOpenChange={setShowTerms}>
+      <Dialog.Portal>
+        <Dialog.Overlay
+          key="overlay"
+          animation="quick"
+          opacity={0.5}
+          enterStyle={{ opacity: 0 }}
+          exitStyle={{ opacity: 0 }}
+        />
+        <Dialog.Content
+          bordered
+          elevate
+          key="content"
+          animation={[
+            "quick",
+            {
+              opacity: {
+                overshootClamping: true,
+              },
+            },
+          ]}
+          enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+          exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+          space
+        >
+          <Dialog.Title style={{ fontFamily: "Poppins", color: "#9BA88D" }}>Terms and Conditions</Dialog.Title>
+          <Dialog.Description style={{ fontFamily: "Poppins" }}>
+            <ScrollView style={{ maxHeight: 300 }}>
+              <SizableText style={{ fontFamily: "Poppins", lineHeight: 20 }}>
+                1. Acceptance of Terms{'\n\n'}
+                By accessing and using this application, you accept and agree to be bound by the terms and provision of this agreement.{'\n\n'}
+                2. Use License{'\n\n'}
+                Permission is granted to temporarily download one copy of the application per device for personal, non-commercial transitory viewing only.{'\n\n'}
+                3. User Account{'\n\n'}
+                You are responsible for maintaining the confidentiality of your account and password.{'\n\n'}
+                4. Privacy Policy{'\n\n'}
+                Your use of this application is also governed by our Privacy Policy.{'\n\n'}
+                5. Disclaimer{'\n\n'}
+                The materials on this application are provided on an 'as is' basis.{'\n\n'}
+                6. Limitations{'\n\n'}
+                In no event shall this application or its suppliers be liable for any damages.{'\n\n'}
+                7. Accuracy of Materials{'\n\n'}
+                The materials appearing in this application could include technical, typographical, or photographic errors.{'\n\n'}
+                8. Links{'\n\n'}
+                This application has not reviewed all of the sites linked to its application and is not responsible for the contents of any such linked site.{'\n\n'}
+                9. Modifications{'\n\n'}
+                This application may revise these terms of service at any time without notice.{'\n\n'}
+                10. Governing Law{'\n\n'}
+                These terms and conditions are governed by and construed in accordance with the laws.
+              </SizableText>
+            </ScrollView>
+          </Dialog.Description>
+          <XStack space="$3" justifyContent="flex-end">
+            <Button
+              onPress={() => {
+                setShowTerms(false);
+                setTermsAccepted(true);
+              }}
+              backgroundColor="#9BA88D"
+            >
+              <SizableText style={{ fontFamily: "Poppins", color: "white" }}>Accept</SizableText>
+            </Button>
+            <Button
+              onPress={() => setShowTerms(false)}
+              backgroundColor="#D6D6C2"
+            >
+              <SizableText style={{ fontFamily: "Poppins", color: "#5A5A4D" }}>Close</SizableText>
+            </Button>
+          </XStack>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -219,8 +302,35 @@ export default function register() {
               value={referralCode}
               onChangeText={setReferralCode}
             />
-            <XStack justifyContent="center" alignItems="center">
-              <CheckboxWithLabel size="$3" />
+            <XStack justifyContent="center" alignItems="center" space={10}>
+              <Checkbox
+                id="terms"
+                checked={termsAccepted}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setShowTerms(true);
+                  } else {
+                    setTermsAccepted(false);
+                  }
+                }}
+                size="$3"
+              >
+                <Checkbox.Indicator>
+                  <Check size={16} />
+                </Checkbox.Indicator>
+              </Checkbox>
+              <Label
+                htmlFor="terms"
+                style={{ fontFamily: "Poppins", color: "#5A5A4D" }}
+              >
+                I agree to the{" "}
+                <SizableText
+                  style={{ color: "#9BA88D", textDecorationLine: "underline" }}
+                  onPress={() => setShowTerms(true)}
+                >
+                  Terms & Conditions
+                </SizableText>
+              </Label>
             </XStack>
             {error ? (
               <SizableText style={{ color: "red", textAlign: "center" }}>
@@ -257,6 +367,7 @@ export default function register() {
             </XStack>
           </YStack>
         </YStack>
+        <TermsAndConditionsModal />
       </ScrollView>
     </SafeAreaView>
   );
