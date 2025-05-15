@@ -3,8 +3,12 @@ import { Menu, User2 } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
 import { Drawer } from "react-native-drawer-layout";
 import { Button, SizableText, XStack } from "tamagui";
+import { Dimensions, StyleSheet } from "react-native";
 
 export function Navbar() {
+  const { width } = Dimensions.get("window"); // Get screen width
+  const isSmallScreen = width < 600; // Define a breakpoint for responsiveness
+
   const buttonTap = () => {
     console.log("Button tapped");
   };
@@ -15,10 +19,10 @@ export function Navbar() {
 
   return (
     <XStack
-      padding={10}
+      padding={isSmallScreen ? 5 : 10} // Adjust padding based on screen size
       backgroundColor={"#A7C4A0"}
       width={"100%"}
-      height={100}
+      height={isSmallScreen ? 80 : 100} // Adjust height based on screen size
       justifyContent="center"
       alignItems="flex-end"
       position="relative"
@@ -45,7 +49,7 @@ export function Navbar() {
       <SizableText
         style={{
           fontFamily: "LexendGiga",
-          fontSize: 17,
+          fontSize: isSmallScreen ? 14 : 17, // Adjust font size based on screen size
           color: "white",
         }}
       >
