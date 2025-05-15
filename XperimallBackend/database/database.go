@@ -29,5 +29,5 @@ func ConnectDB() {
 	DB = db
 	log.Println("Database connected successfully")
 
-	db.AutoMigrate(&models.User{}, &models.Category{}, &models.Activity{})
+	db.AutoMigrate(&models.User{}, &models.Category{}, &models.Activity{}, &models.Floor{})
 }

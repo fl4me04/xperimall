@@ -20,5 +20,7 @@ func SetupRoutes(r *gin.Engine) {
 		api.GET("/categories", controllers.GetCategories)
 		api.POST("/recommendations", controllers.GetRecommendations)
 		api.GET("/activities", controllers.GetActivities)
+		api.GET("/floors", controllers.GetFloors)
+		api.GET("/floors/:floorId/activities", controllers.GetActivitiesByFloor)
 	}
 }
