@@ -88,9 +88,9 @@ export default function NewTenant() {
               data={images}
               horizontal
               pagingEnabled
-              snapToAlignment="center"  // Ensures images are centered
+              snapToAlignment="center"
               decelerationRate="fast"
-              snapToInterval={width - 70}  // Adjusted for overflow effect
+              snapToInterval={width - 60}
               initialScrollIndex={1}
               centerContent
               showsHorizontalScrollIndicator={false}
@@ -100,13 +100,13 @@ export default function NewTenant() {
               )}
               keyExtractor={(_, index) => index.toString()}
               getItemLayout={(_, index) => ({
-                length: width - 70,  // Set width for overflow effect
-                offset: (width - 70) * index,
+                length: width - 60, 
+                offset: (width - 60) * index,
                 index,
               })}
               style={{ flexGrow: 0, width }}
               contentContainerStyle={{
-                paddingHorizontal: 30,  // Adjust padding for proper overflow
+                paddingHorizontal: 31.6, 
               }}
               renderItem={({ item }) => (
                 <View style={styles.imageWrapper}>
@@ -220,11 +220,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imageWrapper: {
-    width: width - 70,  // Adjusted width for overflow effect
-    marginHorizontal: 37,  // Adjust margin for adjacent image overflow
+    width: width - 60,  
+    marginHorizontal: 31.2, 
     alignItems: "center",
     justifyContent: "center",
-    overflow: "visible",  // Allow images to overflow
+    overflow: "visible",
     zIndex: 1,
   },
   image: {
