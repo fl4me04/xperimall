@@ -1,5 +1,7 @@
 import React, { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Platform, Modal, View } from "react-native";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   Adapt,
   Anchor,
@@ -15,9 +17,9 @@ import {
   SelectProps,
   Sheet,
   SizableText,
-  View,
   XStack,
   YStack,
+  Dialog,
 } from "tamagui";
 import { Navbar } from "@/components/Navbar";
 import {
@@ -36,18 +38,25 @@ export default function register() {
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [gender, setGender] = React.useState("");
   const [dob, setDob] = React.useState("");
+  const [showDatePicker, setShowDatePicker] = React.useState(false);
+  const [date, setDate] = React.useState(new Date(2010, 0, 1));
   const [open, setOpen] = React.useState(false);
   const [referralCode, setReferralCode] = React.useState("");
   const [error, setError] = React.useState("");
   const [name, setName] = React.useState("");
+  const [termsAccepted, setTermsAccepted] = React.useState(false);
+  const [showTerms, setShowTerms] = React.useState(false);
 
-  const showDatePicker = useCallback(() => {
-    console.log("Opening date picker...");
-    setDatePickerVisible(true);
-  }, []);
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+      const formattedDate = formatDate(selectedDate);
+      setDob(formattedDate);
+    }
+  };
 
-  function formatDate(date: Date | null): string {
-    if (!date) return "";
+  function formatDate(date: Date): string {
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
@@ -67,6 +76,11 @@ export default function register() {
   }
 
   const handleRegister = async () => {
+    if (!termsAccepted) {
+      setError("Please accept the Terms & Conditions");
+      return;
+    }
+
     if (!name || !email || !password || !confirmPassword || !gender || !dob) {
       setError("All fields are required!");
       return;
@@ -102,7 +116,12 @@ export default function register() {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || "Registration failed");
+        if (data.message && data.message.toLowerCase().includes('Duplicate entry')) {
+          setError("Email already exists!");
+        } else {
+          throw new Error(data.message || "Registration failed");
+        }
+        return;
       }
 
       alert("Registration Successful!");
@@ -116,6 +135,81 @@ export default function register() {
       }
     }
   };
+
+  const TermsAndConditionsModal = () => (
+    <Dialog modal open={showTerms} onOpenChange={setShowTerms}>
+      <Dialog.Portal>
+        <Dialog.Overlay
+          key="overlay"
+          animation="quick"
+          opacity={0.5}
+          enterStyle={{ opacity: 0 }}
+          exitStyle={{ opacity: 0 }}
+        />
+        <Dialog.Content
+          bordered
+          elevate
+          key="content"
+          animation={[
+            "quick",
+            {
+              opacity: {
+                overshootClamping: true,
+              },
+            },
+          ]}
+          enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+          exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+          space
+        >
+          <Dialog.Title style={{ fontFamily: "Poppins", color: "#9BA88D" }}>Terms and Conditions</Dialog.Title>
+          <Dialog.Description style={{ fontFamily: "Poppins" }}>
+            <ScrollView style={{ maxHeight: 300 }}>
+              <SizableText style={{ fontFamily: "Poppins", lineHeight: 20 }}>
+                1. Acceptance of Terms{'\n\n'}
+                By accessing and using this application, you accept and agree to be bound by the terms and provision of this agreement.{'\n\n'}
+                2. Use License{'\n\n'}
+                Permission is granted to temporarily download one copy of the application per device for personal, non-commercial transitory viewing only.{'\n\n'}
+                3. User Account{'\n\n'}
+                You are responsible for maintaining the confidentiality of your account and password.{'\n\n'}
+                4. Privacy Policy{'\n\n'}
+                Your use of this application is also governed by our Privacy Policy.{'\n\n'}
+                5. Disclaimer{'\n\n'}
+                The materials on this application are provided on an 'as is' basis.{'\n\n'}
+                6. Limitations{'\n\n'}
+                In no event shall this application or its suppliers be liable for any damages.{'\n\n'}
+                7. Accuracy of Materials{'\n\n'}
+                The materials appearing in this application could include technical, typographical, or photographic errors.{'\n\n'}
+                8. Links{'\n\n'}
+                This application has not reviewed all of the sites linked to its application and is not responsible for the contents of any such linked site.{'\n\n'}
+                9. Modifications{'\n\n'}
+                This application may revise these terms of service at any time without notice.{'\n\n'}
+                10. Governing Law{'\n\n'}
+                These terms and conditions are governed by and construed in accordance with the laws.
+              </SizableText>
+            </ScrollView>
+          </Dialog.Description>
+          <XStack space="$3" justifyContent="flex-end">
+            <Button
+              onPress={() => {
+                setShowTerms(false);
+                setTermsAccepted(true);
+              }}
+              backgroundColor="#9BA88D"
+            >
+              <SizableText style={{ fontFamily: "Poppins", color: "white" }}>Accept</SizableText>
+            </Button>
+            <Button
+              onPress={() => setShowTerms(false)}
+              backgroundColor="#D6D6C2"
+            >
+              <SizableText style={{ fontFamily: "Poppins", color: "#5A5A4D" }}>Close</SizableText>
+            </Button>
+          </XStack>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -193,19 +287,59 @@ export default function register() {
             />
             <XStack space={10}>
               <SelectGender gender={gender} setGender={setGender} />
-              <Input
-                flex={1}
-                size="$3"
-                placeholder="Date Of Birth (DD-MM-YYYY)"
-                fontFamily={"Poppins"}
-                backgroundColor={"#F7F5E6"}
-                borderWidth={1}
-                borderColor="black"
-                borderRadius={8}
-                value={dob}
-                onChangeText={setDob}
-                keyboardType="numeric"
-              />
+              {Platform.OS === "web" ? (
+                <input
+                  type="date"
+                  style={{
+                    flex: 1,
+                    fontFamily: "Poppins",
+                    backgroundColor: "#F7F5E6",
+                    borderWidth: 1,
+                    borderColor: "black",
+                    borderRadius: 8,
+                    padding: 10,
+                    height: 40,
+                  }}
+                  value={dob ? dob.split("-").reverse().join("-") : "2010-01-01"}
+                  onChange={e => {
+                    const [year, month, day] = e.target.value.split("-");
+                    setDob(`${day}-${month}-${year}`);
+                  }}
+                  max={new Date().toISOString().split("T")[0]}
+                />
+              ) : (
+                <>
+                  <Button
+                    flex={1}
+                    size="$3"
+                    backgroundColor={"#F7F5E6"}
+                    borderWidth={1}
+                    borderColor="black"
+                    borderRadius={8}
+                    onPress={() => setShowDatePicker(true)}
+                  >
+                    <SizableText style={{ fontFamily: "Poppins", color: dob ? "black" : "#0000006B" }}>
+                      {dob || "Date Of Birth (DD-MM-YYYY)"}
+                    </SizableText>
+                  </Button>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={date}
+                      mode="date"
+                      display="default"
+                      onChange={(event, selectedDate) => {
+                        setShowDatePicker(false);
+                        if (selectedDate) {
+                          setDate(selectedDate);
+                          const formattedDate = formatDate(selectedDate);
+                          setDob(formattedDate);
+                        }
+                      }}
+                      maximumDate={new Date()}
+                    />
+                  )}
+                </>
+              )}
             </XStack>
             <Input
               flex={1}
@@ -219,8 +353,35 @@ export default function register() {
               value={referralCode}
               onChangeText={setReferralCode}
             />
-            <XStack justifyContent="center" alignItems="center">
-              <CheckboxWithLabel size="$3" />
+            <XStack justifyContent="center" alignItems="center" space={10}>
+              <Checkbox
+                id="terms"
+                checked={termsAccepted}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setShowTerms(true);
+                  } else {
+                    setTermsAccepted(false);
+                  }
+                }}
+                size="$3"
+              >
+                <Checkbox.Indicator>
+                  <Check size={16} />
+                </Checkbox.Indicator>
+              </Checkbox>
+              <Label
+                htmlFor="terms"
+                style={{ fontFamily: "Poppins", color: "#5A5A4D" }}
+              >
+                I agree to the{" "}
+                <SizableText
+                  style={{ color: "#9BA88D", textDecorationLine: "underline" }}
+                  onPress={() => setShowTerms(true)}
+                >
+                  Terms & Conditions
+                </SizableText>
+              </Label>
             </XStack>
             {error ? (
               <SizableText style={{ color: "red", textAlign: "center" }}>
@@ -257,6 +418,7 @@ export default function register() {
             </XStack>
           </YStack>
         </YStack>
+        <TermsAndConditionsModal />
       </ScrollView>
     </SafeAreaView>
   );
@@ -412,7 +574,4 @@ export function CheckboxWithLabel({
       </Label>
     </XStack>
   );
-}
-function setDatePickerVisible(arg0: boolean) {
-  throw new Error("Function not implemented.");
 }

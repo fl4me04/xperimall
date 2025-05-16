@@ -80,7 +80,7 @@ func Register(c *gin.Context) {
 	result := database.DB.Create(&user)
 
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to create user", "error": result.Error.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Email already exists!", "error": result.Error.Error()})
 		return
 	}
 
