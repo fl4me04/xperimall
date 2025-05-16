@@ -1,21 +1,33 @@
 package main
 
 import (
-  "fmt"
-  "os"
+	"log"
+	"os"
 
-  "github.com/gin-gonic/gin"
+	"XperimallBackend/database"
+	"XperimallBackend/routes"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-  r := gin.Default()
+	r := gin.Default()
 
-  port := os.Getenv("PORT")
-  if port == "" {
-    port = "8080"
-  }
-  fmt.Println("Starting server on port " + port)
-  if err := r.Run("0.0.0.0:" + port); err != nil {
-    fmt.Println("Failed to start server:", err)
-  }
+	database.ConnectDB()
+
+	r.Use(cors.Default())
+
+	routes.SetupRoutes(r)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("🟢 Server starting on port %s", port)
+	if err := r.Run("0.0.0.0:" + port); err != nil {
+		log.Panicf("❌ Failed to start server: %s", err)
+	}
+
 }
