@@ -1,17 +1,17 @@
-# Gunakan base image Go
-FROM golang:1.20
+# Gunakan image Go
+FROM golang:1.21
 
-# Set working directory
+# Set working directory di dalam container
 WORKDIR /app
 
-# Copy semua file ke dalam image
+# Copy file dari XperimallBackend ke dalam /app container
 COPY . .
 
-# Download dependencies
-RUN go mod tidy
+# Set go module name agar sesuai
+ENV GO111MODULE=on
 
-# Build binary (optional, bisa langsung run tanpa build juga)
-# RUN go build -o main .
+# Unduh dependensi
+RUN go mod tidy
 
 # Jalankan aplikasi
 CMD ["go", "run", "main.go"]
