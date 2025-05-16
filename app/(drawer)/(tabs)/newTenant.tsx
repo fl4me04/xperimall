@@ -11,7 +11,7 @@ import {
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 
 const images = [
   require("../../../assets/images/newTenant1.png"),
@@ -24,25 +24,6 @@ const { width } = Dimensions.get("screen");
 export default function NewTenant() {
   const animatedValue = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList<any>>(null);
-
-  /*useEffect(() => {
-    let index = 0;
-    let forward = true;
-
-    const interval = setInterval(() => {
-      if (forward) {
-        index++;
-        if (index >= images.length - 1) forward = false;
-      } else {
-        index--;
-        if (index <= 0) forward = true;
-      }
-
-      flatListRef.current?.scrollToIndex({ index, animated: true });
-    }, );
-
-    return () => clearInterval(interval);
-  }, []);*/
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -107,10 +88,10 @@ export default function NewTenant() {
               data={images}
               horizontal
               pagingEnabled
-              snapToAlignment="center"
+              snapToAlignment="center"  // Ensures images are centered
               decelerationRate="fast"
-              snapToInterval={width - 90}
-              initialScrollIndex={1.001}
+              snapToInterval={width - 70}  // Adjusted for overflow effect
+              initialScrollIndex={1}
               centerContent
               showsHorizontalScrollIndicator={false}
               onScroll={Animated.event(
@@ -119,13 +100,13 @@ export default function NewTenant() {
               )}
               keyExtractor={(_, index) => index.toString()}
               getItemLayout={(_, index) => ({
-                length: width - 90,
-                offset: (width - 90) * index,
+                length: width - 70,  // Set width for overflow effect
+                offset: (width - 70) * index,
                 index,
               })}
               style={{ flexGrow: 0, width }}
               contentContainerStyle={{
-                paddingHorizontal: 16,
+                paddingHorizontal: 30,  // Adjust padding for proper overflow
               }}
               renderItem={({ item }) => (
                 <View style={styles.imageWrapper}>
@@ -239,11 +220,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imageWrapper: {
-    width: width - 90, // ✅ Lebih kecil dari screen
-    marginHorizontal: 11,
+    width: width - 70,  // Adjusted width for overflow effect
+    marginHorizontal: 37,  // Adjust margin for adjacent image overflow
     alignItems: "center",
     justifyContent: "center",
-    overflow: "visible",
+    overflow: "visible",  // Allow images to overflow
     zIndex: 1,
   },
   image: {
