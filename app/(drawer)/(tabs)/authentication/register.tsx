@@ -85,7 +85,7 @@ export default function register() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/authentication/register",
+        "https://xperimall-backend.onrender.com/authentication/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

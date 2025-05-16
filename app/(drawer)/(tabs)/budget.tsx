@@ -14,7 +14,7 @@ import {
 } from "tamagui";
 import { ScrollView as RNScrollView } from "react-native";
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = "https://xperimall-backend.onrender.com/api";
 
 interface Category {
   ID: number;
