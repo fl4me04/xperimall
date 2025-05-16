@@ -1,31 +1,18 @@
-package database
-
-import (
-	"log"
-	"os"
-
-	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-
-	"XperimallBackend/models"
-)
-
-var DB *gorm.DB
-
 func ConnectDB() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("⚠️ Warning: Error loading .env file:", err)
-		// jangan fatal, supaya server tetap jalan
+		log.Println("⚠️ Warning: Failed to load .env file:", err)
+		// lanjutkan walau tanpa .env (Render pakai ENV langsung)
 	}
 
-	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASS") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("DB_NAME") + "?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASS") +
+		"@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" +
+		os.Getenv("DB_NAME") + "?charset=utf8mb4&parseTime=True&loc=Local"
 
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Println("❌ Failed to connect to database:", err)
-		// jangan pakai log.Fatal(), karena itu akan stop aplikasi
+		// JANGAN log.Fatal di sini
 		return
 	}
 
