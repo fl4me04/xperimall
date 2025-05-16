@@ -1,5 +1,7 @@
 import React, { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Platform, Modal, View } from "react-native";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   Adapt,
   Anchor,
@@ -15,7 +17,6 @@ import {
   SelectProps,
   Sheet,
   SizableText,
-  View,
   XStack,
   YStack,
   Dialog,
@@ -37,6 +38,8 @@ export default function register() {
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [gender, setGender] = React.useState("");
   const [dob, setDob] = React.useState("");
+  const [showDatePicker, setShowDatePicker] = React.useState(false);
+  const [date, setDate] = React.useState(new Date(2010, 0, 1));
   const [open, setOpen] = React.useState(false);
   const [referralCode, setReferralCode] = React.useState("");
   const [error, setError] = React.useState("");
@@ -44,13 +47,16 @@ export default function register() {
   const [termsAccepted, setTermsAccepted] = React.useState(false);
   const [showTerms, setShowTerms] = React.useState(false);
 
-  const showDatePicker = useCallback(() => {
-    console.log("Opening date picker...");
-    setDatePickerVisible(true);
-  }, []);
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+      const formattedDate = formatDate(selectedDate);
+      setDob(formattedDate);
+    }
+  };
 
-  function formatDate(date: Date | null): string {
-    if (!date) return "";
+  function formatDate(date: Date): string {
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
@@ -110,7 +116,12 @@ export default function register() {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || "Registration failed");
+        if (data.message && data.message.toLowerCase().includes('Duplicate entry')) {
+          setError("Email already exists!");
+        } else {
+          throw new Error(data.message || "Registration failed");
+        }
+        return;
       }
 
       alert("Registration Successful!");
@@ -276,19 +287,59 @@ export default function register() {
             />
             <XStack space={10}>
               <SelectGender gender={gender} setGender={setGender} />
-              <Input
-                flex={1}
-                size="$3"
-                placeholder="Date Of Birth (DD-MM-YYYY)"
-                fontFamily={"Poppins"}
-                backgroundColor={"#F7F5E6"}
-                borderWidth={1}
-                borderColor="black"
-                borderRadius={8}
-                value={dob}
-                onChangeText={setDob}
-                keyboardType="numeric"
-              />
+              {Platform.OS === "web" ? (
+                <input
+                  type="date"
+                  style={{
+                    flex: 1,
+                    fontFamily: "Poppins",
+                    backgroundColor: "#F7F5E6",
+                    borderWidth: 1,
+                    borderColor: "black",
+                    borderRadius: 8,
+                    padding: 10,
+                    height: 40,
+                  }}
+                  value={dob ? dob.split("-").reverse().join("-") : "2010-01-01"}
+                  onChange={e => {
+                    const [year, month, day] = e.target.value.split("-");
+                    setDob(`${day}-${month}-${year}`);
+                  }}
+                  max={new Date().toISOString().split("T")[0]}
+                />
+              ) : (
+                <>
+                  <Button
+                    flex={1}
+                    size="$3"
+                    backgroundColor={"#F7F5E6"}
+                    borderWidth={1}
+                    borderColor="black"
+                    borderRadius={8}
+                    onPress={() => setShowDatePicker(true)}
+                  >
+                    <SizableText style={{ fontFamily: "Poppins", color: dob ? "black" : "#0000006B" }}>
+                      {dob || "Date Of Birth (DD-MM-YYYY)"}
+                    </SizableText>
+                  </Button>
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={date}
+                      mode="date"
+                      display="default"
+                      onChange={(event, selectedDate) => {
+                        setShowDatePicker(false);
+                        if (selectedDate) {
+                          setDate(selectedDate);
+                          const formattedDate = formatDate(selectedDate);
+                          setDob(formattedDate);
+                        }
+                      }}
+                      maximumDate={new Date()}
+                    />
+                  )}
+                </>
+              )}
             </XStack>
             <Input
               flex={1}
@@ -523,7 +574,4 @@ export function CheckboxWithLabel({
       </Label>
     </XStack>
   );
-}
-function setDatePickerVisible(arg0: boolean) {
-  throw new Error("Function not implemented.");
 }
