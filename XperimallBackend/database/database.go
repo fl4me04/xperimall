@@ -1,3 +1,18 @@
+package database
+
+import (
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+
+	"XperimallBackend/models"
+)
+
+var DB *gorm.DB
+
 func ConnectDB() {
 	err := godotenv.Load()
 	if err != nil {
