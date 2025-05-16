@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"XperimallBackend/database"
@@ -25,9 +25,9 @@ func main() {
 		port = "8080"
 	}
 
-	log.Printf("🟢 Server starting on port %s", port)
-	if err := r.Run("0.0.0.0:" + port); err != nil {
-		log.Panicf("❌ Failed to start server: %s", err)
+	fmt.Println("🟢 Server starting on port: " + port)
+	err := r.Run("0.0.0.0:" + port)
+	if err != nil {
+		fmt.Println("🔴 Failed to start server:", err)
 	}
-
 }
