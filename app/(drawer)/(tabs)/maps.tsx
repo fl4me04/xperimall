@@ -62,7 +62,7 @@ export default function TabTwoScreen() {
     try {
       setIsLoading(true);
       console.log("Fetching floors...");
-      const response = await fetch('http://localhost:8080/api/floors');
+      const response = await fetch('https://xperimall-backend.onrender.com/api/floors');
       const data = await response.json();
       console.log("Floors data:", data);
       const mappedFloors = data.map((f: any) => ({
@@ -86,7 +86,7 @@ export default function TabTwoScreen() {
     try {
       setIsLoading(true);
       console.log("Fetching activities for floor:", floorId);
-      const response = await fetch(`http://localhost:8080/api/floors/${floorId}/activities`);
+      const response = await fetch(`https://xperimall-backend.onrender.com/api/floors/${floorId}/activities`);
       const data = await response.json();
       console.log("Activities data:", data);
       const mappedActivities = data.map((a: any) => ({
