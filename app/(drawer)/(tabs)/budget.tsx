@@ -207,18 +207,20 @@ export default function activityPlanner() {
                 alignItems="center"
                 justifyContent="center"
                 style={{
-                  padding: 140,
+                  padding: 20,
+                  height: 300,
                 }}
               >
                 <RNScrollView
-                  style={{ width: "100%" }}
+                  style={{ width: "100%", height: "100%" }}
                   contentContainerStyle={{
                     flexWrap: "wrap",
                     justifyContent: "center",
                     gap: 10,
                     padding: 10,
                   }}
-                  showsVerticalScrollIndicator={false}
+                  showsVerticalScrollIndicator={true}
+                  nestedScrollEnabled={true}
                 >
                   <XStack
                     flexWrap="wrap"
@@ -357,7 +359,12 @@ export default function activityPlanner() {
                       categories.
                     </SizableText>
                   ) : (
-                    <RNScrollView style={{ width: "100%" }}>
+                    <RNScrollView 
+                      style={{ width: "100%", height: "100%" }}
+                      showsVerticalScrollIndicator={true}
+                      contentContainerStyle={{ paddingBottom: 10 }}
+                      nestedScrollEnabled={true}
+                    >
                       <SizableText
                         marginBottom={2}
                         style={{
@@ -383,6 +390,7 @@ export default function activityPlanner() {
                             marginBottom: 6,
                             marginVertical: 6,
                             justifyContent: "center",
+                            padding: 10,
                           }}
                         >
                           <SizableText

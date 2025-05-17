@@ -122,7 +122,11 @@ export default function TabTwoScreen() {
 
   return (
     <SafeAreaViewContext style={{ flex: 1, backgroundColor: '#fff' }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView 
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={true}
+        bounces={true}
+      >
         <Navbar />
         <YStack width={"auto"} height={"auto"} padding={28} space={5} paddingBottom={2} backgroundColor="#fff">
           <XStack
@@ -186,7 +190,20 @@ export default function TabTwoScreen() {
                     }}
                   />
                 )}
-                <XStack width={"100%"} gap="$4" justifyContent="center" marginBottom={10}>
+                <XStack width={"100%"} gap="$4" justifyContent="center" marginBottom={10} flexDirection="column" alignItems="center">
+                  {selectedFloor && (
+                    <SizableText
+                      style={{
+                        fontFamily: "Poppins",
+                        fontWeight: "600",
+                        fontSize: 16,
+                        color: "#9BA88D",
+                        marginBottom: 6,
+                      }}
+                    >
+                      Current Floor: {selectedFloor.name}
+                    </SizableText>
+                  )}
                   <SelectDemoItem
                     id="select-demo-1"
                     floors={floors}
@@ -195,7 +212,7 @@ export default function TabTwoScreen() {
                   />
                 </XStack>
               </YStack>
-              <YStack marginTop={10}>
+              <YStack marginTop={10} flex={1}>
                 <SizableText style={{ fontFamily: "Poppins", fontWeight: "700", fontSize: 20, color: "#9BA88D", marginBottom: 10 }}>
                   Activities
                 </SizableText>
@@ -204,38 +221,43 @@ export default function TabTwoScreen() {
                     Tidak ada activity di lantai ini.
                   </SizableText>
                 )}
-                {activities.map((activity) => (
-                  <XStack
-                    key={activity.id}
-                    justifyContent="center"
-                    alignItems="center"
-                    alignSelf="center"
-                    style={{
-                      borderRadius: 12,
-                      backgroundColor: "#9BA88D",
-                      width: "95%",
-                      marginBottom: 8,
-                      marginVertical: 6,
-                      padding: 12,
-                      borderWidth: 1,
-                      borderColor: "#D6D6C2",
-                      shadowColor: "#000",
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.08,
-                      shadowRadius: 4,
-                    }}
-                  >
-                    <YStack flex={1}>
-                      <SizableText style={{ fontFamily: "Poppins", fontWeight: "600", color: "#fff", fontSize: 16 }}>{activity.name}</SizableText>
-                      <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
-                        Min: {activity.priceMin} | Max: {activity.priceMax}
-                      </SizableText>
-                      <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
-                        Category: {activity.category?.name}
-                      </SizableText>
-                    </YStack>
-                  </XStack>
-                ))}
+                <ScrollView 
+                  showsVerticalScrollIndicator={true}
+                  contentContainerStyle={{ paddingBottom: 20 }}
+                >
+                  {activities.map((activity) => (
+                    <XStack
+                      key={activity.id}
+                      justifyContent="center"
+                      alignItems="center"
+                      alignSelf="center"
+                      style={{
+                        borderRadius: 12,
+                        backgroundColor: "#9BA88D",
+                        width: "95%",
+                        marginBottom: 8,
+                        marginVertical: 6,
+                        padding: 12,
+                        borderWidth: 1,
+                        borderColor: "#D6D6C2",
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.08,
+                        shadowRadius: 4,
+                      }}
+                    >
+                      <YStack flex={1}>
+                        <SizableText style={{ fontFamily: "Poppins", fontWeight: "600", color: "#fff", fontSize: 16 }}>{activity.name}</SizableText>
+                        <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
+                          Min: {activity.priceMin} | Max: {activity.priceMax}
+                        </SizableText>
+                        <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
+                          Category: {activity.category?.name}
+                        </SizableText>
+                      </YStack>
+                    </XStack>
+                  ))}
+                </ScrollView>
               </YStack>
             </>
           )}
@@ -253,6 +275,7 @@ export function SelectDemoItem(
   }
 ) {
   const [val, setVal] = React.useState("");
+  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     if (props.selectedFloorId !== undefined) {
@@ -263,12 +286,15 @@ export function SelectDemoItem(
   const handleValueChange = (value: string) => {
     setVal(value);
     props.onFloorChange(parseInt(value));
+    setOpen(false);
   };
 
   return (
     <Select
       value={val}
       onValueChange={handleValueChange}
+      open={open}
+      onOpenChange={setOpen}
       disablePreventBodyScroll
       {...props}
     >
@@ -295,14 +321,36 @@ export function SelectDemoItem(
             fontWeight: "600",
             fontSize: 16,
           }}
-        />
+        >
+          {props.floors.find(f => f.id.toString() === val)?.name || "Pilih Lantai"}
+        </Select.Value>
       </Select.Trigger>
 
+      <Adapt platform="touch">
+        <Sheet modal dismissOnSnapToBottom>
+          <Sheet.Frame>
+            <Adapt.Contents />
+          </Sheet.Frame>
+          <Sheet.Overlay />
+        </Sheet>
+      </Adapt>
+
       <Select.Content zIndex={200000}>
+        <Select.ScrollUpButton
+          alignItems="center"
+          justifyContent="center"
+          position="relative"
+          height={25}
+          backgroundColor="#F8F6E8"   
+        >
+          <ChevronUp size={20} color="#5A5A4D" />
+        </Select.ScrollUpButton>
+
         <Select.Viewport
           style={{
             padding: 10,
             backgroundColor: "#F8F6E8",
+            maxHeight: 300,
           }}
         >
           <Select.Group>
@@ -311,8 +359,9 @@ export function SelectDemoItem(
                 backgroundColor: "transparent",
                 fontSize: 14,
                 fontWeight: "600",
-                color: "#fff",
+                color: "#5A5A4D",
                 marginBottom: 8,
+                paddingHorizontal: 10,
               }}
             >
               Select Floor
@@ -332,12 +381,14 @@ export function SelectDemoItem(
                       val === floor.id.toString() ? "#A7C4A0" : "transparent",
                     flexDirection: "row",
                     alignItems: "center",
+                    marginVertical: 2,
                   }}
                 >
                   <Select.ItemText
                     style={{
                       color: "#5A5A4D",
                       fontWeight: "500",
+                      fontSize: 14,
                     }}
                   >
                     {floor.name}
@@ -349,6 +400,16 @@ export function SelectDemoItem(
               ))}
           </Select.Group>
         </Select.Viewport>
+
+        <Select.ScrollDownButton
+          alignItems="center"
+          justifyContent="center"
+          position="relative"
+          height={25}
+          backgroundColor="#F8F6E8"
+        >
+          <ChevronDown size={20} color="#5A5A4D" />
+        </Select.ScrollDownButton>
       </Select.Content>
     </Select>
   );
