@@ -74,7 +74,7 @@ export default function HomeScreen() {
           height={"auto"}
           padding={width * 0.07}
           space={width * 0.03}
-          paddingBottom={width * 0.01}
+          paddingBottom={width * 0.02}
         >
           <SizableText
             width={"auto"}
@@ -89,14 +89,14 @@ export default function HomeScreen() {
           </SizableText>
           <XStack
             alignItems="center"
-            padding={width * 0.02}
+            padding={width * 0.0118}
             borderRadius={width * 0.02}
             borderWidth={1}
             borderColor="$borderColor"
-            space={width * 0.02}
+            space={width * 0.01}
             backgroundColor={"#F7F5E6"}
           >
-            <Search color="gray" size={width * 0.04} />
+            <Search color="gray" size={width * 0.03} />
             <Input
               flex={1}
               size="$3"
@@ -121,7 +121,7 @@ export default function HomeScreen() {
             />
           </XStack>
         </YStack>
-        <YStack paddingTop={width * 0.03}>
+        <YStack paddingTop={10}>
           <Slider />
         </YStack>
         <YStack
@@ -229,7 +229,7 @@ export default function HomeScreen() {
           </SizableText>
           <XStack space={width * 0.03}>
             <Button
-              height={height * 0.05}
+              height={height * 0.06}
               width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
@@ -243,7 +243,7 @@ export default function HomeScreen() {
               </SizableText>
             </Button>
             <Button
-              height={height * 0.05}
+              height={height * 0.06}
               width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
@@ -259,7 +259,7 @@ export default function HomeScreen() {
           </XStack>
           <XStack space={width * 0.03}>
             <Button
-              height={height * 0.05}
+              height={height * 0.06}
               width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
@@ -273,7 +273,7 @@ export default function HomeScreen() {
               </SizableText>
             </Button>
             <Button
-              height={height * 0.05}
+              height={height * 0.06}
               width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
@@ -289,7 +289,7 @@ export default function HomeScreen() {
           </XStack>
           <XStack space={width * 0.03}>
             <Button
-              height={height * 0.05}
+              height={height * 0.06}
               width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}
@@ -303,7 +303,7 @@ export default function HomeScreen() {
               </SizableText>
             </Button>
             <Button
-              height={height * 0.05}
+              height={height * 0.06}
               width={width * 0.4}
               backgroundColor={"#A7C4A0"}
               borderRadius={"$10"}

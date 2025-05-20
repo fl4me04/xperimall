@@ -7,7 +7,7 @@ import {
 } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, Image, Dimensions, ActivityIndicator } from "react-native";
+import { SafeAreaView, ScrollView, Image, Dimensions } from "react-native";
 import {
   Adapt,
   Button,
@@ -20,7 +20,6 @@ import {
   SizableText,
   XStack,
   YStack,
-  Spinner,
 } from "tamagui";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 
@@ -46,12 +45,12 @@ interface Activity {
   };
 }
 
+const { width, height } = Dimensions.get("window");
 
 export default function TabTwoScreen() {
   const [floors, setFloors] = useState<Floor[]>([]);
   const [selectedFloor, setSelectedFloor] = useState<Floor | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const screenWidth = Dimensions.get("window").width;
 
   useEffect(() => {
@@ -60,33 +59,31 @@ export default function TabTwoScreen() {
 
   const fetchFloors = async () => {
     try {
-      setIsLoading(true);
       console.log("Fetching floors...");
-      const response = await fetch('http://localhost:8080/api/floors');
+      const response = await fetch("http://localhost:8080/api/floors");
       const data = await response.json();
       console.log("Floors data:", data);
       const mappedFloors = data.map((f: any) => ({
         id: f.ID,
         name: f.Name,
-        imageURL: f.ImageURL
+        imageURL: f.ImageURL,
       }));
       setFloors(mappedFloors);
       if (mappedFloors.length > 0) {
         setSelectedFloor(mappedFloors[0]);
-        await fetchActivitiesByFloor(mappedFloors[0].id);
+        fetchActivitiesByFloor(mappedFloors[0].id);
       }
     } catch (error) {
-      console.error('Error fetching floors:', error);
-    } finally {
-      setIsLoading(false);
+      console.error("Error fetching floors:", error);
     }
   };
 
   const fetchActivitiesByFloor = async (floorId: number) => {
     try {
-      setIsLoading(true);
       console.log("Fetching activities for floor:", floorId);
-      const response = await fetch(`http://localhost:8080/api/floors/${floorId}/activities`);
+      const response = await fetch(
+        `http://localhost:8080/api/floors/${floorId}/activities`
+      );
       const data = await response.json();
       console.log("Activities data:", data);
       const mappedActivities = data.map((a: any) => ({
@@ -94,26 +91,28 @@ export default function TabTwoScreen() {
         name: a.Name,
         priceMin: a.PriceMin,
         priceMax: a.PriceMax,
-        category: a.Category ? {
-          id: a.Category.ID,
-          name: a.Category.Name
-        } : undefined,
-        floor: a.Floor ? {
-          id: a.Floor.ID,
-          name: a.Floor.Name,
-          imageURL: a.Floor.ImageURL
-        } : undefined
+        category: a.Category
+          ? {
+              id: a.Category.ID,
+              name: a.Category.Name,
+            }
+          : undefined,
+        floor: a.Floor
+          ? {
+              id: a.Floor.ID,
+              name: a.Floor.Name,
+              imageURL: a.Floor.ImageURL,
+            }
+          : undefined,
       }));
       setActivities(mappedActivities);
     } catch (error) {
-      console.error('Error fetching activities:', error);
-    } finally {
-      setIsLoading(false);
+      console.error("Error fetching activities:", error);
     }
   };
 
   const handleFloorChange = (floorId: number) => {
-    const floor = floors.find(f => f.id === floorId);
+    const floor = floors.find((f) => f.id === floorId);
     if (floor) {
       setSelectedFloor(floor);
       fetchActivitiesByFloor(floorId);
@@ -121,16 +120,23 @@ export default function TabTwoScreen() {
   };
 
   return (
-    <SafeAreaViewContext style={{ flex: 1, backgroundColor: '#fff' }}>
+    <SafeAreaViewContext style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Navbar />
-        <YStack width={"auto"} height={"auto"} padding={28} space={5} paddingBottom={2} backgroundColor="#fff">
+        <YStack
+          width={"auto"}
+          height={"auto"}
+          padding={width * 0.07}
+          space={width * 0.03}
+          paddingBottom={width * 0.01}
+          backgroundColor="#fff"
+        >
           <XStack
             alignItems="center"
             position="relative"
             justifyContent="center"
-            height={50}
-            marginBottom={10}
+            height={width * 0.115}
+            marginBottom={width * 0.01}
           >
             <Button
               circular
@@ -154,7 +160,7 @@ export default function TabTwoScreen() {
               style={{
                 fontFamily: "Poppins",
                 fontWeight: "700",
-                fontSize: 28,
+                fontSize: width * 0.06,
                 color: "#9BA88D",
                 letterSpacing: 1,
                 alignSelf: "center",
@@ -163,82 +169,122 @@ export default function TabTwoScreen() {
               Mall Map
             </SizableText>
           </XStack>
-          {isLoading ? (
-            <YStack flex={1} justifyContent="center" alignItems="center" padding={20}>
-              <Spinner size="large" color="#9BA88D" />
-              <SizableText style={{ marginTop: 10, color: "#9BA88D" }}>Loading...</SizableText>
-            </YStack>
-          ) : (
-            <>
-              <YStack alignItems="center" justifyContent="center" space={4}>
-                {selectedFloor && (
-                  <Image
-                    source={floorImageMap[selectedFloor.name]}
+          <YStack
+            alignItems="center"
+            justifyContent="center"
+            space={width * 0.02}
+          >
+            {selectedFloor && (
+              <Image
+                source={floorImageMap[selectedFloor.name]}
+                style={{
+                  width: screenWidth * 0.87,
+                  height: screenWidth * 0.9 * 0.75,
+                  resizeMode: "contain",
+                  borderRadius: 20,
+                  borderWidth: 2,
+                  borderColor: "#D6D6C2",
+                  backgroundColor: "#fff",
+                  marginBottom: 10,
+                }}
+              />
+            )}
+            <XStack
+              width={"100%"}
+              gap="$4"
+              justifyContent="center"
+              marginBottom={10}
+            >
+              <SelectDemoItem
+                id="select-demo-1"
+                floors={floors}
+                selectedFloorId={selectedFloor?.id}
+                onFloorChange={handleFloorChange}
+              />
+            </XStack>
+          </YStack>
+          <YStack marginTop={10} justifyContent="center" alignItems="center">
+            <SizableText
+              style={{
+                fontFamily: "Poppins",
+                fontWeight: "700",
+                fontSize: width * 0.05,
+                color: "#9BA88D",
+                marginBottom: width * 0.03,
+              }}
+            >
+              Activities
+            </SizableText>
+            {activities.length === 0 && (
+              <SizableText
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#5A5A4D",
+                  textAlign: "center",
+                  padding: 20,
+                  backgroundColor: "#fff",
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: "#D6D6C2",
+                }}
+              >
+                Tidak ada activity di lantai ini.
+              </SizableText>
+            )}
+            {activities.map((activity) => (
+              <XStack
+                key={activity.id}
+                justifyContent="center"
+                alignItems="center"
+                alignSelf="center"
+                style={{
+                  borderRadius: 12,
+                  backgroundColor: "#9BA88D",
+                  width: "95%",
+                  marginBottom: width * 0.015,
+                  marginVertical: 6,
+                  padding: width * 0.027,
+                  borderWidth: 1,
+                  borderColor: "#D6D6C2",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.08,
+                  shadowRadius: 4,
+                }}
+              >
+                <YStack flex={1} space={width * 0.01}>
+                  <SizableText
                     style={{
-                      width: screenWidth * 0.9,
-                      height: screenWidth * 0.9 * 0.75,
-                      resizeMode: "contain",
-                      borderRadius: 20,
-                      borderWidth: 2,
-                      borderColor: "#D6D6C2",
-                      backgroundColor: "#fff",
-                      marginBottom: 10,
-                    }}
-                  />
-                )}
-                <XStack width={"100%"} gap="$4" justifyContent="center" marginBottom={10}>
-                  <SelectDemoItem
-                    id="select-demo-1"
-                    floors={floors}
-                    selectedFloorId={selectedFloor?.id}
-                    onFloorChange={handleFloorChange}
-                  />
-                </XStack>
-              </YStack>
-              <YStack marginTop={10}>
-                <SizableText style={{ fontFamily: "Poppins", fontWeight: "700", fontSize: 20, color: "#9BA88D", marginBottom: 10 }}>
-                  Activities
-                </SizableText>
-                {activities.length === 0 && (
-                  <SizableText style={{ fontFamily: "Poppins", color: "#5A5A4D", textAlign: "center", padding: 20, backgroundColor: "#fff", borderRadius: 12, borderWidth: 1, borderColor: "#D6D6C2" }}>
-                    Tidak ada activity di lantai ini.
-                  </SizableText>
-                )}
-                {activities.map((activity) => (
-                  <XStack
-                    key={activity.id}
-                    justifyContent="center"
-                    alignItems="center"
-                    alignSelf="center"
-                    style={{
-                      borderRadius: 12,
-                      backgroundColor: "#9BA88D",
-                      width: "95%",
-                      marginBottom: 8,
-                      marginVertical: 6,
-                      padding: 12,
-                      borderWidth: 1,
-                      borderColor: "#D6D6C2",
-                      shadowColor: "#000",
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.08,
-                      shadowRadius: 4,
+                      fontFamily: "Poppins",
+                      fontWeight: "600",
+                      color: "#fff",
+                      fontSize: width * 0.032,
                     }}
                   >
-                    <YStack flex={1}>
-                      <SizableText style={{ fontFamily: "Poppins", fontWeight: "600", color: "#fff", fontSize: 16 }}>{activity.name}</SizableText>
-                      <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
-                        Min: {activity.priceMin} | Max: {activity.priceMax}
-                      </SizableText>
-                      <SizableText style={{ fontFamily: "Poppins", color: "#fff", fontSize: 13 }}>
-                        Category: {activity.category?.name}
-                      </SizableText>
-                    </YStack>
-                  </XStack>
-                ))}
-              </YStack>
-            </>
-          )}
+                    {activity.name}
+                  </SizableText>
+                  <SizableText
+                    style={{
+                      fontFamily: "Poppins",
+                      color: "#fff",
+                      fontSize: width * 0.025,
+                    }}
+                  >
+                    Min: {activity.priceMin} | Max: {activity.priceMax}
+                  </SizableText>
+                  <SizableText
+                    style={{
+                      fontFamily: "Poppins",
+                      color: "#fff",
+                      fontSize: width * 0.025,
+                    }}
+                  >
+                    Category: {activity.category?.name}
+                  </SizableText>
+                </YStack>
+              </XStack>
+            ))}
+          </YStack>
         </YStack>
       </ScrollView>
     </SafeAreaViewContext>
@@ -246,7 +292,7 @@ export default function TabTwoScreen() {
 }
 
 export function SelectDemoItem(
-  props: SelectProps & { 
+  props: SelectProps & {
     floors: Floor[];
     selectedFloorId?: number;
     onFloorChange: (floorId: number) => void;
@@ -318,7 +364,7 @@ export function SelectDemoItem(
               Select Floor
             </Select.Label>
             {props.floors
-              ?.filter(floor => floor && typeof floor.id === "number")
+              ?.filter((floor) => floor && typeof floor.id === "number")
               .map((floor, i) => (
                 <Select.Item
                   index={i}
@@ -355,11 +401,11 @@ export function SelectDemoItem(
 }
 
 const floorImageMap: { [key: string]: any } = {
-  "Lower Ground Floor": require('../../../assets/images/lowerGroundFloor.png'),
-  "Lower Ground Mezzanine Floor": require('../../../assets/images/lowerGroundMezzanine.png'),
-  "Ground Floor": require('../../../assets/images/groundFloor.png'),
-  "Upper Ground Floor": require('../../../assets/images/upperGroundFloor.png'),
-  "1st Floor": require('../../../assets/images/1stFloor.png'),
-  "2nd Floor": require('../../../assets/images/2ndFloor.png'),
-  "3rd Floor": require('../../../assets/images/3rdFloor.png'),
+  "Lower Ground Floor": require("../../../assets/images/lowerGroundFloor.png"),
+  "Lower Ground Mezzanine Floor": require("../../../assets/images/lowerGroundMezzanine.png"),
+  "Ground Floor": require("../../../assets/images/groundFloor.png"),
+  "Upper Ground Floor": require("../../../assets/images/upperGroundFloor.png"),
+  "1st Floor": require("../../../assets/images/1stFloor.png"),
+  "2nd Floor": require("../../../assets/images/2ndFloor.png"),
+  "3rd Floor": require("../../../assets/images/3rdFloor.png"),
 };
