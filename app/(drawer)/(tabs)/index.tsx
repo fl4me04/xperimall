@@ -66,8 +66,10 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+      >
         <Navbar />
         <YStack
           width={"auto"}
@@ -80,38 +82,41 @@ export default function HomeScreen() {
             width={"auto"}
             height={"auto"}
             style={{
-              fontSize: width * 0.05,
-              color: "#9BA88D",
+              fontSize: 25,
+              color: "#000",
               fontFamily: "Poppins",
+              // fontWeight: "500",
             }}
           >
             Hello, {userData ? userData.name : "Guest"}!
           </SizableText>
           <XStack
             alignItems="center"
-            padding={width * 0.0118}
-            borderRadius={width * 0.02}
+            padding="$2"
+            borderRadius="$4"
             borderWidth={1}
             borderColor="$borderColor"
-            space={width * 0.01}
+            space={5}
             backgroundColor={"#F7F5E6"}
           >
-            <Search color="gray" size={width * 0.03} />
+            <Search color="gray" size={"$1"} marginLeft={10} />
             <Input
               flex={1}
               size="$3"
+              // height={height * 0.065}
               placeholder="Search for anything in Central Park"
               value={searchText}
               onChangeText={setSearchText}
               borderWidth={0}
               backgroundColor="transparent"
               fontFamily={"Poppins"}
-              style={{ fontSize: width * 0.03 }}
+              // style={{ fontSize: width * 0.03 }}
             />
             <Button
               icon={Filter}
+              color={"#fff"}
               size="$3"
-              backgroundColor={"#A7C4A0"}
+              backgroundColor={"#4A7C59"}
               animation="bouncy"
               elevation="$4"
               pressStyle={{
@@ -136,8 +141,8 @@ export default function HomeScreen() {
             alignSelf="center"
             justifyContent="center"
             style={{
-              fontSize: width * 0.05,
-              color: "#9BA88D",
+              fontSize: 25,
+              color: "#000",
               fontFamily: "Poppins",
             }}
           >
@@ -220,8 +225,8 @@ export default function HomeScreen() {
             alignSelf="center"
             justifyContent="center"
             style={{
-              fontSize: width * 0.05,
-              color: "#9BA88D",
+              fontSize: 25,
+              color: "#000",
               fontFamily: "Poppins",
             }}
           >
@@ -231,26 +236,26 @@ export default function HomeScreen() {
             <Button
               height={height * 0.06}
               width={width * 0.4}
-              backgroundColor={"#A7C4A0"}
+              backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={width * 0.03}
+                fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
-                Level B1
+                Lower Ground
               </SizableText>
             </Button>
             <Button
               height={height * 0.06}
               width={width * 0.4}
-              backgroundColor={"#A7C4A0"}
+              backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={width * 0.03}
+                fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
                 Ground
@@ -261,12 +266,12 @@ export default function HomeScreen() {
             <Button
               height={height * 0.06}
               width={width * 0.4}
-              backgroundColor={"#A7C4A0"}
+              backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={width * 0.03}
+                fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
                 Upperground
@@ -275,12 +280,12 @@ export default function HomeScreen() {
             <Button
               height={height * 0.06}
               width={width * 0.4}
-              backgroundColor={"#A7C4A0"}
+              backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={width * 0.03}
+                fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
                 Level 1
@@ -291,12 +296,12 @@ export default function HomeScreen() {
             <Button
               height={height * 0.06}
               width={width * 0.4}
-              backgroundColor={"#A7C4A0"}
+              backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={width * 0.03}
+                fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
                 Level 2
@@ -305,12 +310,12 @@ export default function HomeScreen() {
             <Button
               height={height * 0.06}
               width={width * 0.4}
-              backgroundColor={"#A7C4A0"}
+              backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
             >
               <SizableText
                 color="white"
-                fontSize={width * 0.03}
+                fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
                 Level 3

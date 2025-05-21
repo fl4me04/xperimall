@@ -70,7 +70,7 @@ export default function Slider() {
     pagingDot: {
       width: 7,
       height: 7,
-      backgroundColor: "#9BA88D",
+      backgroundColor: "#4A7C59",
       borderRadius: 7,
     },
     dotContainer: { width: 20, padding: 10 },
@@ -116,7 +116,7 @@ export default function Slider() {
               index * screenWidth,
               (index + 1) * screenWidth,
             ];
-            const colorOutputRange = ["#D9D9D9", "#9BA88D", "#D9D9D9"];
+            const colorOutputRange = ["#D9D9D9", "#4A7C59", "#D9D9D9"];
             const scaleOutputRange = [1, 1, 1];
             const dotScale = animatedValue.interpolate({
               inputRange,
@@ -150,7 +150,7 @@ const PagingDot: FunctionComponent<{
         {
           width: 7,
           height: 7,
-          backgroundColor: "#9BA88D",
+          backgroundColor: "#4A7C59",
           borderRadius: 7,
         },
         { backgroundColor: color, transform: [{ scale }] },

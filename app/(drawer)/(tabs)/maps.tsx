@@ -121,7 +121,9 @@ export default function TabTwoScreen() {
 
   return (
     <SafeAreaViewContext style={{ flex: 1, backgroundColor: "#fff" }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+      >
         <Navbar />
         <YStack
           width={"auto"}
@@ -129,7 +131,6 @@ export default function TabTwoScreen() {
           padding={width * 0.07}
           space={width * 0.03}
           paddingBottom={width * 0.01}
-          backgroundColor="#fff"
         >
           <XStack
             alignItems="center"
@@ -141,13 +142,13 @@ export default function TabTwoScreen() {
             <Button
               circular
               size="$2"
-              background="#9BA88D"
+              background="#4A7C59"
               icon={<ArrowLeft size={20} color={"white"} />}
               onPress={() => router.push("/(drawer)/(tabs)")}
               style={{
                 position: "absolute",
                 left: 0,
-                backgroundColor: "#9BA88D",
+                backgroundColor: "#4A7C59",
                 borderWidth: 0,
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },
@@ -160,8 +161,8 @@ export default function TabTwoScreen() {
               style={{
                 fontFamily: "Poppins",
                 fontWeight: "700",
-                fontSize: width * 0.06,
-                color: "#9BA88D",
+                fontSize: 28,
+                color: "#000",
                 letterSpacing: 1,
                 alignSelf: "center",
               }}
@@ -208,8 +209,8 @@ export default function TabTwoScreen() {
               style={{
                 fontFamily: "Poppins",
                 fontWeight: "700",
-                fontSize: width * 0.05,
-                color: "#9BA88D",
+                fontSize: 25,
+                color: "#000",
                 marginBottom: width * 0.03,
               }}
             >
@@ -239,11 +240,11 @@ export default function TabTwoScreen() {
                 alignSelf="center"
                 style={{
                   borderRadius: 12,
-                  backgroundColor: "#9BA88D",
+                  backgroundColor: "#4A7C59",
                   width: "95%",
                   marginBottom: width * 0.015,
                   marginVertical: 6,
-                  padding: width * 0.027,
+                  padding: width * 0.05,
                   borderWidth: 1,
                   borderColor: "#D6D6C2",
                   shadowColor: "#000",
@@ -252,13 +253,13 @@ export default function TabTwoScreen() {
                   shadowRadius: 4,
                 }}
               >
-                <YStack flex={1} space={width * 0.01}>
+                <YStack flex={1} space={width * 0.006}>
                   <SizableText
                     style={{
                       fontFamily: "Poppins",
                       fontWeight: "600",
                       color: "#fff",
-                      fontSize: width * 0.032,
+                      fontSize: 17,
                     }}
                   >
                     {activity.name}
@@ -267,7 +268,7 @@ export default function TabTwoScreen() {
                     style={{
                       fontFamily: "Poppins",
                       color: "#fff",
-                      fontSize: width * 0.025,
+                      fontSize: 15,
                     }}
                   >
                     Min: {activity.priceMin} | Max: {activity.priceMax}
@@ -276,7 +277,7 @@ export default function TabTwoScreen() {
                     style={{
                       fontFamily: "Poppins",
                       color: "#fff",
-                      fontSize: width * 0.025,
+                      fontSize: 15,
                     }}
                   >
                     Category: {activity.category?.name}
@@ -375,21 +376,21 @@ export function SelectDemoItem(
                     paddingHorizontal: 15,
                     borderRadius: 15,
                     backgroundColor:
-                      val === floor.id.toString() ? "#A7C4A0" : "transparent",
+                      val === floor.id.toString() ? "#4A7C59" : "transparent",
                     flexDirection: "row",
                     alignItems: "center",
                   }}
                 >
                   <Select.ItemText
                     style={{
-                      color: "#5A5A4D",
+                      color: "#000",
                       fontWeight: "500",
                     }}
                   >
                     {floor.name}
                   </Select.ItemText>
                   <Select.ItemIndicator marginLeft="auto">
-                    <Check size={16} color="#5A5A4D" />
+                    <Check size={16} color="#fff" />
                   </Select.ItemIndicator>
                 </Select.Item>
               ))}
