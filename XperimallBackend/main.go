@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"XperimallBackend/database"
 	"XperimallBackend/routes"
 
@@ -9,13 +12,22 @@ import (
 )
 
 func main() {
-    r := gin.Default()
+	r := gin.Default()
 
-    database.ConnectDB()
+	database.ConnectDB()
 
-    r.Use(cors.Default())
+	r.Use(cors.Default())
 
-    routes.SetupRoutes(r)
+	routes.SetupRoutes(r)
 
-    r.Run(":8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Println("🟢 Server starting on port: " + port)
+	err := r.Run("0.0.0.0:" + port)
+	if err != nil {
+		fmt.Println("🔴 Failed to start server:", err)
+	}
 }
