@@ -97,12 +97,12 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         label={"Home"}
         labelStyle={[
           styles.navItemLabel,
-          { color: pathName == "/" ? "#9BA88D" : "#fff" },
+          { color: pathName == "/" ? "#4A7C59" : "#fff" },
         ]}
         icon={({ color, size }) => (
-          <House size={24} color={pathName == "/" ? "#9BA88D" : "#fff"} />
+          <House size={24} color={pathName == "/" ? "#4A7C59" : "#fff"} />
         )}
-        style={{ backgroundColor: pathName == "/" ? "#F7F5E6" : "#A7C4A0" }}
+        style={{ backgroundColor: pathName == "/" ? "#F7F5E6" : "#4A7C59" }}
         onPress={() => {
           router.push("/(drawer)/(tabs)");
         }}
@@ -113,18 +113,18 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           labelStyle={[
             styles.navItemLabel,
             {
-              color: pathName == "/authentication/login" ? "#9BA88D" : "#fff",
+              color: pathName == "/authentication/login" ? "#4A7C59" : "#fff",
             },
           ]}
           icon={({ color, size }) => (
             <User
               size={24}
-              color={pathName == "/authentication/login" ? "#9BA88D" : "#fff"}
+              color={pathName == "/authentication/login" ? "#4A7C59" : "#fff"}
             />
           )}
           style={{
             backgroundColor:
-              pathName == "/authentication/login" ? "#F7F5E6" : "#A7C4A0",
+              pathName == "/authentication/login" ? "#F7F5E6" : "#4A7C59",
           }}
           onPress={() => {
             router.push("/(drawer)/(tabs)/authentication/login");
@@ -137,16 +137,16 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             label={"Activity Planner"}
             labelStyle={[
               styles.navItemLabel,
-              { color: pathName == "/budget" ? "#9BA88D" : "#fff" },
+              { color: pathName == "/budget" ? "#4A7C59" : "#fff" },
             ]}
             icon={({ color, size }) => (
               <Activity
                 size={24}
-                color={pathName == "/budget" ? "#9BA88D" : "#fff"}
+                color={pathName == "/budget" ? "#4A7C59" : "#fff"}
               />
             )}
             style={{
-              backgroundColor: pathName == "/budget" ? "#F7F5E6" : "#A7C4A0",
+              backgroundColor: pathName == "/budget" ? "#F7F5E6" : "#4A7C59",
             }}
             onPress={() => {
               router.push("/(drawer)/(tabs)/budget");
@@ -156,13 +156,13 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             label={"Mall Map"}
             labelStyle={[
               styles.navItemLabel,
-              { color: pathName == "/maps" ? "#9BA88D" : "#fff" },
+              { color: pathName == "/maps" ? "#4A7C59" : "#fff" },
             ]}
             icon={({ color, size }) => (
-              <Map size={24} color={pathName == "/maps" ? "#9BA88D" : "#fff"} />
+              <Map size={24} color={pathName == "/maps" ? "#4A7C59" : "#fff"} />
             )}
             style={{
-              backgroundColor: pathName == "/maps" ? "#F7F5E6" : "#A7C4A0",
+              backgroundColor: pathName == "/maps" ? "#F7F5E6" : "#4A7C59",
             }}
             onPress={() => {
               router.push("/(drawer)/(tabs)/maps");
@@ -172,17 +172,17 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             label={"Mall Directory"}
             labelStyle={[
               styles.navItemLabel,
-              { color: pathName == "/mallDirectory" ? "#9BA88D" : "#fff" },
+              { color: pathName == "/mallDirectory" ? "#4A7C59" : "#fff" },
             ]}
             icon={({ color, size }) => (
               <Route
                 size={24}
-                color={pathName == "/mallDirectory" ? "#9BA88D" : "#fff"}
+                color={pathName == "/mallDirectory" ? "#4A7C59" : "#fff"}
               />
             )}
             style={{
               backgroundColor:
-                pathName == "/mallDirectory" ? "#F7F5E6" : "#A7C4A0",
+                pathName == "/mallDirectory" ? "#F7F5E6" : "#4A7C59",
             }}
             onPress={() => {
               router.push("/(drawer)/(tabs)/mallDirectory");
@@ -192,16 +192,16 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             label={"Promotions"}
             labelStyle={[
               styles.navItemLabel,
-              { color: pathName == "/promotion" ? "#9BA88D" : "#fff" },
+              { color: pathName == "/promotion" ? "#4A7C59" : "#fff" },
             ]}
             icon={({ color, size }) => (
               <BadgePercent
                 size={24}
-                color={pathName == "/promotion" ? "#9BA88D" : "#fff"}
+                color={pathName == "/promotion" ? "#4A7C59" : "#fff"}
               />
             )}
             style={{
-              backgroundColor: pathName == "/promotion" ? "#F7F5E6" : "#A7C4A0",
+              backgroundColor: pathName == "/promotion" ? "#F7F5E6" : "#4A7C59",
             }}
             onPress={() => {
               router.push("/(drawer)/(tabs)/promotion");
@@ -211,7 +211,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             label={"Logout"}
             labelStyle={[styles.navItemLabel, { color: "#fff" }]}
             icon={({ color, size }) => <User size={24} color="#fff" />}
-            style={{ backgroundColor: "#A7C4A0" }}
+            style={{ backgroundColor: "#4A7C59" }}
             onPress={handleLogout}
           />
         </>
@@ -227,7 +227,7 @@ export default function Layout() {
       screenOptions={{
         headerShown: false,
         drawerStyle: {
-          backgroundColor: "#A7C4A0",
+          backgroundColor: "#4A7C59",
         },
       }}
     />

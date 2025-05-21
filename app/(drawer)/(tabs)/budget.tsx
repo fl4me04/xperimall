@@ -12,9 +12,11 @@ import {
   YStack,
   ZStack,
 } from "tamagui";
-import { ScrollView as RNScrollView } from "react-native";
+import { Dimensions, ScrollView as RNScrollView } from "react-native";
 
 const API_URL = "http://localhost:8080/api";
+
+const { width, height } = Dimensions.get("window");
 
 interface Category {
   ID: number;
@@ -33,7 +35,7 @@ export default function activityPlanner() {
   };
 
   const handleAmountChange = (value: string) => {
-    const numericValue = value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+    const numericValue = value.replace(/[^0-9]/g, "");
     setAmount(numericValue);
   };
 
@@ -116,8 +118,10 @@ export default function activityPlanner() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+      >
         <Navbar />
         <YStack width={"auto"} height={"auto"} padding={25}>
           <XStack
@@ -129,7 +133,7 @@ export default function activityPlanner() {
             <Button
               circular
               size="$2"
-              background="#9BA88D"
+              background="#4A7C59"
               icon={<ArrowLeft size={20} color={"white"} />}
               onPress={() => router.push("/(drawer)/(tabs)")}
               style={{
@@ -138,7 +142,7 @@ export default function activityPlanner() {
               }}
             />
             <SizableText
-              style={{ fontWeight: "500", fontSize: 32, color: "#9BA88D" }}
+              style={{ fontWeight: "500", fontSize: 32, color: "#000" }}
             >
               Your Activity Guide
             </SizableText>
@@ -148,6 +152,7 @@ export default function activityPlanner() {
             space={5}
             paddingTop={10}
             paddingBottom={10}
+            width="100%"
           >
             <SizableText
               style={{
@@ -159,7 +164,6 @@ export default function activityPlanner() {
               1. Enter your Budget
             </SizableText>
             <Input
-              flex={1}
               size="$3"
               width={"100%"}
               placeholder="Insert Amount (Rp.)"
@@ -236,7 +240,7 @@ export default function activityPlanner() {
                         backgroundColor={
                           selectedCategories.includes(category.ID)
                             ? "#E8E8E8"
-                            : "#9BA88D"
+                            : "#4A7C59"
                         }
                         color={
                           selectedCategories.includes(category.ID)
@@ -275,7 +279,7 @@ export default function activityPlanner() {
                 width={120}
                 height={40}
                 alignSelf="center"
-                backgroundColor="#9BA88D"
+                backgroundColor="#4A7C59"
                 borderRadius={17}
                 justifyContent="center"
                 onPress={fetchRecommendations}
@@ -362,7 +366,7 @@ export default function activityPlanner() {
                         marginBottom={2}
                         style={{
                           fontFamily: "Poppins",
-                          color: "#A7C4A0",
+                          color: "#000",
                           fontSize: 16,
                           alignSelf: "center",
                           paddingBottom: 10,
@@ -378,8 +382,9 @@ export default function activityPlanner() {
                           alignSelf="center"
                           style={{
                             borderRadius: 12,
-                            backgroundColor: "#9BA88D",
+                            backgroundColor: "#4A7C59",
                             width: "90%",
+                            height: height * 0.045,
                             marginBottom: 6,
                             marginVertical: 6,
                             justifyContent: "center",

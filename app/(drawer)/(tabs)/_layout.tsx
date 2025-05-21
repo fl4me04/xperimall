@@ -26,7 +26,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: "#A7C4A0",
+          backgroundColor: "#4A7C59",
           borderTopWidth: 0,
           padding: 0,
           height: isSmallScreen ? 50 : 60,
@@ -102,6 +102,8 @@ export default function TabLayout() {
       <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen name="mallDirectory" options={{ href: null }} />
       <Tabs.Screen name="activityPlanner" options={{ href: null }} />
+      <Tabs.Screen name="financeTracker" options={{ href: null }} />
+      <Tabs.Screen name="historyTracker" options={{ href: null }} />
     </Tabs>
   );
 }
