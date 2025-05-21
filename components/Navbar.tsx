@@ -20,7 +20,7 @@ export function Navbar() {
   return (
     <XStack
       padding={isSmallScreen ? 5 : 10} // Adjust padding based on screen size
-      backgroundColor={"#A7C4A0"}
+      backgroundColor={"#4A7C59"}
       width={"100%"}
       height={isSmallScreen ? 80 : 100} // Adjust height based on screen size
       justifyContent="center"

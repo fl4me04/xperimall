@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Platform, Modal, View } from "react-native";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   Adapt,
   Anchor,
@@ -116,7 +116,10 @@ export default function register() {
 
       const data = await response.json();
       if (!response.ok) {
-        if (data.message && data.message.toLowerCase().includes('Duplicate entry')) {
+        if (
+          data.message &&
+          data.message.toLowerCase().includes("Duplicate entry")
+        ) {
           setError("Email already exists!");
         } else {
           throw new Error(data.message || "Registration failed");
@@ -162,30 +165,44 @@ export default function register() {
           exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
           space
         >
-          <Dialog.Title style={{ fontFamily: "Poppins", color: "#9BA88D" }}>Terms and Conditions</Dialog.Title>
+          <Dialog.Title style={{ fontFamily: "Poppins", color: "#9BA88D" }}>
+            Terms and Conditions
+          </Dialog.Title>
           <Dialog.Description style={{ fontFamily: "Poppins" }}>
             <ScrollView style={{ maxHeight: 300 }}>
               <SizableText style={{ fontFamily: "Poppins", lineHeight: 20 }}>
-                1. Acceptance of Terms{'\n\n'}
-                By accessing and using this application, you accept and agree to be bound by the terms and provision of this agreement.{'\n\n'}
-                2. Use License{'\n\n'}
-                Permission is granted to temporarily download one copy of the application per device for personal, non-commercial transitory viewing only.{'\n\n'}
-                3. User Account{'\n\n'}
-                You are responsible for maintaining the confidentiality of your account and password.{'\n\n'}
-                4. Privacy Policy{'\n\n'}
-                Your use of this application is also governed by our Privacy Policy.{'\n\n'}
-                5. Disclaimer{'\n\n'}
-                The materials on this application are provided on an 'as is' basis.{'\n\n'}
-                6. Limitations{'\n\n'}
-                In no event shall this application or its suppliers be liable for any damages.{'\n\n'}
-                7. Accuracy of Materials{'\n\n'}
-                The materials appearing in this application could include technical, typographical, or photographic errors.{'\n\n'}
-                8. Links{'\n\n'}
-                This application has not reviewed all of the sites linked to its application and is not responsible for the contents of any such linked site.{'\n\n'}
-                9. Modifications{'\n\n'}
-                This application may revise these terms of service at any time without notice.{'\n\n'}
-                10. Governing Law{'\n\n'}
-                These terms and conditions are governed by and construed in accordance with the laws.
+                1. Acceptance of Terms{"\n\n"}
+                By accessing and using this application, you accept and agree to
+                be bound by the terms and provision of this agreement.{"\n\n"}
+                2. Use License{"\n\n"}
+                Permission is granted to temporarily download one copy of the
+                application per device for personal, non-commercial transitory
+                viewing only.{"\n\n"}
+                3. User Account{"\n\n"}
+                You are responsible for maintaining the confidentiality of your
+                account and password.{"\n\n"}
+                4. Privacy Policy{"\n\n"}
+                Your use of this application is also governed by our Privacy
+                Policy.{"\n\n"}
+                5. Disclaimer{"\n\n"}
+                The materials on this application are provided on an 'as is'
+                basis.{"\n\n"}
+                6. Limitations{"\n\n"}
+                In no event shall this application or its suppliers be liable
+                for any damages.{"\n\n"}
+                7. Accuracy of Materials{"\n\n"}
+                The materials appearing in this application could include
+                technical, typographical, or photographic errors.{"\n\n"}
+                8. Links{"\n\n"}
+                This application has not reviewed all of the sites linked to its
+                application and is not responsible for the contents of any such
+                linked site.{"\n\n"}
+                9. Modifications{"\n\n"}
+                This application may revise these terms of service at any time
+                without notice.{"\n\n"}
+                10. Governing Law{"\n\n"}
+                These terms and conditions are governed by and construed in
+                accordance with the laws.
               </SizableText>
             </ScrollView>
           </Dialog.Description>
@@ -197,13 +214,17 @@ export default function register() {
               }}
               backgroundColor="#9BA88D"
             >
-              <SizableText style={{ fontFamily: "Poppins", color: "white" }}>Accept</SizableText>
+              <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
+                Accept
+              </SizableText>
             </Button>
             <Button
               onPress={() => setShowTerms(false)}
               backgroundColor="#D6D6C2"
             >
-              <SizableText style={{ fontFamily: "Poppins", color: "#5A5A4D" }}>Close</SizableText>
+              <SizableText style={{ fontFamily: "Poppins", color: "#5A5A4D" }}>
+                Close
+              </SizableText>
             </Button>
           </XStack>
         </Dialog.Content>
@@ -212,8 +233,10 @@ export default function register() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+      >
         <Navbar />
         <YStack
           padding={25}
@@ -223,7 +246,7 @@ export default function register() {
           <Button
             circular
             size="$2"
-            background="#9BA88D"
+            background="#4A7C59"
             icon={<ArrowLeft size={20} color={"white"} />}
             onPress={() => router.push("/(drawer)/(tabs)")}
           />
@@ -231,7 +254,7 @@ export default function register() {
         <YStack padding={50} marginVertical={80}>
           <YStack space={10} justifyContent="center">
             <SizableText
-              style={{ fontSize: 24, color: "#9BA88D", fontFamily: "Poppins" }}
+              style={{ fontSize: 24, color: "#000", fontFamily: "Poppins" }}
             >
               Sign Up
             </SizableText>
@@ -300,8 +323,10 @@ export default function register() {
                     padding: 10,
                     height: 40,
                   }}
-                  value={dob ? dob.split("-").reverse().join("-") : "2010-01-01"}
-                  onChange={e => {
+                  value={
+                    dob ? dob.split("-").reverse().join("-") : "2010-01-01"
+                  }
+                  onChange={(e) => {
                     const [year, month, day] = e.target.value.split("-");
                     setDob(`${day}-${month}-${year}`);
                   }}
@@ -318,7 +343,12 @@ export default function register() {
                     borderRadius={8}
                     onPress={() => setShowDatePicker(true)}
                   >
-                    <SizableText style={{ fontFamily: "Poppins", color: dob ? "black" : "#0000006B" }}>
+                    <SizableText
+                      style={{
+                        fontFamily: "Poppins",
+                        color: dob ? "black" : "#0000006B",
+                      }}
+                    >
                       {dob || "Date Of Birth (DD-MM-YYYY)"}
                     </SizableText>
                   </Button>
@@ -376,7 +406,11 @@ export default function register() {
               >
                 I agree to the{" "}
                 <SizableText
-                  style={{ color: "#9BA88D", textDecorationLine: "underline" }}
+                  style={{
+                    color: "#4A7C59",
+                    textDecorationLine: "underline",
+                    fontFamily: "Poppins",
+                  }}
                   onPress={() => setShowTerms(true)}
                 >
                   Terms & Conditions
@@ -394,7 +428,7 @@ export default function register() {
               width={120}
               height={40}
               alignSelf="center"
-              backgroundColor={"#9BA88D"}
+              backgroundColor={"#4A7C59"}
               borderRadius={17}
               onPress={handleRegister}
             >
@@ -404,7 +438,7 @@ export default function register() {
             </Button>
             <XStack justifyContent="center" alignItems="center">
               <Anchor
-                color={"#9BA88D"}
+                color={"#4A7C59"}
                 width={"247.19"}
                 height={"24"}
                 href="/authentication/login"

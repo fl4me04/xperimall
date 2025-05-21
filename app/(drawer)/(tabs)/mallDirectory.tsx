@@ -5,8 +5,10 @@ import { Button, ScrollView, YStack } from "tamagui";
 
 export default function mallDirectory() {
   return (
-    <SafeAreaView>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+      >
         <Navbar />
         <YStack backgroundColor={"cyan"} width={"auto"} height={"auto"}>
           <Button width={10} height={20} padding={10} />
