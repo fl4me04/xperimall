@@ -4,6 +4,7 @@ import (
 	"XperimallBackend/database"
 	"XperimallBackend/models"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -100,9 +101,13 @@ func GetUserExpensesByDate(c *gin.Context) {
 	// Group expenses by date
 	groupedExpenses := make(map[string]GroupedExpenseResponse)
 	for _, expense := range expenses {
+		// Format date to "Monday, 02 January 2006"
 		date := expense.CreatedAt.Format("Monday, 02 January 2006")
 
-		if group, exists := groupedExpenses[date]; exists {
+		// Create a key for the map using the date string
+		dateKey := date
+
+		if group, exists := groupedExpenses[dateKey]; exists {
 			group.Total += expense.Amount
 			group.Expenses = append(group.Expenses, ExpenseResponse{
 				ID:        expense.ID,
@@ -110,9 +115,9 @@ func GetUserExpensesByDate(c *gin.Context) {
 				Amount:    expense.Amount,
 				CreatedAt: expense.CreatedAt,
 			})
-			groupedExpenses[date] = group
+			groupedExpenses[dateKey] = group
 		} else {
-			groupedExpenses[date] = GroupedExpenseResponse{
+			groupedExpenses[dateKey] = GroupedExpenseResponse{
 				Date:  date,
 				Total: expense.Amount,
 				Expenses: []ExpenseResponse{{
@@ -130,6 +135,13 @@ func GetUserExpensesByDate(c *gin.Context) {
 	for _, group := range groupedExpenses {
 		response = append(response, group)
 	}
+
+	// Sort the response by date in descending order
+	sort.Slice(response, func(i, j int) bool {
+		dateI, _ := time.Parse("Monday, 02 January 2006", response[i].Date)
+		dateJ, _ := time.Parse("Monday, 02 January 2006", response[j].Date)
+		return dateI.After(dateJ)
+	})
 
 	c.JSON(http.StatusOK, response)
 }
@@ -155,8 +167,12 @@ func GetUserExpensesByDateDetail(c *gin.Context) {
 	}
 
 	var expenses []models.Expense
-	result := database.DB.Where("user_id = ? AND DATE(created_at) = ?",
-		userID.(uint), date.Format("2006-01-02")).Find(&expenses)
+	// Use DATE() function to compare only the date part, ignoring time
+	result := database.DB.Where(
+		"user_id = ? AND DATE(created_at) = DATE(?)",
+		userID.(uint),
+		date,
+	).Find(&expenses)
 
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch expenses"})

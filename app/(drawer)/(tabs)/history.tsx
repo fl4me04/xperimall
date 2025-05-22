@@ -69,7 +69,9 @@ export default function History() {
 
       if (response.ok) {
         const data = await response.json();
-        setGroupedExpenses(data);
+        // Ensure data is an array and sort by date
+        const sortedData = Array.isArray(data) ? data : [];
+        setGroupedExpenses(sortedData);
       } else {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch expenses');
@@ -82,6 +84,7 @@ export default function History() {
       } else {
         alert(error.message || "Failed to fetch expenses. Please try again.");
       }
+      setGroupedExpenses([]);
     } finally {
       setIsLoading(false);
     }
@@ -93,6 +96,20 @@ export default function History() {
       currency: 'IDR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
+    });
+  };
+
+  const handleDateClick = (dateStr: string) => {
+    // Parse the date string (e.g., "Monday, 23 February 2025")
+    const dateParts = dateStr.split(', ')[1].split(' ');
+    const day = dateParts[0];
+    const month = new Date(Date.parse(dateParts[1] + " 1, 2000")).getMonth() + 1;
+    const year = dateParts[2];
+    const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.padStart(2, '0')}`;
+    
+    router.push({
+      pathname: "/(drawer)/(tabs)/historyTracker",
+      params: { date: formattedDate }
     });
   };
 
@@ -174,19 +191,7 @@ export default function History() {
               groupedExpenses.map((group, index) => (
                 <Pressable
                   key={index}
-                  onPress={() => {
-                    // Extract date from the group.date string (e.g., "Monday, 23 February 2025")
-                    const dateParts = group.date.split(', ')[1].split(' ');
-                    const day = dateParts[0];
-                    const month = new Date(Date.parse(dateParts[1] + " 1, 2000")).getMonth() + 1;
-                    const year = dateParts[2];
-                    const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.padStart(2, '0')}`;
-                    
-                    router.push({
-                      pathname: "/(drawer)/(tabs)/historyTracker",
-                      params: { date: formattedDate }
-                    });
-                  }}
+                  onPress={() => handleDateClick(group.date)}
                   style={{ width: "100%" }}
                 >
                   <XStack
