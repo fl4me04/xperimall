@@ -23,4 +23,13 @@ func SetupRoutes(r *gin.Engine) {
 		api.GET("/floors", controllers.GetFloors)
 		api.GET("/floors/:floorId/activities", controllers.GetActivitiesByFloor)
 	}
+
+	expenses := r.Group("/expenses")
+	expenses.Use(middlewares.AuthMiddleware())
+	{
+		expenses.POST("", controllers.CreateExpense)
+		expenses.GET("", controllers.GetUserExpenses)
+		expenses.GET("/grouped", controllers.GetUserExpensesByDate)
+		expenses.GET("/detail", controllers.GetUserExpensesByDateDetail)
+	}
 }

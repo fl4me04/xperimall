@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-import { router } from "expo-router";
-import React, { useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useState, useEffect } from "react";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { G, Path, Circle, Text as SvgText, TSpan } from "react-native-svg";
@@ -12,9 +12,25 @@ import {
   SizableText,
   XStack,
   YStack,
+  Spinner,
 } from "tamagui";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get("window");
+const API_URL = "http://localhost:8080";
+
+interface Expense {
+  id: number;
+  tenant: string;
+  amount: number;
+  created_at: string;
+}
+
+interface ExpenseData {
+  date: string;
+  total: number;
+  expenses: Expense[];
+}
 
 function createPieSlices(expenses: { amount: number; color: string }[]) {
   const total = expenses.reduce((sum, e) => sum + e.amount, 0);
@@ -32,49 +48,158 @@ function createPieSlices(expenses: { amount: number; color: string }[]) {
   });
 }
 
-export default function financetracker() {
-  const [expenses, setExpenses] = useState([
-    { tenant: "Food & Beverages", amount: 304000, color: "#4A7C59" },
-    { tenant: "Fashion", amount: 80000, color: "#C47A7B" },
-    { tenant: "Coffee Shop", amount: 75000, color: "#9BA88D" },
-  ]);
-
-  const [tenant, setTenant] = useState("");
-  const [amount, setAmount] = useState("");
-
-  const formatCurrency = (value: string) => {
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
-  const handleAmountChange = (value: string) => {
-    const numericValue = value.replace(/[^0-9]/g, "");
-    setAmount(numericValue);
-  };
-
+const PieChart = React.memo(({ expenses }: { expenses: Expense[] }) => {
   const colors = ["#4A7C59", "#C47A7B", "#9BA88D", "#F7F5E6", "#4D4D4D"];
+  const pieSlices = expenses.length
+    ? createPieSlices(expenses.map((expense, index) => ({
+        amount: expense.amount,
+        color: colors[index % colors.length],
+      })))
+    : [];
 
-  const handleAdd = () => {
-    if (!tenant || !amount) return;
-    const parsedAmount = parseFloat(amount);
-    if (isNaN(parsedAmount) || parsedAmount === 0) {
-      alert("Please enter the correct amount");
+  return (
+    <Svg width={width * 0.8} height={width * 0.8} viewBox="0 0 2 2">
+      <G>
+        {expenses.length === 1 ? (
+          <>
+            <Circle cx={1} cy={1} r={1} fill={colors[0]} />
+            <SvgText
+              x={1}
+              y={0.9}
+              fill="#fff"
+              fontSize={0.07}
+              fontWeight="400"
+              textAnchor="middle"
+              alignmentBaseline="middle"
+              fontFamily="Poppins"
+            >
+              {expenses[0].tenant}
+              <TSpan
+                x={1}
+                dy={0.12}
+                fontSize={0.07}
+                fontWeight="bold"
+                fontFamily="Poppins"
+              >
+                Rp {expenses[0].amount.toLocaleString("id-ID")}
+              </TSpan>
+            </SvgText>
+          </>
+        ) : pieSlices.length > 0 ? (
+          <>
+            {pieSlices.map((slice, i) => (
+              <Path key={i} d={slice.d} fill={slice.color} />
+            ))}
+            {expenses.map((expense, i) => {
+              const total = expenses.reduce((sum, e) => sum + e.amount, 0);
+              let prev = 0;
+              for (let j = 0; j < i; j++) prev += expenses[j].amount;
+              const angle = ((prev + expense.amount / 2) / total) * 2 * Math.PI;
+              const r = 0.55;
+              const x = Math.cos(angle) * r + 1;
+              const y = Math.sin(angle) * r + 1;
+              return (
+                <SvgText
+                  key={i}
+                  x={x}
+                  y={y}
+                  fill="#fff"
+                  fontSize={0.07}
+                  fontWeight="400"
+                  textAnchor="middle"
+                  alignmentBaseline="middle"
+                  fontFamily="Poppins"
+                >
+                  {expense.tenant}
+                  <TSpan
+                    x={x}
+                    dy={0.12}
+                    fontSize={0.07}
+                    fontWeight="bold"
+                    fontFamily="Poppins"
+                  >
+                    Rp {expense.amount.toLocaleString("id-ID")}
+                  </TSpan>
+                </SvgText>
+              );
+            })}
+          </>
+        ) : (
+          <Circle cx={1} cy={1} r={1} fill="#4A7C59" />
+        )}
+      </G>
+    </Svg>
+  );
+});
+
+export default function HistoryTracker() {
+  const params = useLocalSearchParams();
+  const [expenseData, setExpenseData] = useState<ExpenseData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem("token");
+        setToken(storedToken);
+      } catch (error) {
+        console.error("Error getting token:", error);
+      }
+    };
+    getToken();
+  }, []);
+
+  useEffect(() => {
+    if (token && params.date) {
+      fetchExpenses();
+    }
+  }, [token, params.date]);
+
+  const fetchExpenses = async () => {
+    if (!token) {
+      alert("Please login first");
+      router.push("/(drawer)/(tabs)/authentication/login");
       return;
     }
-    setExpenses([
-      ...expenses,
-      {
-        tenant,
-        amount: parsedAmount,
-        color: colors[expenses.length % colors.length],
-      },
-    ]);
-    setTenant("");
-    setAmount("");
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/expenses/detail?date=${params.date}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setExpenseData(data);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch expenses');
+      }
+    } catch (error: any) {
+      console.error("Error fetching expenses:", error);
+      if (error.message?.includes('401') || error.message?.includes('unauthorized')) {
+        alert("Session expired. Please login again.");
+        router.push("/(drawer)/(tabs)/authentication/login");
+      } else {
+        alert(error.message || "Failed to fetch expenses. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const pieSlices = expenses.length
-    ? createPieSlices(expenses.map(({ amount, color }) => ({ amount, color })))
-    : [];
+  const formatCurrency = (amount: number) => {
+    return amount.toLocaleString('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -101,12 +226,15 @@ export default function financetracker() {
               size="$2"
               background="#4A7C59"
               icon={<ArrowLeft size={20} color={"white"} />}
-              onPress={() => router.push("/(drawer)/(tabs)")}
+              onPress={() => router.push("/(drawer)/(tabs)/history")}
               style={{
                 position: "absolute",
                 left: 0,
                 backgroundColor: "#4A7C59",
-                borderWidth: 0,
+                borderTopWidth: 0,
+                borderRightWidth: 0,
+                borderBottomWidth: 0,
+                borderLeftWidth: 0,
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.1,
@@ -118,143 +246,59 @@ export default function financetracker() {
               style={{
                 fontFamily: "Poppins",
                 fontWeight: "700",
-                fontSize: 28,
+                fontSize: 18,
                 color: "#000",
                 letterSpacing: 1,
                 alignSelf: "center",
               }}
             >
-              23 February 2025
+              {expenseData?.date || "Loading..."}
             </SizableText>
           </XStack>
           <YStack alignItems="center" marginVertical={20}>
-            <Svg width={width * 0.8} height={width * 0.8} viewBox="0 0 2 2">
-              <G>
-                {expenses.length === 1 ? (
-                  <>
-                    <Circle cx={1} cy={1} r={1} fill={expenses[0].color} />
-                    <SvgText
-                      x={1}
-                      y={0.9}
-                      fill="#fff"
-                      fontSize={0.07}
-                      fontWeight="400"
-                      textAnchor="middle"
-                      alignmentBaseline="middle"
-                      fontFamily="Poppins"
-                    >
-                      {expenses[0].tenant}
-                      <TSpan
-                        x={1}
-                        dy={0.12}
-                        fontSize={0.07}
-                        fontWeight="bold"
-                        fontFamily="Poppins"
-                      >
-                        Rp {expenses[0].amount.toLocaleString("id-ID")}
-                      </TSpan>
-                    </SvgText>
-                  </>
-                ) : pieSlices.length > 0 ? (
-                  <>
-                    {pieSlices.map((slice, i) => (
-                      <Path key={i} d={slice.d} fill={slice.color} />
-                    ))}
-                    {expenses.map((expense, i) => {
-                      const total = expenses.reduce(
-                        (sum, e) => sum + e.amount,
-                        0
-                      );
-                      let prev = 0;
-                      for (let j = 0; j < i; j++) prev += expenses[j].amount;
-                      const angle =
-                        ((prev + expense.amount / 2) / total) * 2 * Math.PI;
-                      const r = 0.55;
-                      const x = Math.cos(angle) * r + 1;
-                      const y = Math.sin(angle) * r + 1;
-                      return (
-                        <SvgText
-                          key={i}
-                          x={x}
-                          y={y}
-                          fill="#fff"
-                          fontSize={0.07}
-                          fontWeight="400"
-                          textAnchor="middle"
-                          alignmentBaseline="middle"
-                          fontFamily="Poppins"
-                        >
-                          {expense.tenant}
-                          <TSpan
-                            x={x}
-                            dy={0.12}
-                            fontSize={0.07}
-                            fontWeight="bold"
-                            fontFamily="Poppins"
-                          >
-                            Rp {expense.amount.toLocaleString("id-ID")}
-                          </TSpan>
-                        </SvgText>
-                      );
-                    })}
-                  </>
-                ) : (
-                  <Circle cx={1} cy={1} r={1} fill="#4A7C59" />
-                )}
-              </G>
-            </Svg>
-            {expenses.length === 0 && (
+            {isLoading ? (
+              <YStack flex={1} justifyContent="center" alignItems="center">
+                <Spinner size="large" color="#4A7C59" />
+              </YStack>
+            ) : expenseData?.expenses.length === 0 ? (
               <SizableText
                 style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: [
-                    { translateX: -width * 0.25 },
-                    { translateY: -10 },
-                  ],
-                  color: "#fff",
+                  fontFamily: "Poppins",
+                  color: "#666",
                   textAlign: "center",
-                  width: width * 0.5,
+                  padding: 20,
                 }}
               >
-                You haven't inputted an expense.
+                No expenses found for this date
               </SizableText>
+            ) : (
+              <>
+                <PieChart expenses={expenseData?.expenses || []} />
+                <YStack alignItems="center" marginVertical={20}>
+                  <SizableText
+                    style={{
+                      fontFamily: "Poppins",
+                      fontWeight: "700",
+                      fontSize: 25,
+                      color: "#000",
+                      marginBottom: height * 0.02,
+                    }}
+                  >
+                    Total Expense:
+                  </SizableText>
+                  <SizableText
+                    style={{
+                      color: "#4A7C59",
+                      fontWeight: "600",
+                      fontSize: 28,
+                      fontFamily: "Poppins",
+                    }}
+                  >
+                    {expenseData ? formatCurrency(expenseData.total) : "Rp 0"}
+                  </SizableText>
+                </YStack>
+              </>
             )}
-          </YStack>
-          <YStack alignItems="center" marginVertical={20}>
-            <SizableText
-              style={{
-                fontFamily: "Poppins",
-                fontWeight: "700",
-                fontSize: 25,
-                color: "#000",
-                marginBottom: height * 0.02,
-              }}
-            >
-              Total Expense:
-            </SizableText>
-            <SizableText
-              style={{
-                color: "#4A7C59",
-                fontWeight: "600",
-                fontSize: 28,
-                fontFamily: "Poppins",
-              }}
-            >
-              Rp. 459.000
-            </SizableText>
-            <XStack space={20} marginTop={40}>
-              <Button
-                backgroundColor="#C47A7B"
-                color="#fff"
-                borderRadius={20}
-                width={100}
-                onPress={() => router.push("/(drawer)/(tabs)/history")}
-              >
-                Delete
-              </Button>
-            </XStack>
           </YStack>
         </YStack>
       </ScrollView>

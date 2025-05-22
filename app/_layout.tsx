@@ -1,6 +1,6 @@
 import { defaultConfig } from "@tamagui/config/v4";
 import { useFonts } from "expo-font";
-import { Stack, useRouter } from "expo-router";
+import { Stack, Slot } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -32,12 +32,9 @@ export default function RootLayout() {
 
   return (
     <TamaguiProvider config={config}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(drawer)" />
-        {/* <Stack.Screen
-          name="authentication/login"
-          options={{ presentation: "modal" }}
-        /> */}
+      <Stack>
+        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+        <Stack.Screen name="authentication" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </TamaguiProvider>
