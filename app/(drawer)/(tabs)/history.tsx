@@ -1,11 +1,12 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-import { router } from "expo-router";
-import React, { useState, useEffect } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useState, useEffect, useCallback } from "react";
 import { Dimensions, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, ScrollView, SizableText, XStack, YStack, Spinner } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../../hooks/useAuth";
 
 const { width, height } = Dimensions.get("window");
 const API_URL = "http://localhost:8080";
@@ -31,25 +32,7 @@ const formatDateForAPI = (dateStr: string) => {
 export default function History() {
   const [groupedExpenses, setGroupedExpenses] = useState<GroupedExpenses[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const getToken = async () => {
-      try {
-        const storedToken = await AsyncStorage.getItem("token");
-        setToken(storedToken);
-      } catch (error) {
-        console.error("Error getting token:", error);
-      }
-    };
-    getToken();
-  }, []);
-
-  useEffect(() => {
-    if (token) {
-      fetchExpenses();
-    }
-  }, [token]);
+  const { token, isLoading: isAuthLoading, checkAuth } = useAuth();
 
   const fetchExpenses = async () => {
     if (!token) {
@@ -89,6 +72,15 @@ export default function History() {
       setIsLoading(false);
     }
   };
+
+  // Refresh data when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      if (token) {
+        fetchExpenses();
+      }
+    }, [token])
+  );
 
   const formatCurrency = (amount: number) => {
     return amount.toLocaleString('id-ID', {

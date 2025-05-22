@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
@@ -15,7 +14,6 @@ import {
   YStack,
   Spinner,
 } from "tamagui";
-import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get("window");
@@ -196,7 +194,6 @@ export default function FinanceTracker() {
       return;
     }
 
-    setIsLoading(true);
     try {
       const expenseData = expenses.map(({ tenant, amount }) => ({
         tenant,
@@ -232,15 +229,8 @@ export default function FinanceTracker() {
         // Clear expenses after a short delay
         setTimeout(() => {
           setExpenses([]);
-          
-          // Navigate after state update
-          setTimeout(() => {
-            if (Platform.OS === 'web') {
-              window.location.reload();
-            } else {
-              router.replace("/(drawer)/(tabs)/financeTracker");
-            }
-          }, 100);
+          // Redirect to history page
+          router.push("/(drawer)/(tabs)/history");
         }, 100);
       } else {
         const errorData = await response.json();
@@ -402,7 +392,7 @@ export default function FinanceTracker() {
                 color="#fff"
                 borderRadius={20}
                 width={100}
-                onPress={handleFinalize}
+                onPress={() => handleFinalize()}
                 disabled={isLoading}
                 style={{
                   borderTopWidth: 0,

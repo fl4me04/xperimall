@@ -31,5 +31,6 @@ func SetupRoutes(r *gin.Engine) {
 		expenses.GET("", controllers.GetUserExpenses)
 		expenses.GET("/grouped", controllers.GetUserExpensesByDate)
 		expenses.GET("/detail", controllers.GetUserExpensesByDateDetail)
+		expenses.DELETE("", controllers.DeleteExpensesByDate)
 	}
 }

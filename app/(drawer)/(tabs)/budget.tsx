@@ -11,8 +11,10 @@ import {
   XStack,
   YStack,
   ZStack,
+  Spinner,
 } from "tamagui";
 import { Dimensions, ScrollView as RNScrollView } from "react-native";
+import { useAuth } from "../../hooks/useAuth";
 
 const API_URL = "http://localhost:8080/api";
 
@@ -30,6 +32,7 @@ export default function activityPlanner() {
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const { token, isLoading: isAuthLoading } = useAuth();
   const formatCurrency = (value: string) => {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };

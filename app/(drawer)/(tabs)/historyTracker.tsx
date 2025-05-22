@@ -13,8 +13,12 @@ import {
   XStack,
   YStack,
   Spinner,
+  Dialog,
+  Adapt,
+  Sheet,
 } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../../hooks/useAuth";
 
 const { width, height } = Dimensions.get("window");
 const API_URL = "http://localhost:8080";
@@ -136,19 +140,8 @@ export default function HistoryTracker() {
   const params = useLocalSearchParams();
   const [expenseData, setExpenseData] = useState<ExpenseData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const getToken = async () => {
-      try {
-        const storedToken = await AsyncStorage.getItem("token");
-        setToken(storedToken);
-      } catch (error) {
-        console.error("Error getting token:", error);
-      }
-    };
-    getToken();
-  }, []);
+  const { token, isLoading: isAuthLoading, checkAuth } = useAuth();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if (token && params.date) {
@@ -189,6 +182,41 @@ export default function HistoryTracker() {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!token) {
+      alert("Please login first");
+      router.push("/(drawer)/(tabs)/authentication/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/expenses?date=${params.date}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        setShowDeleteModal(false);
+        alert("Expenses deleted successfully");
+        router.push("/(drawer)/(tabs)/history");
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete expenses');
+      }
+    } catch (error: any) {
+      console.error("Error deleting expenses:", error);
+      if (error.message?.includes('401') || error.message?.includes('unauthorized')) {
+        alert("Session expired. Please login again.");
+        router.push("/(drawer)/(tabs)/authentication/login");
+      } else {
+        alert(error.message || "Failed to delete expenses. Please try again.");
+      }
     }
   };
 
@@ -297,11 +325,127 @@ export default function HistoryTracker() {
                     {expenseData ? formatCurrency(expenseData.total) : "Rp 0"}
                   </SizableText>
                 </YStack>
+                <Button
+                  backgroundColor="#C47A7B"
+                  color="#fff"
+                  borderRadius={20}
+                  width={120}
+                  onPress={() => setShowDeleteModal(true)}
+                  style={{
+                    borderTopWidth: 0,
+                    borderRightWidth: 0,
+                    borderBottomWidth: 0,
+                    borderLeftWidth: 0,
+                    marginTop: 20,
+                  }}
+                >
+                  Delete
+                </Button>
               </>
             )}
           </YStack>
         </YStack>
       </ScrollView>
+
+      <Dialog modal open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <Dialog.Portal>
+          <Dialog.Overlay
+            key="overlay"
+            animation="quick"
+            opacity={0.5}
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+          />
+
+          <Dialog.Content
+            bordered
+            elevate
+            key="content"
+            animateOnly={["transform", "opacity"]}
+            animation={[
+              "quick",
+              {
+                opacity: {
+                  overshootClamping: true,
+                },
+              },
+            ]}
+            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+            space
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 20,
+              padding: 20,
+              width: width * 0.8,
+              maxWidth: 400,
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+            }}
+          >
+            <Dialog.Title
+              style={{
+                fontFamily: "Poppins",
+                fontWeight: "700",
+                fontSize: 20,
+                color: "#000",
+                marginBottom: 10,
+              }}
+            >
+              Confirm Delete
+            </Dialog.Title>
+            <Dialog.Description
+              style={{
+                fontFamily: "Poppins",
+                color: "#666",
+                fontSize: 16,
+                marginBottom: 20,
+              }}
+            >
+              Are you sure you want to delete all expenses for this date? This action cannot be undone.
+            </Dialog.Description>
+
+            <XStack space="$3" justifyContent="flex-end">
+              <Dialog.Close displayWhenAdapted asChild>
+                <Button
+                  backgroundColor="#4A7C59"
+                  color="#fff"
+                  borderRadius={20}
+                  width={100}
+                  onPress={() => setShowDeleteModal(false)}
+                  style={{
+                    borderTopWidth: 0,
+                    borderRightWidth: 0,
+                    borderBottomWidth: 0,
+                    borderLeftWidth: 0,
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Dialog.Close>
+              <Dialog.Close displayWhenAdapted asChild>
+                <Button
+                  backgroundColor="#C47A7B"
+                  color="#fff"
+                  borderRadius={20}
+                  width={100}
+                  onPress={handleDelete}
+                  style={{
+                    borderTopWidth: 0,
+                    borderRightWidth: 0,
+                    borderBottomWidth: 0,
+                    borderLeftWidth: 0,
+                  }}
+                >
+                  Delete
+                </Button>
+              </Dialog.Close>
+            </XStack>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog>
     </SafeAreaView>
   );
 }
