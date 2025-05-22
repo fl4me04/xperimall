@@ -56,6 +56,8 @@ export default function HomeScreen() {
     console.log("Button tapped");
   };
 
+  const navigation: any = useNavigation();
+
   const [searchText, setSearchText] = useState("");
 
   const buttonImages = {

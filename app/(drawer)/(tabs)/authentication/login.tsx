@@ -68,7 +68,7 @@ export default function Login() {
       >
         <Navbar />
         <YStack padding={25} alignItems="flex-start">
-          <Button
+        <Button
             circular
             size="$2"
             background="#4A7C59"
