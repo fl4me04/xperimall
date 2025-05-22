@@ -12,7 +12,7 @@ import {
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
   const router = useRouter();
@@ -39,14 +39,15 @@ export default function Login() {
 
       if (response.ok) {
         // Store the JWT token
-        await AsyncStorage.setItem('token', data.token);
+        await AsyncStorage.setItem("token", data.token);
         // Store user data
         const userData = {
           name: data.username,
-          email: email
+          email: email,
         };
-        await AsyncStorage.setItem('userData', JSON.stringify(userData));
-        
+        await AsyncStorage.setItem("userData", JSON.stringify(userData));
+        setEmail("");
+        setPassword("");
         setTimeout(() => {
           alert("Login successful!");
           router.push("/");
@@ -55,20 +56,22 @@ export default function Login() {
         alert(data.message || "Login failed");
       }
     } catch (error) {
-      console.error('Error logging in:', error);
+      console.error("Error logging in:", error);
       alert("Error logging in");
     }
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+      >
         <Navbar />
         <YStack padding={25} alignItems="flex-start">
         <Button
             circular
             size="$2"
-            background="#9BA88D"
+            background="#4A7C59"
             icon={<ArrowLeft size={20} color={"white"} />}
             onPress={() => router.push("/(drawer)/(tabs)")}
           />
@@ -76,7 +79,7 @@ export default function Login() {
         <YStack padding={50} marginVertical={80}>
           <YStack space={10} justifyContent="center">
             <SizableText
-              style={{ fontSize: 24, color: "#9BA88D", fontFamily: "Poppins" }}
+              style={{ fontSize: 24, color: "#000", fontFamily: "Poppins" }}
             >
               Sign In
             </SizableText>
@@ -104,6 +107,7 @@ export default function Login() {
               borderWidth={1}
               borderColor="black"
               borderRadius={8}
+              onSubmitEditing={handleLogin}
             />
             <XStack justifyContent="center" alignItems="center">
               <Anchor
@@ -123,7 +127,7 @@ export default function Login() {
               width={120}
               height={40}
               alignSelf="center"
-              backgroundColor="#9BA88D"
+              backgroundColor="#4A7C59"
               borderRadius={17}
               onPress={handleLogin}
             >
@@ -133,7 +137,7 @@ export default function Login() {
             </Button>
             <XStack justifyContent="center" alignItems="center">
               <Anchor
-                color="#9BA88D"
+                color="#4A7C59"
                 href="/authentication/register"
                 textAlign="center"
                 style={{ fontFamily: "Poppins", fontSize: 13 }}
