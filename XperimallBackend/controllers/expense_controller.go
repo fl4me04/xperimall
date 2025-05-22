@@ -92,7 +92,7 @@ func GetUserExpensesByDate(c *gin.Context) {
 	}
 
 	var expenses []models.Expense
-	result := database.DB.Where("user_id = ?", userID.(uint)).Order("created_at DESC").Find(&expenses)
+	result := database.DB.Where("user_id = ? AND deleted_at IS NULL", userID.(uint)).Order("created_at DESC").Find(&expenses)
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch expenses"})
 		return
@@ -169,7 +169,7 @@ func GetUserExpensesByDateDetail(c *gin.Context) {
 	var expenses []models.Expense
 	// Use DATE() function to compare only the date part, ignoring time
 	result := database.DB.Where(
-		"user_id = ? AND DATE(created_at) = DATE(?)",
+		"user_id = ? AND DATE(created_at) = DATE(?) AND deleted_at IS NULL",
 		userID.(uint),
 		date,
 	).Find(&expenses)
@@ -205,4 +205,39 @@ func GetUserExpensesByDateDetail(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+
+func DeleteExpensesByDate(c *gin.Context) {
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	dateStr := c.Query("date")
+	if dateStr == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Date parameter is required"})
+		return
+	}
+
+	// Parse the date string to time.Time
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format. Use YYYY-MM-DD"})
+		return
+	}
+
+	// Soft delete by updating deleted_at
+	result := database.DB.Model(&models.Expense{}).
+		Where("user_id = ? AND DATE(created_at) = DATE(?) AND deleted_at IS NULL", userID.(uint), date).
+		Update("deleted_at", time.Now())
+
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete expenses"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Expenses deleted successfully",
+	})
 }

@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
@@ -230,6 +229,8 @@ export default function FinanceTracker() {
         // Clear expenses after a short delay
         setTimeout(() => {
           setExpenses([]);
+          // Redirect to history page
+          router.push("/(drawer)/(tabs)/history");
         }, 100);
       } else {
         const errorData = await response.json();
