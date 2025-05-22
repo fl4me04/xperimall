@@ -82,6 +82,12 @@ export default function History() {
     }, [token])
   );
 
+  useEffect(() => {
+    if (token) {
+      fetchExpenses();
+    }
+  }, [token]);
+
   const formatCurrency = (amount: number) => {
     return amount.toLocaleString('id-ID', {
       style: 'currency',
