@@ -164,13 +164,35 @@ export default function register() {
           enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
           exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
           space
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 20,
+            padding: 20,
+            width: "90%",
+            maxWidth: 400,
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: [{ translateX: -200 }, { translateY: -200 }],
+          }}
         >
-          <Dialog.Title style={{ fontFamily: "Poppins", color: "#9BA88D" }}>
+          <Dialog.Title style={{ 
+            fontFamily: "Poppins", 
+            color: "#4A7C59",
+            fontSize: 20,
+            fontWeight: "700",
+            marginBottom: 10
+          }}>
             Terms and Conditions
           </Dialog.Title>
           <Dialog.Description style={{ fontFamily: "Poppins" }}>
             <ScrollView style={{ maxHeight: 300 }}>
-              <SizableText style={{ fontFamily: "Poppins", lineHeight: 20 }}>
+              <SizableText style={{ 
+                fontFamily: "Poppins", 
+                lineHeight: 20,
+                color: "#5A5A4D",
+                fontSize: 14
+              }}>
                 1. Acceptance of Terms{"\n\n"}
                 By accessing and using this application, you accept and agree to
                 be bound by the terms and provision of this agreement.{"\n\n"}
@@ -206,13 +228,21 @@ export default function register() {
               </SizableText>
             </ScrollView>
           </Dialog.Description>
-          <XStack space="$3" justifyContent="flex-end">
+          <XStack space="$3" justifyContent="flex-end" marginTop={10}>
             <Button
               onPress={() => {
                 setShowTerms(false);
                 setTermsAccepted(true);
               }}
-              backgroundColor="#9BA88D"
+              backgroundColor="#4A7C59"
+              borderRadius={20}
+              width={100}
+              style={{
+                borderTopWidth: 0,
+                borderRightWidth: 0,
+                borderBottomWidth: 0,
+                borderLeftWidth: 0,
+              }}
             >
               <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
                 Accept
@@ -220,7 +250,16 @@ export default function register() {
             </Button>
             <Button
               onPress={() => setShowTerms(false)}
-              backgroundColor="#D6D6C2"
+              backgroundColor="#F7F5E6"
+              borderRadius={20}
+              width={100}
+              style={{
+                borderTopWidth: 1,
+                borderRightWidth: 1,
+                borderBottomWidth: 1,
+                borderLeftWidth: 1,
+                borderColor: "#000",
+              }}
             >
               <SizableText style={{ fontFamily: "Poppins", color: "#5A5A4D" }}>
                 Close
@@ -437,18 +476,16 @@ export default function register() {
               </SizableText>
             </Button>
             <XStack justifyContent="center" alignItems="center">
-              <Anchor
-                color={"#4A7C59"}
-                width={"247.19"}
-                height={"24"}
-                href="/authentication/login"
-                textAlign="center"
+              <Button
+                backgroundColor="transparent"
+                onPress={() => router.push("/(drawer)/(tabs)/authentication/login")}
                 style={{ fontFamily: "Poppins", fontSize: 13 }}
                 marginVertical={40}
-                textDecorationLine="none"
               >
-                Have an account? Login Now!
-              </Anchor>
+                <SizableText style={{ color: "#4A7C59", fontFamily: "Poppins", fontSize: 13 }}>
+                  Have an account? Login Now!
+                </SizableText>
+              </Button>
             </XStack>
           </YStack>
         </YStack>

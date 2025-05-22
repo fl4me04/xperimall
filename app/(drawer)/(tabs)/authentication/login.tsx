@@ -136,16 +136,16 @@ export default function Login() {
               </SizableText>
             </Button>
             <XStack justifyContent="center" alignItems="center">
-              <Anchor
-                color="#4A7C59"
-                href="/authentication/register"
-                textAlign="center"
+              <Button
+                backgroundColor="transparent"
+                onPress={() => router.push("/(drawer)/(tabs)/authentication/register")}
                 style={{ fontFamily: "Poppins", fontSize: 13 }}
                 marginVertical={40}
-                textDecorationLine="none"
               >
-                Don't have an account? Register Now!
-              </Anchor>
+                <SizableText style={{ color: "#4A7C59", fontFamily: "Poppins", fontSize: 13 }}>
+                  Don't have an account? Register Now!
+                </SizableText>
+              </Button>
             </XStack>
           </YStack>
         </YStack>
