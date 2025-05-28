@@ -4,7 +4,14 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useState, useEffect, useCallback } from "react";
 import { Dimensions, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, ScrollView, SizableText, XStack, YStack, Spinner } from "tamagui";
+import {
+  Button,
+  ScrollView,
+  SizableText,
+  XStack,
+  YStack,
+  Spinner,
+} from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -26,7 +33,7 @@ interface GroupedExpenses {
 
 const formatDateForAPI = (dateStr: string) => {
   const date = new Date(dateStr);
-  return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
+  return date.toISOString().split("T")[0]; // Returns YYYY-MM-DD format
 };
 
 export default function History() {
@@ -45,8 +52,8 @@ export default function History() {
     try {
       const response = await fetch(`${API_URL}/expenses/grouped`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
       });
 
@@ -57,11 +64,14 @@ export default function History() {
         setGroupedExpenses(sortedData);
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch expenses');
+        throw new Error(errorData.message || "Failed to fetch expenses");
       }
     } catch (error: any) {
       console.error("Error fetching expenses:", error);
-      if (error.message?.includes('401') || error.message?.includes('unauthorized')) {
+      if (
+        error.message?.includes("401") ||
+        error.message?.includes("unauthorized")
+      ) {
         alert("Session expired. Please login again.");
         router.push("/(drawer)/(tabs)/authentication/login");
       } else {
@@ -89,34 +99,41 @@ export default function History() {
   }, [token]);
 
   const formatCurrency = (amount: number) => {
-    return amount.toLocaleString('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
+    return amount.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     });
   };
 
   const handleDateClick = (dateStr: string) => {
     // Parse the date string (e.g., "Monday, 23 February 2025")
-    const dateParts = dateStr.split(', ')[1].split(' ');
+    const dateParts = dateStr.split(", ")[1].split(" ");
     const day = dateParts[0];
-    const month = new Date(Date.parse(dateParts[1] + " 1, 2000")).getMonth() + 1;
+    const month =
+      new Date(Date.parse(dateParts[1] + " 1, 2000")).getMonth() + 1;
     const year = dateParts[2];
-    const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.padStart(2, '0')}`;
-    
+    const formattedDate = `${year}-${month
+      .toString()
+      .padStart(2, "0")}-${day.padStart(2, "0")}`;
+
     router.push({
       pathname: "/(drawer)/(tabs)/historyTracker",
-      params: { date: formattedDate }
+      params: { date: formattedDate },
     });
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Navbar />
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: "#fff",
+          paddingTop: 100,
+        }}
       >
-        <Navbar />
         <YStack
           width={"auto"}
           height={"auto"}
@@ -134,17 +151,14 @@ export default function History() {
             <Button
               circular
               size="$2"
-              background="#4A7C59"
+              background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
               onPress={() => router.push("/(drawer)/(tabs)")}
               style={{
                 position: "absolute",
                 left: 0,
-                backgroundColor: "#4A7C59",
-                borderTopWidth: 0,
-                borderRightWidth: 0,
-                borderBottomWidth: 0,
-                borderLeftWidth: 0,
+                backgroundColor: "#2B4433",
+                borderWidth: 0,
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.1,
@@ -200,10 +214,7 @@ export default function History() {
                       marginBottom: width * 0.015,
                       marginVertical: 6,
                       padding: width * 0.027,
-                      borderTopWidth: 1,
-                      borderRightWidth: 1,
-                      borderBottomWidth: 1,
-                      borderLeftWidth: 1,
+                      borderWidth: 1,
                       borderColor: "#000",
                       shadowColor: "#000",
                       shadowOffset: { width: 0, height: 2 },
@@ -247,10 +258,7 @@ export default function History() {
                 borderRadius={width * 0.04}
                 onPress={() => router.push("/(drawer)/(tabs)/financeTracker")}
                 style={{
-                  borderTopWidth: 0,
-                  borderRightWidth: 0,
-                  borderBottomWidth: 0,
-                  borderLeftWidth: 0,
+                  borderWidth: 0,
                 }}
               >
                 Add

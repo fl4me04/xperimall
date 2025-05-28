@@ -47,9 +47,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="store"
+        name="mallDirectory"
         options={{
-          title: "Stores",
+          title: "Directory",
           tabBarIcon: ({ color }) => (
             <Store size={isSmallScreen ? 20 : 26} color={color} />
           ),
@@ -100,10 +100,11 @@ export default function TabLayout() {
       <Tabs.Screen name="authentication/login" options={{ href: null }} />
       <Tabs.Screen name="authentication/register" options={{ href: null }} />
       <Tabs.Screen name="index" options={{ href: null }} />
-      <Tabs.Screen name="mallDirectory" options={{ href: null }} />
       <Tabs.Screen name="activityPlanner" options={{ href: null }} />
       <Tabs.Screen name="financeTracker" options={{ href: null }} />
       <Tabs.Screen name="historyTracker" options={{ href: null }} />
+      <Tabs.Screen name="promodetails" options={{ href: null }} />
+      <Tabs.Screen name="newtenant" options={{ href: null }} />
     </Tabs>
   );
 }

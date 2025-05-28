@@ -12,6 +12,7 @@ import {
   YStack,
   ZStack,
   Spinner,
+  Dialog,
 } from "tamagui";
 import { Dimensions, ScrollView as RNScrollView } from "react-native";
 import { useAuth } from "../../hooks/useAuth";
@@ -33,6 +34,9 @@ export default function activityPlanner() {
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const { token, isLoading: isAuthLoading } = useAuth();
+  const [showCategoryDialog, setShowCategoryDialog] = useState(false);
+  const [showAmountDialog, setShowAmountDialog] = useState(false);
+
   const formatCurrency = (value: string) => {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -70,11 +74,11 @@ export default function activityPlanner() {
 
   const fetchRecommendations = async () => {
     if (selectedCategories.length === 0) {
-      alert("Please select at least one category!");
+      setShowCategoryDialog(true);
       return;
     }
     if (inputAmount === "") {
-      alert("Please enter your budget amount!");
+      setShowAmountDialog(true);
       return;
     }
     setLoading(true);
@@ -122,30 +126,55 @@ export default function activityPlanner() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Navbar />
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: "#fff",
+          paddingTop: 100,
+        }}
       >
-        <Navbar />
-        <YStack width={"auto"} height={"auto"} padding={25}>
+        <YStack
+          width={"auto"}
+          height={"auto"}
+          padding={width * 0.07}
+          space={width * 0.03}
+          paddingBottom={width * 0.01}
+        >
           <XStack
-            alignItems="flex-start"
+            alignItems="center"
             position="relative"
             justifyContent="center"
-            height={50}
+            height={width * 0.115}
+            marginBottom={width * 0.01}
           >
             <Button
               circular
               size="$2"
-              background="#4A7C59"
+              background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
               onPress={() => router.push("/(drawer)/(tabs)")}
               style={{
                 position: "absolute",
                 left: 0,
+                backgroundColor: "#2B4433",
+                borderWidth: 0,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,
               }}
             />
             <SizableText
-              style={{ fontWeight: "500", fontSize: 32, color: "#000" }}
+              style={{
+                fontFamily: "Poppins",
+                fontWeight: "700",
+                fontSize: 28,
+                color: "#000",
+                letterSpacing: 1,
+                alignSelf: "center",
+              }}
             >
               Your Activity Guide
             </SizableText>
@@ -161,24 +190,27 @@ export default function activityPlanner() {
               style={{
                 color: "#000",
                 fontWeight: "500",
-                fontSize: 16,
+                fontSize: 18,
               }}
             >
               1. Enter your Budget
             </SizableText>
             <Input
-              size="$3"
-              width={"100%"}
+              flex={1}
               placeholder="Insert Amount (Rp.)"
               value={`Rp ${formatCurrency(inputAmount)}`}
               onChangeText={(value) =>
                 handleAmountChange(value.replace(/^Rp\s?/, ""))
               }
-              fontFamily="Poppins"
-              backgroundColor="#F7F5E6"
-              borderWidth={1}
-              borderColor="black"
-              borderRadius={8}
+              style={{
+                width: "100%",
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: "#000",
+                padding: 10,
+                backgroundColor: "#F7F5E6",
+                fontFamily: "Poppins",
+              }}
             />
           </YStack>
           <YStack
@@ -188,7 +220,7 @@ export default function activityPlanner() {
             paddingBottom={10}
           >
             <SizableText
-              style={{ color: "#000", fontWeight: "500", fontSize: 16 }}
+              style={{ color: "#000", fontWeight: "500", fontSize: 18 }}
             >
               2. Add activity preferences
             </SizableText>
@@ -300,7 +332,7 @@ export default function activityPlanner() {
             paddingBottom={10}
           >
             <SizableText
-              style={{ color: "#000", fontWeight: "500", fontSize: 16 }}
+              style={{ color: "#000", fontWeight: "500", fontSize: 18 }}
             >
               3. Your Recommendation
             </SizableText>
@@ -417,6 +449,172 @@ export default function activityPlanner() {
             </YStack>
           </YStack>
         </YStack>
+
+        <Dialog
+          modal
+          open={showCategoryDialog}
+          onOpenChange={setShowCategoryDialog}
+        >
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-category"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              justifyContent="center"
+              alignItems="center"
+              key="content-category"
+              animateOnly={["transform", "opacity"]}
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                No Category Selected
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                Please select at least one category!
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Dialog.Close displayWhenAdapted asChild>
+                  <Button
+                    backgroundColor="#4A7C59"
+                    color="#fff"
+                    borderRadius={20}
+                    width={100}
+                    onPress={() => setShowCategoryDialog(false)}
+                    style={{
+                      borderWidth: 0,
+                    }}
+                  >
+                    Return
+                  </Button>
+                </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
+
+        <Dialog
+          modal
+          open={showAmountDialog}
+          onOpenChange={setShowAmountDialog}
+        >
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-amount"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              justifyContent="center"
+              alignItems="center"
+              key="content-amount"
+              animateOnly={["transform", "opacity"]}
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                No Budget Entered
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                Please enter your budget amount!
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Dialog.Close displayWhenAdapted asChild>
+                  <Button
+                    backgroundColor="#4A7C59"
+                    color="#fff"
+                    borderRadius={20}
+                    width={100}
+                    onPress={() => setShowAmountDialog(false)}
+                    style={{
+                      borderWidth: 0,
+                    }}
+                  >
+                    Return
+                  </Button>
+                </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
       </ScrollView>
     </SafeAreaView>
   );

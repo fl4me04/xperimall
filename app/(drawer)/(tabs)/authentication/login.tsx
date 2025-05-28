@@ -1,8 +1,9 @@
-import { SafeAreaView } from "react-native";
+import { Dimensions, SafeAreaView } from "react-native";
 import React, { useState } from "react";
 import {
   Anchor,
   Button,
+  Dialog,
   Input,
   ScrollView,
   SizableText,
@@ -14,14 +15,18 @@ import { ArrowLeft } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const { width, height } = Dimensions.get("window");
+
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showFillFieldsDialog, setShowFillFieldsDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      alert("Please fill in all fields.");
+      setShowFillFieldsDialog(true);
       return;
     }
 
@@ -49,7 +54,7 @@ export default function Login() {
         setEmail("");
         setPassword("");
         setTimeout(() => {
-          alert("Login successful!");
+          setShowSuccessDialog(true);
           router.push("/");
         }, 100);
       } else {
@@ -63,92 +68,308 @@ export default function Login() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Navbar />
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: "#fff",
+          paddingTop: 100,
+        }}
       >
-        <Navbar />
-        <YStack padding={25} alignItems="flex-start">
-          <Button
-            circular
-            size="$2"
-            background="#4A7C59"
-            icon={<ArrowLeft size={20} color={"white"} />}
-            onPress={() => router.push("/(drawer)/(tabs)")}
-          />
-        </YStack>
-        <YStack padding={50} marginVertical={80}>
-          <YStack space={10} justifyContent="center">
-            <SizableText
-              style={{ fontSize: 24, color: "#000", fontFamily: "Poppins" }}
-            >
-              Sign In
-            </SizableText>
-            <Input
-              flex={1}
-              size="$3"
-              placeholder="Enter your E-mail"
-              value={email}
-              onChangeText={setEmail}
-              fontFamily="Poppins"
-              backgroundColor="#F7F5E6"
-              borderWidth={1}
-              borderColor="black"
-              borderRadius={8}
-            />
-            <Input
-              flex={1}
-              size="$3"
-              placeholder="Enter your Password"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-              fontFamily="Poppins"
-              backgroundColor="#F7F5E6"
-              borderWidth={1}
-              borderColor="black"
-              borderRadius={8}
-              onSubmitEditing={handleLogin}
-            />
-            <XStack justifyContent="center" alignItems="center">
-              <Anchor
-                color="black"
-                width={150}
-                height={24}
-                marginVertical={6}
-                href="/forgot-password"
-                textAlign="center"
-                style={{ fontFamily: "Poppins", fontSize: 13 }}
-              >
-                Forgot your account?
-              </Anchor>
-            </XStack>
+        <YStack
+          width={"auto"}
+          height={"auto"}
+          padding={width * 0.07}
+          space={width * 0.03}
+          paddingBottom={width * 0.01}
+        >
+          <XStack
+            alignItems="center"
+            position="relative"
+            justifyContent="center"
+            height={width * 0.115}
+            // marginBottom={width * 0.01}
+          >
             <Button
-              marginVertical={10}
-              width={120}
-              height={40}
-              alignSelf="center"
-              backgroundColor="#4A7C59"
-              borderRadius={17}
-              onPress={handleLogin}
-            >
-              <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
-                Login
-              </SizableText>
-            </Button>
-            <XStack justifyContent="center" alignItems="center">
-              <Button
-                backgroundColor="transparent"
-                onPress={() => router.push("/(drawer)/(tabs)/authentication/register")}
-                style={{ fontFamily: "Poppins", fontSize: 13 }}
-                marginVertical={40}
+              circular
+              size="$2"
+              background="#2B4433"
+              icon={<ArrowLeft size={20} color={"white"} />}
+              onPress={() => router.push("/(drawer)/(tabs)")}
+              style={{
+                position: "absolute",
+                left: 0,
+                backgroundColor: "#2B4433",
+                borderWidth: 0,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,
+              }}
+            />
+          </XStack>
+          <YStack padding={25}>
+            <YStack space={15} justifyContent="center">
+              <SizableText
+                style={{ fontSize: 26, color: "#000", fontFamily: "Poppins" }}
               >
-                <SizableText style={{ color: "#4A7C59", fontFamily: "Poppins", fontSize: 13 }}>
-                  Don't have an account? Register Now!
+                Sign In
+              </SizableText>
+              <YStack space={10}>
+                <Input
+                  flex={1}
+                  placeholder="Enter your E-mail"
+                  value={email}
+                  onChangeText={setEmail}
+                  style={{
+                    width: "100%",
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "#000",
+                    padding: 10,
+                    backgroundColor: "#F7F5E6",
+                    fontFamily: "Poppins",
+                  }}
+                />
+                <Input
+                  flex={1}
+                  placeholder="Enter your Password"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                  style={{
+                    width: "100%",
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "#000",
+                    padding: 10,
+                    backgroundColor: "#F7F5E6",
+                    fontFamily: "Poppins",
+                  }}
+                  onSubmitEditing={handleLogin}
+                />
+              </YStack>
+              <XStack justifyContent="center" alignItems="center">
+                <Anchor
+                  color="black"
+                  width={150}
+                  height={24}
+                  marginVertical={6}
+                  href="/forgot-password"
+                  textAlign="center"
+                  style={{ fontFamily: "Poppins", fontSize: 13 }}
+                >
+                  Forgot your account?
+                </Anchor>
+              </XStack>
+              <Button
+                marginVertical={10}
+                width={120}
+                height={40}
+                alignSelf="center"
+                backgroundColor="#4A7C59"
+                borderRadius={17}
+                onPress={handleLogin}
+              >
+                <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
+                  Login
                 </SizableText>
               </Button>
-            </XStack>
+              <XStack justifyContent="center" alignItems="center">
+                <Button
+                  backgroundColor="transparent"
+                  onPress={() =>
+                    router.push("/(drawer)/(tabs)/authentication/register")
+                  }
+                  style={{ fontFamily: "Poppins", fontSize: 13 }}
+                  marginVertical={40}
+                >
+                  <SizableText
+                    style={{
+                      color: "#2B4433",
+                      fontFamily: "Poppins",
+                      fontSize: 13,
+                    }}
+                  >
+                    Don't have an account? Register Now!
+                  </SizableText>
+                </Button>
+              </XStack>
+            </YStack>
           </YStack>
         </YStack>
+
+        <Dialog
+          modal
+          open={showFillFieldsDialog}
+          onOpenChange={setShowFillFieldsDialog}
+        >
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-fill-fields"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              justifyContent="center"
+              alignItems="center"
+              key="content-fill-fields"
+              animateOnly={["transform", "opacity"]}
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                Incomplete Fields
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                Please fill in all fields.
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Dialog.Close displayWhenAdapted asChild>
+                  <Button
+                    backgroundColor="#4A7C59"
+                    color="#fff"
+                    borderRadius={20}
+                    width={100}
+                    onPress={() => setShowFillFieldsDialog(false)}
+                    style={{
+                      borderWidth: 0,
+                    }}
+                  >
+                    Return
+                  </Button>
+                </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
+
+        <Dialog
+          modal
+          open={showSuccessDialog}
+          onOpenChange={(open) => {
+            setShowSuccessDialog(open);
+            if (!open) {
+              router.push("/");
+            }
+          }}
+        >
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-success"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              justifyContent="center"
+              alignItems="center"
+              key="content-success"
+              animateOnly={["transform", "opacity"]}
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                Login Successful
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                You have logged in successfully!
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Dialog.Close displayWhenAdapted asChild>
+                  <Button
+                    backgroundColor="#4A7C59"
+                    color="#fff"
+                    borderRadius={20}
+                    width={100}
+                    onPress={() => setShowSuccessDialog(false)}
+                    style={{
+                      borderWidth: 0,
+                    }}
+                  >
+                    Continue
+                  </Button>
+                </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
       </ScrollView>
     </SafeAreaView>
   );
