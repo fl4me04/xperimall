@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-import { router } from "expo-router";
-import React, { useState, useEffect, useRef } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Dimensions, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { G, Path, Circle, Text as SvgText, TSpan } from "react-native-svg";
@@ -150,6 +150,15 @@ export default function FinanceTracker() {
     getToken();
   }, []);
 
+  // Reset form when page comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      setExpenses([]);
+      setTenant("");
+      setAmount("");
+    }, [])
+  );
+
   const formatCurrency = (value: string) => {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -200,8 +209,6 @@ export default function FinanceTracker() {
         amount,
       }));
 
-      console.log("Sending data:", expenseData);
-
       const response = await fetch(`${API_URL}/expenses`, {
         method: 'POST',
         headers: {
@@ -214,11 +221,8 @@ export default function FinanceTracker() {
         })
       });
 
-      console.log("Response status:", response.status);
-
       if (response.ok) {
         const data = await response.json();
-        console.log("Response data:", data);
         
         // Set navigating flag
         isNavigating.current = true;
@@ -226,15 +230,13 @@ export default function FinanceTracker() {
         // Show success message
         alert("Expenses saved successfully!");
         
-        // Clear expenses after a short delay
-        setTimeout(() => {
-          setExpenses([]);
-          // Redirect to history page
-          router.push("/(drawer)/(tabs)/history");
-        }, 100);
+        setExpenses([]);
+        setTenant("");
+        setAmount("");
+        
+        router.push("/(drawer)/(tabs)/history");
       } else {
         const errorData = await response.json();
-        console.error("Error response:", errorData);
         throw new Error(errorData.message || 'Failed to save expenses');
       }
     } catch (error: any) {
@@ -247,6 +249,7 @@ export default function FinanceTracker() {
       }
     } finally {
       setIsLoading(false);
+      isNavigating.current = false;
     }
   };
 

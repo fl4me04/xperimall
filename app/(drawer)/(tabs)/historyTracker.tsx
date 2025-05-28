@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useState, useEffect } from "react";
+import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
+import React, { useState, useEffect, useCallback } from "react";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { G, Path, Circle, Text as SvgText, TSpan } from "react-native-svg";
@@ -143,11 +143,13 @@ export default function HistoryTracker() {
   const { token, isLoading: isAuthLoading, checkAuth } = useAuth();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  useEffect(() => {
-    if (token && params.date) {
-      fetchExpenses();
-    }
-  }, [token, params.date]);
+  useFocusEffect(
+    useCallback(() => {
+      if (token && params.date) {
+        fetchExpenses();
+      }
+    }, [token, params.date])
+  );
 
   const fetchExpenses = async () => {
     if (!token) {
