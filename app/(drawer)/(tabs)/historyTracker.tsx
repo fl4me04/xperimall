@@ -55,10 +55,12 @@ function createPieSlices(expenses: { amount: number; color: string }[]) {
 const PieChart = React.memo(({ expenses }: { expenses: Expense[] }) => {
   const colors = ["#4A7C59", "#C47A7B", "#9BA88D", "#F7F5E6", "#4D4D4D"];
   const pieSlices = expenses.length
-    ? createPieSlices(expenses.map((expense, index) => ({
-        amount: expense.amount,
-        color: colors[index % colors.length],
-      })))
+    ? createPieSlices(
+        expenses.map((expense, index) => ({
+          amount: expense.amount,
+          color: colors[index % colors.length],
+        }))
+      )
     : [];
 
   return (
@@ -142,6 +144,7 @@ export default function HistoryTracker() {
   const [isLoading, setIsLoading] = useState(true);
   const { token, isLoading: isAuthLoading, checkAuth } = useAuth();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -160,23 +163,29 @@ export default function HistoryTracker() {
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_URL}/expenses/detail?date=${params.date}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${API_URL}/expenses/detail?date=${params.date}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         setExpenseData(data);
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch expenses');
+        throw new Error(errorData.message || "Failed to fetch expenses");
       }
     } catch (error: any) {
       console.error("Error fetching expenses:", error);
-      if (error.message?.includes('401') || error.message?.includes('unauthorized')) {
+      if (
+        error.message?.includes("401") ||
+        error.message?.includes("unauthorized")
+      ) {
         alert("Session expired. Please login again.");
         router.push("/(drawer)/(tabs)/authentication/login");
       } else {
@@ -196,24 +205,27 @@ export default function HistoryTracker() {
 
     try {
       const response = await fetch(`${API_URL}/expenses?date=${params.date}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
       });
 
       if (response.ok) {
         setShowDeleteModal(false);
-        alert("Expenses deleted successfully");
+        setShowSuccessDialog(true);
         router.push("/(drawer)/(tabs)/history");
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to delete expenses');
+        throw new Error(errorData.message || "Failed to delete expenses");
       }
     } catch (error: any) {
       console.error("Error deleting expenses:", error);
-      if (error.message?.includes('401') || error.message?.includes('unauthorized')) {
+      if (
+        error.message?.includes("401") ||
+        error.message?.includes("unauthorized")
+      ) {
         alert("Session expired. Please login again.");
         router.push("/(drawer)/(tabs)/authentication/login");
       } else {
@@ -223,20 +235,24 @@ export default function HistoryTracker() {
   };
 
   const formatCurrency = (amount: number) => {
-    return amount.toLocaleString('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
+    return amount.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     });
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Navbar />
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: "#fff",
+          paddingTop: 100,
+        }}
       >
-        <Navbar />
         <YStack
           width={"auto"}
           height={"auto"}
@@ -254,17 +270,14 @@ export default function HistoryTracker() {
             <Button
               circular
               size="$2"
-              background="#4A7C59"
+              background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
               onPress={() => router.push("/(drawer)/(tabs)/history")}
               style={{
                 position: "absolute",
                 left: 0,
-                backgroundColor: "#4A7C59",
-                borderTopWidth: 0,
-                borderRightWidth: 0,
-                borderBottomWidth: 0,
-                borderLeftWidth: 0,
+                backgroundColor: "#2B4433",
+                borderWidth: 0,
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.1,
@@ -272,18 +285,22 @@ export default function HistoryTracker() {
                 elevation: 3,
               }}
             />
-            <SizableText
-              style={{
-                fontFamily: "Poppins",
-                fontWeight: "700",
-                fontSize: 18,
-                color: "#000",
-                letterSpacing: 1,
-                alignSelf: "center",
-              }}
-            >
-              {expenseData?.date || "Loading..."}
-            </SizableText>
+            <XStack width={width * 0.5} justifyContent="center">
+              <SizableText
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 25,
+                  color: "#4A7C59",
+                  letterSpacing: 1,
+                  alignSelf: "center",
+                  textAlign: "center",
+                  textWrap: "wrap",
+                }}
+              >
+                {expenseData?.date || "Loading..."}
+              </SizableText>
+            </XStack>
           </XStack>
           <YStack alignItems="center" marginVertical={20}>
             {isLoading ? (
@@ -334,10 +351,7 @@ export default function HistoryTracker() {
                   width={120}
                   onPress={() => setShowDeleteModal(true)}
                   style={{
-                    borderTopWidth: 0,
-                    borderRightWidth: 0,
-                    borderBottomWidth: 0,
-                    borderLeftWidth: 0,
+                    borderWidth: 0,
                     marginTop: 20,
                   }}
                 >
@@ -362,6 +376,8 @@ export default function HistoryTracker() {
           <Dialog.Content
             bordered
             elevate
+            justifyContent="center"
+            alignItems="center"
             key="content"
             animateOnly={["transform", "opacity"]}
             animation={[
@@ -376,14 +392,120 @@ export default function HistoryTracker() {
             exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
             space
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: "#2B4433",
               borderRadius: 20,
               padding: 20,
               width: width * 0.8,
               maxWidth: 400,
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+            }}
+          >
+            <Dialog.Title
+              style={{
+                fontFamily: "Poppins",
+                fontWeight: "100",
+                fontSize: 20,
+                color: "#fff",
+                // marginBottom: 5,
+              }}
+            >
+              Delete History
+            </Dialog.Title>
+            <Dialog.Description
+              style={{
+                fontFamily: "Poppins",
+                color: "#fff",
+                fontSize: 16,
+                marginBottom: 5,
+                marginTop: -13,
+              }}
+            >
+              Are you sure you want to delete all expenses for this date? This
+              action cannot be undone.
+            </Dialog.Description>
+
+            <XStack space="$3" justifyContent="flex-end">
+              <Dialog.Close displayWhenAdapted asChild>
+                <Button
+                  backgroundColor="#C47A7B"
+                  color="#fff"
+                  borderRadius={20}
+                  width={100}
+                  onPress={() => setShowDeleteModal(false)}
+                  style={{
+                    borderWidth: 0,
+                  }}
+                >
+                  No
+                </Button>
+              </Dialog.Close>
+              <Dialog.Close displayWhenAdapted asChild>
+                <Button
+                  backgroundColor="#4A7C59"
+                  color="#fff"
+                  borderRadius={20}
+                  width={100}
+                  onPress={handleDelete}
+                  style={{
+                    borderWidth: 0,
+                  }}
+                >
+                  Yes
+                </Button>
+              </Dialog.Close>
+            </XStack>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog>
+
+      <Dialog
+        modal
+        open={showSuccessDialog}
+        onOpenChange={(open) => {
+          setShowSuccessDialog(open);
+          if (!open) {
+            router.push("/(drawer)/(tabs)/history");
+          }
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay
+            key="overlay-success"
+            animation="quick"
+            opacity={0.5}
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+          />
+          <Dialog.Content
+            bordered
+            elevate
+            justifyContent="center"
+            alignItems="center"
+            key="content-success"
+            animateOnly={["transform", "opacity"]}
+            animation={[
+              "quick",
+              {
+                opacity: {
+                  overshootClamping: true,
+                },
+              },
+            ]}
+            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+            space
+            style={{
+              backgroundColor: "#2B4433",
+              borderRadius: 20,
+              padding: 20,
+              width: width * 0.8,
+              maxWidth: 400,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
               transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
             }}
           >
@@ -392,23 +514,22 @@ export default function HistoryTracker() {
                 fontFamily: "Poppins",
                 fontWeight: "700",
                 fontSize: 20,
-                color: "#000",
-                marginBottom: 10,
+                color: "#fff",
+                // marginBottom: 10,
               }}
             >
-              Confirm Delete
+              Success
             </Dialog.Title>
             <Dialog.Description
               style={{
                 fontFamily: "Poppins",
-                color: "#666",
+                color: "#fff",
                 fontSize: 16,
-                marginBottom: 20,
+                marginBottom: 10,
               }}
             >
-              Are you sure you want to delete all expenses for this date? This action cannot be undone.
+              History Deleted.
             </Dialog.Description>
-
             <XStack space="$3" justifyContent="flex-end">
               <Dialog.Close displayWhenAdapted asChild>
                 <Button
@@ -416,32 +537,12 @@ export default function HistoryTracker() {
                   color="#fff"
                   borderRadius={20}
                   width={100}
-                  onPress={() => setShowDeleteModal(false)}
+                  onPress={() => setShowSuccessDialog(false)}
                   style={{
-                    borderTopWidth: 0,
-                    borderRightWidth: 0,
-                    borderBottomWidth: 0,
-                    borderLeftWidth: 0,
+                    borderWidth: 0,
                   }}
                 >
-                  Cancel
-                </Button>
-              </Dialog.Close>
-              <Dialog.Close displayWhenAdapted asChild>
-                <Button
-                  backgroundColor="#C47A7B"
-                  color="#fff"
-                  borderRadius={20}
-                  width={100}
-                  onPress={handleDelete}
-                  style={{
-                    borderTopWidth: 0,
-                    borderRightWidth: 0,
-                    borderBottomWidth: 0,
-                    borderLeftWidth: 0,
-                  }}
-                >
-                  Delete
+                  Return
                 </Button>
               </Dialog.Close>
             </XStack>

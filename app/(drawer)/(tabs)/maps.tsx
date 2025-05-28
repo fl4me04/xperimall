@@ -124,10 +124,14 @@ export default function TabTwoScreen() {
 
   return (
     <SafeAreaViewContext style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Navbar />
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: "#fff",
+          paddingTop: 100,
+        }}
       >
-        <Navbar />
         <YStack
           width={"auto"}
           height={"auto"}
@@ -145,13 +149,13 @@ export default function TabTwoScreen() {
             <Button
               circular
               size="$2"
-              background="#4A7C59"
+              background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
               onPress={() => router.push("/(drawer)/(tabs)")}
               style={{
                 position: "absolute",
                 left: 0,
-                backgroundColor: "#4A7C59",
+                backgroundColor: "#2B4433",
                 borderWidth: 0,
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },

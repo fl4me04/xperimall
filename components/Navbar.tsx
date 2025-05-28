@@ -6,8 +6,7 @@ import { Button, SizableText, XStack } from "tamagui";
 import { Dimensions, StyleSheet } from "react-native";
 
 export function Navbar() {
-  const { width } = Dimensions.get("window"); // Get screen width
-  const isSmallScreen = width < 600; // Define a breakpoint for responsiveness
+  const { width } = Dimensions.get("window");
 
   const buttonTap = () => {
     console.log("Button tapped");
@@ -15,17 +14,19 @@ export function Navbar() {
 
   const navigation = useNavigation();
 
-  const router = useRouter();
-
   return (
     <XStack
-      padding={isSmallScreen ? 5 : 10} // Adjust padding based on screen size
+      padding={10}
       backgroundColor={"#4A7C59"}
       width={"100%"}
-      height={isSmallScreen ? 80 : 100} // Adjust height based on screen size
+      height={100}
       justifyContent="center"
       alignItems="flex-end"
-      position="relative"
+      position="absolute"
+      top={0}
+      left={0}
+      right={0}
+      zIndex={100}
     >
       <Button
         animation="bouncy"
@@ -49,7 +50,7 @@ export function Navbar() {
       <SizableText
         style={{
           fontFamily: "LexendGiga",
-          fontSize: isSmallScreen ? 14 : 17, // Adjust font size based on screen size
+          fontSize: 17,
           color: "white",
         }}
       >

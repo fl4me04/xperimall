@@ -13,6 +13,7 @@ import { Filter, Search } from "@tamagui/lucide-icons";
 import Slider from "@/components/Slider";
 import { Navbar } from "@/components/Navbar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 interface UserData {
   name: string;
@@ -67,10 +68,14 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Navbar />
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: "#fff",
+          paddingTop: 100,
+        }}
       >
-        <Navbar />
         <YStack
           width={"auto"}
           height={"auto"}
@@ -83,7 +88,7 @@ export default function HomeScreen() {
             height={"auto"}
             style={{
               fontSize: 25,
-              color: "#000",
+              color: "#2B4433",
               fontFamily: "Poppins",
               // fontWeight: "500",
             }}
@@ -102,15 +107,13 @@ export default function HomeScreen() {
             <Search color="gray" size={"$1"} marginLeft={10} />
             <Input
               flex={1}
-              size="$3"
-              // height={height * 0.065}
+              width={"100%"}
               placeholder="Search for anything in Central Park"
               value={searchText}
               onChangeText={setSearchText}
               borderWidth={0}
               backgroundColor="transparent"
               fontFamily={"Poppins"}
-              // style={{ fontSize: width * 0.03 }}
             />
             <Button
               icon={Filter}
@@ -142,7 +145,7 @@ export default function HomeScreen() {
             justifyContent="center"
             style={{
               fontSize: 25,
-              color: "#000",
+              color: "#2B4433",
               fontFamily: "Poppins",
             }}
           >
@@ -152,7 +155,7 @@ export default function HomeScreen() {
             <Button
               width={width * 0.4}
               height={width * 0.4}
-              onPress={buttonTap}
+              onPress={() => router.push("/(drawer)/(tabs)/newtenant")}
               borderRadius={width * 0.02}
               padding="$0"
               backgroundColor="transparent"
@@ -226,7 +229,7 @@ export default function HomeScreen() {
             justifyContent="center"
             style={{
               fontSize: 25,
-              color: "#000",
+              color: "#2B4433",
               fontFamily: "Poppins",
             }}
           >
@@ -238,6 +241,7 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
+              onPress={() => router.push("/(drawer)/(tabs)/mallDirectory")}
             >
               <SizableText
                 color="white"

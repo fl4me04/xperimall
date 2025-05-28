@@ -13,6 +13,7 @@ import {
   XStack,
   YStack,
   Spinner,
+  Dialog,
 } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -83,14 +84,10 @@ const PieChart = React.memo(({ expenses }: PieChartProps) => {
               <Path key={i} d={slice.d} fill={slice.color} />
             ))}
             {expenses.map((expense, i) => {
-              const total = expenses.reduce(
-                (sum, e) => sum + e.amount,
-                0
-              );
+              const total = expenses.reduce((sum, e) => sum + e.amount, 0);
               let prev = 0;
               for (let j = 0; j < i; j++) prev += expenses[j].amount;
-              const angle =
-                ((prev + expense.amount / 2) / total) * 2 * Math.PI;
+              const angle = ((prev + expense.amount / 2) / total) * 2 * Math.PI;
               const r = 0.55;
               const x = Math.cos(angle) * r + 1;
               const y = Math.sin(angle) * r + 1;
@@ -137,6 +134,9 @@ export default function FinanceTracker() {
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const isNavigating = useRef(false);
+  const [showNoExpenseDialog, setShowNoExpenseDialog] = useState(false);
+  const [showAmountDialog, setShowAmountDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   useEffect(() => {
     const getToken = async () => {
@@ -174,7 +174,7 @@ export default function FinanceTracker() {
     if (!tenant || !amount) return;
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount === 0) {
-      alert("Please enter the correct amount");
+      setShowAmountDialog(true);
       return;
     }
     setExpenses([
@@ -191,9 +191,9 @@ export default function FinanceTracker() {
 
   const handleFinalize = async () => {
     if (isNavigating.current) return;
-    
+
     if (expenses.length === 0) {
-      alert("Please add at least one expense before finalizing");
+      setShowNoExpenseDialog(true);
       return;
     }
 
@@ -210,38 +210,41 @@ export default function FinanceTracker() {
       }));
 
       const response = await fetch(`${API_URL}/expenses`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
         body: JSON.stringify({
-          expenses: expenseData
-        })
+          expenses: expenseData,
+        }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        
+
         // Set navigating flag
         isNavigating.current = true;
-        
+
         // Show success message
-        alert("Expenses saved successfully!");
-        
+        setShowSuccessDialog(true);
+
         setExpenses([]);
         setTenant("");
         setAmount("");
-        
+
         router.push("/(drawer)/(tabs)/history");
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to save expenses');
+        throw new Error(errorData.message || "Failed to save expenses");
       }
     } catch (error: any) {
       console.error("Error saving expenses:", error);
-      if (error.message?.includes('401') || error.message?.includes('unauthorized')) {
+      if (
+        error.message?.includes("401") ||
+        error.message?.includes("unauthorized")
+      ) {
         alert("Session expired. Please login again.");
         router.push("/(drawer)/(tabs)/authentication/login");
       } else {
@@ -255,10 +258,14 @@ export default function FinanceTracker() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Navbar />
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: "#fff",
+          paddingTop: 100,
+        }}
       >
-        <Navbar />
         <YStack
           width={"auto"}
           height={"auto"}
@@ -276,17 +283,14 @@ export default function FinanceTracker() {
             <Button
               circular
               size="$2"
-              background="#4A7C59"
+              background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
               onPress={() => router.push("/(drawer)/(tabs)")}
               style={{
                 position: "absolute",
                 left: 0,
-                backgroundColor: "#4A7C59",
-                borderTopWidth: 0,
-                borderRightWidth: 0,
-                borderBottomWidth: 0,
-                borderLeftWidth: 0,
+                backgroundColor: "#2B4433",
+                borderWidth: 0,
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.1,
@@ -345,7 +349,7 @@ export default function FinanceTracker() {
               value={tenant}
               onChangeText={setTenant}
               style={{
-                width: width * 0.7,
+                width: "90%",
                 borderRadius: 20,
                 borderWidth: 1,
                 borderColor: "#000",
@@ -363,12 +367,12 @@ export default function FinanceTracker() {
               }
               keyboardType="numeric"
               style={{
-                width: width * 0.7,
+                width: "90%",
                 borderRadius: 20,
                 borderWidth: 1,
                 borderColor: "#000",
                 padding: 10,
-                marginBottom: 10,
+                marginBottom: height * 0.02,
                 backgroundColor: "#F7F5E6",
                 fontFamily: "Poppins",
               }}
@@ -382,10 +386,7 @@ export default function FinanceTracker() {
                 onPress={handleAdd}
                 disabled={isLoading}
                 style={{
-                  borderTopWidth: 0,
-                  borderRightWidth: 0,
-                  borderBottomWidth: 0,
-                  borderLeftWidth: 0,
+                  borderWidth: 0,
                 }}
               >
                 Add
@@ -398,10 +399,7 @@ export default function FinanceTracker() {
                 onPress={() => handleFinalize()}
                 disabled={isLoading}
                 style={{
-                  borderTopWidth: 0,
-                  borderRightWidth: 0,
-                  borderBottomWidth: 0,
-                  borderLeftWidth: 0,
+                  borderWidth: 0,
                 }}
               >
                 {isLoading ? <Spinner color="#fff" /> : "Finalize"}
@@ -409,6 +407,260 @@ export default function FinanceTracker() {
             </XStack>
           </YStack>
         </YStack>
+
+        <Dialog
+          modal
+          open={showNoExpenseDialog}
+          onOpenChange={setShowNoExpenseDialog}
+        >
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-no-expense"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              justifyContent="center"
+              alignItems="center"
+              key="content-no-expense"
+              animateOnly={["transform", "opacity"]}
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                No Expenses
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                Please add at least one expense before finalizing.
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Dialog.Close displayWhenAdapted asChild>
+                  <Button
+                    backgroundColor="#4A7C59"
+                    color="#fff"
+                    borderRadius={20}
+                    width={100}
+                    onPress={() => setShowNoExpenseDialog(false)}
+                    style={{
+                      borderWidth: 0,
+                    }}
+                  >
+                    Return
+                  </Button>
+                </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
+
+        <Dialog
+          modal
+          open={showAmountDialog}
+          onOpenChange={setShowAmountDialog}
+        >
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-amount"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              justifyContent="center"
+              alignItems="center"
+              key="content-amount"
+              animateOnly={["transform", "opacity"]}
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                Invalid Amount
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                Please enter the correct amount.
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Dialog.Close displayWhenAdapted asChild>
+                  <Button
+                    backgroundColor="#4A7C59"
+                    color="#fff"
+                    borderRadius={20}
+                    width={100}
+                    onPress={() => setShowAmountDialog(false)}
+                    style={{
+                      borderWidth: 0,
+                    }}
+                  >
+                    Return
+                  </Button>
+                </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
+
+        <Dialog
+          modal
+          open={showSuccessDialog}
+          onOpenChange={(open) => {
+            setShowSuccessDialog(open);
+            if (!open) {
+              router.push("/(drawer)/(tabs)/history");
+            }
+          }}
+        >
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-success"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              justifyContent="center"
+              alignItems="center"
+              key="content-success"
+              animateOnly={["transform", "opacity"]}
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                Success
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                Spending History Saved.
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Dialog.Close displayWhenAdapted asChild>
+                  <Button
+                    backgroundColor="#4A7C59"
+                    color="#fff"
+                    borderRadius={20}
+                    width={100}
+                    onPress={() => setShowSuccessDialog(false)}
+                    style={{
+                      borderWidth: 0,
+                    }}
+                  >
+                    Return
+                  </Button>
+                </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
       </ScrollView>
     </SafeAreaView>
   );

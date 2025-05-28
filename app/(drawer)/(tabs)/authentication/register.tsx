@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Platform, Modal, View } from "react-native";
+import { Platform, Modal, View, Dimensions } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   Adapt,
@@ -31,6 +31,8 @@ import {
 import { useRouter } from "expo-router";
 import { LinearGradient } from "tamagui/linear-gradient";
 
+const { width, height } = Dimensions.get("window");
+
 export default function register() {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
@@ -46,6 +48,7 @@ export default function register() {
   const [name, setName] = React.useState("");
   const [termsAccepted, setTermsAccepted] = React.useState(false);
   const [showTerms, setShowTerms] = React.useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = React.useState(false);
 
   const onDateChange = (event: any, selectedDate?: Date) => {
     setShowDatePicker(false);
@@ -127,7 +130,7 @@ export default function register() {
         return;
       }
 
-      alert("Registration Successful!");
+      setShowSuccessDialog(true);
       router.push("/authentication/login");
     } catch (error) {
       console.error("Error:", error);
@@ -165,34 +168,38 @@ export default function register() {
           exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
           space
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: "#2B4433",
             borderRadius: 20,
             padding: 20,
             width: "90%",
             maxWidth: 400,
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
             transform: [{ translateX: -200 }, { translateY: -200 }],
           }}
         >
-          <Dialog.Title style={{ 
-            fontFamily: "Poppins", 
-            color: "#4A7C59",
-            fontSize: 20,
-            fontWeight: "700",
-            marginBottom: 10
-          }}>
+          <Dialog.Title
+            style={{
+              fontFamily: "Poppins",
+              color: "#fff",
+              fontSize: 20,
+              fontWeight: "700",
+              marginBottom: 10,
+            }}
+          >
             Terms and Conditions
           </Dialog.Title>
           <Dialog.Description style={{ fontFamily: "Poppins" }}>
             <ScrollView style={{ maxHeight: 300 }}>
-              <SizableText style={{ 
-                fontFamily: "Poppins", 
-                lineHeight: 20,
-                color: "#5A5A4D",
-                fontSize: 14
-              }}>
+              <SizableText
+                style={{
+                  fontFamily: "Poppins",
+                  lineHeight: 20,
+                  color: "#fff",
+                  fontSize: 14,
+                }}
+              >
                 1. Acceptance of Terms{"\n\n"}
                 By accessing and using this application, you accept and agree to
                 be bound by the terms and provision of this agreement.{"\n\n"}
@@ -238,10 +245,7 @@ export default function register() {
               borderRadius={20}
               width={100}
               style={{
-                borderTopWidth: 0,
-                borderRightWidth: 0,
-                borderBottomWidth: 0,
-                borderLeftWidth: 0,
+                borderWidth: 0,
               }}
             >
               <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
@@ -254,10 +258,7 @@ export default function register() {
               borderRadius={20}
               width={100}
               style={{
-                borderTopWidth: 1,
-                borderRightWidth: 1,
-                borderBottomWidth: 1,
-                borderLeftWidth: 1,
+                borderWidth: 1,
                 borderColor: "#000",
               }}
             >
@@ -273,223 +274,361 @@ export default function register() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Navbar />
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: "#fff" }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: "#fff",
+          paddingTop: 100,
+        }}
       >
-        <Navbar />
         <YStack
-          padding={25}
-          style={{ justifyContent: "center", alignItems: "flex-start" }}
-          borderRadius={100}
+          width={"auto"}
+          height={"auto"}
+          padding={width * 0.07}
+          space={width * 0.03}
+          paddingBottom={width * 0.01}
         >
-          <Button
-            circular
-            size="$2"
-            background="#4A7C59"
-            icon={<ArrowLeft size={20} color={"white"} />}
-            onPress={() => router.push("/(drawer)/(tabs)")}
-          />
-        </YStack>
-        <YStack padding={50} marginVertical={80}>
-          <YStack space={10} justifyContent="center">
-            <SizableText
-              style={{ fontSize: 24, color: "#000", fontFamily: "Poppins" }}
-            >
-              Sign Up
-            </SizableText>
-            <Input
-              flex={1}
-              size="$3"
-              placeholder="Enter your Name"
-              fontFamily={"Poppins"}
-              backgroundColor={"#F7F5E6"}
-              borderWidth={1}
-              borderColor="black"
-              borderRadius={8}
-              value={name}
-              onChangeText={setName}
-            />
-            <Input
-              flex={1}
-              size="$3"
-              placeholder="Enter your E-mail"
-              fontFamily={"Poppins"}
-              backgroundColor={"#F7F5E6"}
-              borderWidth={1}
-              borderColor="black"
-              borderRadius={8}
-              value={email}
-              onChangeText={setEmail}
-            />
-            <Input
-              flex={1}
-              size="$3"
-              placeholder="Enter your Password"
-              fontFamily={"Poppins"}
-              backgroundColor={"#F7F5E6"}
-              borderWidth={1}
-              borderColor="black"
-              borderRadius={8}
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
-            <Input
-              flex={1}
-              size="$3"
-              placeholder="Re-enter your Password"
-              fontFamily={"Poppins"}
-              backgroundColor={"#F7F5E6"}
-              borderWidth={1}
-              borderColor="black"
-              secureTextEntry
-              borderRadius={8}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
-            <XStack space={10}>
-              <SelectGender gender={gender} setGender={setGender} />
-              {Platform.OS === "web" ? (
-                <input
-                  type="date"
-                  style={{
-                    flex: 1,
-                    fontFamily: "Poppins",
-                    backgroundColor: "#F7F5E6",
-                    borderWidth: 1,
-                    borderColor: "black",
-                    borderRadius: 8,
-                    padding: 10,
-                    height: 40,
-                  }}
-                  value={
-                    dob ? dob.split("-").reverse().join("-") : "2010-01-01"
-                  }
-                  onChange={(e) => {
-                    const [year, month, day] = e.target.value.split("-");
-                    setDob(`${day}-${month}-${year}`);
-                  }}
-                  max={new Date().toISOString().split("T")[0]}
-                />
-              ) : (
-                <>
-                  <Button
-                    flex={1}
-                    size="$3"
-                    backgroundColor={"#F7F5E6"}
-                    borderWidth={1}
-                    borderColor="black"
-                    borderRadius={8}
-                    onPress={() => setShowDatePicker(true)}
-                  >
-                    <SizableText
-                      style={{
-                        fontFamily: "Poppins",
-                        color: dob ? "black" : "#0000006B",
-                      }}
-                    >
-                      {dob || "Date Of Birth (DD-MM-YYYY)"}
-                    </SizableText>
-                  </Button>
-                  {showDatePicker && (
-                    <DateTimePicker
-                      value={date}
-                      mode="date"
-                      display="default"
-                      onChange={(event, selectedDate) => {
-                        setShowDatePicker(false);
-                        if (selectedDate) {
-                          setDate(selectedDate);
-                          const formattedDate = formatDate(selectedDate);
-                          setDob(formattedDate);
-                        }
-                      }}
-                      maximumDate={new Date()}
-                    />
-                  )}
-                </>
-              )}
-            </XStack>
-            <Input
-              flex={1}
-              size="$3"
-              placeholder="Referral Code (Optional)"
-              fontFamily={"Poppins"}
-              backgroundColor={"#F7F5E6"}
-              borderWidth={1}
-              borderColor="black"
-              borderRadius={8}
-              value={referralCode}
-              onChangeText={setReferralCode}
-            />
-            <XStack justifyContent="center" alignItems="center" space={10}>
-              <Checkbox
-                id="terms"
-                checked={termsAccepted}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    setShowTerms(true);
-                  } else {
-                    setTermsAccepted(false);
-                  }
-                }}
-                size="$3"
-              >
-                <Checkbox.Indicator>
-                  <Check size={16} />
-                </Checkbox.Indicator>
-              </Checkbox>
-              <Label
-                htmlFor="terms"
-                style={{ fontFamily: "Poppins", color: "#5A5A4D" }}
-              >
-                I agree to the{" "}
-                <SizableText
-                  style={{
-                    color: "#4A7C59",
-                    textDecorationLine: "underline",
-                    fontFamily: "Poppins",
-                  }}
-                  onPress={() => setShowTerms(true)}
-                >
-                  Terms & Conditions
-                </SizableText>
-              </Label>
-            </XStack>
-            {error ? (
-              <SizableText style={{ color: "red", textAlign: "center" }}>
-                {error}
-              </SizableText>
-            ) : null}
-
+          <XStack
+            alignItems="center"
+            position="relative"
+            justifyContent="center"
+            height={width * 0.115}
+            // marginBottom={width * 0.01}
+          >
             <Button
-              marginVertical={0}
-              width={120}
-              height={40}
-              alignSelf="center"
-              backgroundColor={"#4A7C59"}
-              borderRadius={17}
-              onPress={handleRegister}
-            >
-              <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
-                Register
-              </SizableText>
-            </Button>
-            <XStack justifyContent="center" alignItems="center">
-              <Button
-                backgroundColor="transparent"
-                onPress={() => router.push("/(drawer)/(tabs)/authentication/login")}
-                style={{ fontFamily: "Poppins", fontSize: 13 }}
-                marginVertical={40}
+              circular
+              size="$2"
+              background="#2B4433"
+              icon={<ArrowLeft size={20} color={"white"} />}
+              onPress={() => router.push("/(drawer)/(tabs)")}
+              style={{
+                position: "absolute",
+                left: 0,
+                backgroundColor: "#2B4433",
+                borderWidth: 0,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,
+              }}
+            />
+          </XStack>
+          <YStack padding={25}>
+            <YStack space={15} justifyContent="center">
+              <SizableText
+                style={{ fontSize: 26, color: "#000", fontFamily: "Poppins" }}
               >
-                <SizableText style={{ color: "#4A7C59", fontFamily: "Poppins", fontSize: 13 }}>
-                  Have an account? Login Now!
+                Sign Up
+              </SizableText>
+              <YStack space={10}>
+                <Input
+                  flex={1}
+                  placeholder="Enter your Name"
+                  style={{
+                    width: "100%",
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "#000",
+                    padding: 10,
+                    backgroundColor: "#F7F5E6",
+                    fontFamily: "Poppins",
+                  }}
+                  value={name}
+                  onChangeText={setName}
+                />
+                <Input
+                  flex={1}
+                  placeholder="Enter your E-mail"
+                  style={{
+                    width: "100%",
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "#000",
+                    padding: 10,
+                    backgroundColor: "#F7F5E6",
+                    fontFamily: "Poppins",
+                  }}
+                  value={email}
+                  onChangeText={setEmail}
+                />
+                <Input
+                  flex={1}
+                  placeholder="Enter your Password"
+                  style={{
+                    width: "100%",
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "#000",
+                    padding: 10,
+                    backgroundColor: "#F7F5E6",
+                    fontFamily: "Poppins",
+                  }}
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <Input
+                  flex={1}
+                  placeholder="Re-enter your Password"
+                  style={{
+                    width: "100%",
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "#000",
+                    padding: 10,
+                    backgroundColor: "#F7F5E6",
+                    fontFamily: "Poppins",
+                  }}
+                  secureTextEntry
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                />
+                <XStack space={10}>
+                  <SelectGender gender={gender} setGender={setGender} />
+                  {Platform.OS === "web" ? (
+                    <input
+                      type="date"
+                      style={{
+                        flex: 1,
+                        fontFamily: "Poppins",
+                        backgroundColor: "#F7F5E6",
+                        borderWidth: 1,
+                        borderColor: "black",
+                        borderRadius: 8,
+                        padding: 10,
+                        height: 40,
+                      }}
+                      value={
+                        dob ? dob.split("-").reverse().join("-") : "2010-01-01"
+                      }
+                      onChange={(e) => {
+                        const [year, month, day] = e.target.value.split("-");
+                        setDob(`${day}-${month}-${year}`);
+                      }}
+                      max={new Date().toISOString().split("T")[0]}
+                    />
+                  ) : (
+                    <>
+                      <Button
+                        flex={1}
+                        size="$3"
+                        backgroundColor={"#F7F5E6"}
+                        borderWidth={1}
+                        borderColor="black"
+                        borderRadius={8}
+                        onPress={() => setShowDatePicker(true)}
+                      >
+                        <SizableText
+                          style={{
+                            fontFamily: "Poppins",
+                            color: dob ? "black" : "#0000006B",
+                          }}
+                        >
+                          {dob || "Date Of Birth (DD-MM-YYYY)"}
+                        </SizableText>
+                      </Button>
+                      {showDatePicker && (
+                        <DateTimePicker
+                          value={date}
+                          mode="date"
+                          display="default"
+                          onChange={(event, selectedDate) => {
+                            setShowDatePicker(false);
+                            if (selectedDate) {
+                              setDate(selectedDate);
+                              const formattedDate = formatDate(selectedDate);
+                              setDob(formattedDate);
+                            }
+                          }}
+                          maximumDate={new Date()}
+                        />
+                      )}
+                    </>
+                  )}
+                </XStack>
+                <Input
+                  flex={1}
+                  placeholder="Referral Code (Optional)"
+                  style={{
+                    width: "100%",
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "#000",
+                    padding: 10,
+                    backgroundColor: "#F7F5E6",
+                    fontFamily: "Poppins",
+                  }}
+                  value={referralCode}
+                  onChangeText={setReferralCode}
+                />
+              </YStack>
+              <XStack justifyContent="center" alignItems="center" space={10}>
+                <Checkbox
+                  id="terms"
+                  checked={termsAccepted}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setShowTerms(true);
+                    } else {
+                      setTermsAccepted(false);
+                    }
+                  }}
+                  size="$3"
+                >
+                  <Checkbox.Indicator>
+                    <Check size={16} />
+                  </Checkbox.Indicator>
+                </Checkbox>
+                <Label
+                  htmlFor="terms"
+                  style={{ fontFamily: "Poppins", color: "#5A5A4D" }}
+                >
+                  I agree to the{" "}
+                  <SizableText
+                    style={{
+                      color: "#4A7C59",
+                      textDecorationLine: "underline",
+                      fontFamily: "Poppins",
+                    }}
+                    onPress={() => setShowTerms(true)}
+                  >
+                    Terms & Conditions
+                  </SizableText>
+                </Label>
+              </XStack>
+              {error ? (
+                <SizableText style={{ color: "red", textAlign: "center" }}>
+                  {error}
+                </SizableText>
+              ) : null}
+
+              <Button
+                marginVertical={0}
+                width={120}
+                height={40}
+                alignSelf="center"
+                backgroundColor={"#4A7C59"}
+                borderRadius={17}
+                onPress={handleRegister}
+              >
+                <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
+                  Register
                 </SizableText>
               </Button>
-            </XStack>
+              <XStack justifyContent="center" alignItems="center">
+                <Button
+                  backgroundColor="transparent"
+                  onPress={() =>
+                    router.push("/(drawer)/(tabs)/authentication/login")
+                  }
+                  style={{ fontFamily: "Poppins", fontSize: 13 }}
+                  marginVertical={30}
+                >
+                  <SizableText
+                    style={{
+                      color: "#2B4433",
+                      fontFamily: "Poppins",
+                      fontSize: 13,
+                    }}
+                  >
+                    Have an account? Login Now!
+                  </SizableText>
+                </Button>
+              </XStack>
+            </YStack>
           </YStack>
+          <TermsAndConditionsModal />
         </YStack>
-        <TermsAndConditionsModal />
+
+        <Dialog
+          modal
+          open={showSuccessDialog}
+          onOpenChange={(open) => {
+            setShowSuccessDialog(open);
+            if (!open) {
+              router.push("/authentication/login");
+            }
+          }}
+        >
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-success"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              justifyContent="center"
+              alignItems="center"
+              key="content-success"
+              animateOnly={["transform", "opacity"]}
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                Registration Successful
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                Your account has been created successfully!
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Dialog.Close displayWhenAdapted asChild>
+                  <Button
+                    backgroundColor="#4A7C59"
+                    color="#fff"
+                    borderRadius={20}
+                    width={100}
+                    onPress={() => setShowSuccessDialog(false)}
+                    style={{
+                      borderWidth: 0,
+                    }}
+                  >
+                    Login
+                  </Button>
+                </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
       </ScrollView>
     </SafeAreaView>
   );
