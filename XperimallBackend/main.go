@@ -13,6 +13,11 @@ import (
 )
 
 func main() {
+	// Set Gin to release mode in production
+	if os.Getenv("GIN_MODE") == "release" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r := gin.Default()
 
 	database.ConnectDB()
@@ -29,16 +34,18 @@ func main() {
 
 	routes.SetupRoutes(r)
 
-	// Ambil PORT dari env, default 8080 jika kosong
+	// Get PORT from env, default to 10000 for Render
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "10000"
 	}
 
-	fmt.Println("🟢 Starting server on port: " + port)
-	// PENTING: harus pakai 0.0.0.0 agar Render bisa mendeteksi port
+	fmt.Printf("🟢 Starting server on port: %s\n", port)
+
+	// Bind to 0.0.0.0 to make it accessible from outside
 	err := r.Run("0.0.0.0:" + port)
 	if err != nil {
-		fmt.Println("🔴 Failed to start server:", err)
+		fmt.Printf("🔴 Failed to start server: %v\n", err)
+		os.Exit(1)
 	}
 }
