@@ -155,7 +155,10 @@ export default function HomeScreen() {
             <Button
               width={width * 0.4}
               height={width * 0.4}
-              onPress={() => router.push("/(drawer)/(tabs)/newtenant")}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/newtenant",
+                params: { id: 1 }
+              })}
               borderRadius={width * 0.02}
               padding="$0"
               backgroundColor="transparent"
@@ -170,7 +173,10 @@ export default function HomeScreen() {
             <Button
               width={width * 0.4}
               height={width * 0.4}
-              onPress={buttonTap}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/newtenant",
+                params: { id: 2 }
+              })}
               borderRadius={width * 0.02}
               padding="$0"
               backgroundColor="transparent"
@@ -187,7 +193,10 @@ export default function HomeScreen() {
             <Button
               width={width * 0.4}
               height={width * 0.4}
-              onPress={buttonTap}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/newtenant",
+                params: { id: 3 }
+              })}
               borderRadius={width * 0.02}
               padding="$0"
               backgroundColor="transparent"
@@ -202,7 +211,10 @@ export default function HomeScreen() {
             <Button
               width={width * 0.4}
               height={width * 0.4}
-              onPress={buttonTap}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/newtenant",
+                params: { id: 4 }
+              })}
               borderRadius={width * 0.02}
               padding="$0"
               backgroundColor="transparent"

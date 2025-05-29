@@ -10,20 +10,77 @@ import {
 } from "react-native";
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-import { router } from "expo-router";
-import { useRef } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useRef, useEffect, useState } from "react";
 
-const images = [
-  require("../../../assets/images/MonsieurSpoon1.jpg"),
-  require("../../../assets/images/MonsieurSpoon2.jpg"),
-  require("../../../assets/images/MonsieurSpoon3.jpg"),
-];
+const tenantImages = {
+  1: [
+    require("../../../assets/images/MonsieurSpoon1.jpg"),
+    require("../../../assets/images/MonsieurSpoon2.jpg"),
+    require("../../../assets/images/MonsieurSpoon3.jpg"),
+  ],
+  2: [
+    require("../../../assets/images/SushiTei1.png"),
+    require("../../../assets/images/SushiTei2.png"),
+    require("../../../assets/images/SushiTei3.png"),
+  ],
+  3: [
+    require("../../../assets/images/CoffeeBeanTea1.png"),
+    require("../../../assets/images/CoffeeBeanTea2.png"),
+    require("../../../assets/images/CoffeeBeanTea3.png"),
+  ],
+  4: [
+    require("../../../assets/images/HM1.png"),
+    require("../../../assets/images/HM2.png"),
+    require("../../../assets/images/HM3.png"),
+  ],
+};
 
 const { width, height } = Dimensions.get("screen");
 
+interface Tenant {
+  id: number;
+  name: string;
+  description: string;
+  location: string;
+  floor_id: number;
+}
+
 export default function NewTenant() {
+  const { id } = useLocalSearchParams();
+  const [tenant, setTenant] = useState<Tenant | null>(null);
   const animatedValue = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList<any>>(null);
+
+  useEffect(() => {
+    const fetchTenant = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/tenants/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch tenant');
+        }
+        const data = await response.json();
+        setTenant(data);
+      } catch (error) {
+        console.error('Error fetching tenant:', error);
+      }
+    };
+
+    fetchTenant();
+  }, [id]);
+
+  if (!tenant) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <Navbar />
+        <YStack flex={1} justifyContent="center" alignItems="center">
+          <SizableText>Loading...</SizableText>
+        </YStack>
+      </SafeAreaView>
+    );
+  }
+
+  const currentImages = tenantImages[tenant.id as keyof typeof tenantImages] || tenantImages[1];
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -47,7 +104,6 @@ export default function NewTenant() {
             position="relative"
             justifyContent="center"
             height={width * 0.115}
-            // marginBottom={width * 0.01}
           >
             <Button
               circular
@@ -84,13 +140,13 @@ export default function NewTenant() {
                 style={{
                   fontFamily: "Poppins",
                   fontWeight: "700",
-                  fontSize: 28,
+                  fontSize: 20,
                   color: "#2B4433",
                   letterSpacing: 1,
                   alignSelf: "center",
                 }}
               >
-                Monsieur Spoon!
+                {tenant.name}!
               </SizableText>
             </YStack>
           </XStack>
@@ -99,13 +155,13 @@ export default function NewTenant() {
               <View style={styles.sliderTop}>
                 <FlatList
                   ref={flatListRef}
-                  data={images}
+                  data={currentImages}
                   horizontal
                   pagingEnabled
                   snapToAlignment="center"
                   decelerationRate="fast"
                   snapToInterval={width - 60}
-                  initialScrollIndex={1}
+                  initialScrollIndex={0}
                   centerContent
                   showsHorizontalScrollIndicator={false}
                   onScroll={Animated.event(
@@ -130,7 +186,7 @@ export default function NewTenant() {
                 />
               </View>
               <View style={styles.dotsWrapper}>
-                {images.map((_, index) => {
+                {currentImages.map((_, index) => {
                   const inputRange = [
                     (index - 1) * width,
                     index * width,
@@ -170,7 +226,7 @@ export default function NewTenant() {
                 textAlign: "center",
               }}
             >
-              Central Park Jakarta - TGF 16 Floor
+              Central Park Jakarta - {tenant.location}
             </SizableText>
             <SizableText
               style={{
@@ -209,16 +265,7 @@ export default function NewTenant() {
                 textAlign: "justify",
               }}
             >
-              Monsieur Spoon is a popular French bakery and café chain in
-              Indonesia, known for its artisanal pastries, croissants, and
-              high-quality coffee. Originally founded in Bali, it has expanded
-              to several locations across the island, offering a cozy,
-              Parisian-style ambiance. The bakery is particularly famous for its
-              buttery, flaky croissants and authentic French bread, attracting
-              both locals and tourists looking for a taste of France in
-              Indonesia. With a commitment to using premium ingredients and
-              traditional baking techniques, Monsieur Spoon has become a go-to
-              spot for breakfast, brunch, and indulgent desserts.
+              {tenant.description}
             </SizableText>
           </YStack>
         </YStack>
