@@ -2,10 +2,7 @@ services:
   - type: web
     name: xperimall-backend
     env: go
-    buildCommand: go build -o main
-    startCommand: ./main
-    envVars:
-      - key: PORT
-        value: 10000
-      - key: GIN_MODE
-        value: release
+    rootDir: XperimallBackend
+    buildCommand: go mod tidy
+    startCommand: go run main.go
+    plan: free
