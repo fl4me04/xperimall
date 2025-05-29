@@ -3,6 +3,23 @@ services:
     name: xperimall-backend
     env: go
     rootDir: XperimallBackend
-    buildCommand: go mod tidy
-    startCommand: go run main.go
+    buildCommand: go mod tidy && go build -o main
+    startCommand: ./main
     plan: free
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: GIN_MODE
+        value: release
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: JWT_SECRET
+        sync: false

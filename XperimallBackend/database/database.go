@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -14,14 +15,20 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// Try to load .env file, but don't fail if it doesn't exist
+	_ = godotenv.Load()
 
-	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASS") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/" + os.Getenv("DB_NAME") + "?charset=utf8mb4&parseTime=True&loc=Local"
+	// Get environment variables with fallbacks
+	dbUser := getEnv("DB_USER", "root")
+	dbPass := getEnv("DB_PASS", "")
+	dbHost := getEnv("DB_HOST", "localhost")
+	dbPort := getEnv("DB_PORT", "3306")
+	dbName := getEnv("DB_NAME", "xperimall")
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		dbUser, dbPass, dbHost, dbPort, dbName)
+
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
@@ -29,5 +36,17 @@ func ConnectDB() {
 	DB = db
 	log.Println("Database connected successfully")
 
-	db.AutoMigrate(&models.User{}, &models.Category{}, &models.Activity{}, &models.Floor{}, &models.Expense{})
+	// Auto migrate the schema
+	err = db.AutoMigrate(&models.User{}, &models.Category{}, &models.Activity{}, &models.Floor{}, &models.Expense{})
+	if err != nil {
+		log.Fatal("Failed to migrate database:", err)
+	}
+}
+
+// Helper function to get environment variable with fallback
+func getEnv(key, fallback string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+	return fallback
 }
