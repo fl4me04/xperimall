@@ -35,6 +35,9 @@ func main() {
 		port = "8080"
 	}
 
-	fmt.Println("🟢 Server running on port", port)
-	r.Run("0.0.0.0:" + port)
+	fmt.Println("🟢 Server starting on port: " + port)
+	err := r.Run("0.0.0.0:" + port)
+	if err != nil {
+		fmt.Println("🔴 Failed to start server:", err)
+	}
 }
