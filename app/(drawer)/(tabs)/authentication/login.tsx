@@ -1,5 +1,5 @@
 import { Dimensions, SafeAreaView } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Anchor,
   Button,
@@ -12,17 +12,25 @@ import {
 } from "tamagui";
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width, height } = Dimensions.get("window");
 
 export default function Login() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showFillFieldsDialog, setShowFillFieldsDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [returnTo, setReturnTo] = useState<"/(drawer)/(tabs)" | string>("/(drawer)/(tabs)");
+
+  useEffect(() => {
+    if (params.returnTo) {
+      setReturnTo(params.returnTo as string);
+    }
+  }, [params]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -53,10 +61,9 @@ export default function Login() {
         await AsyncStorage.setItem("userData", JSON.stringify(userData));
         setEmail("");
         setPassword("");
-        setTimeout(() => {
-          setShowSuccessDialog(true);
-          router.push("/");
-        }, 100);
+        setShowSuccessDialog(true);
+        // Use router.replace to navigate to the return path
+        router.replace(returnTo as any);
       } else {
         alert(data.message || "Login failed");
       }
@@ -64,6 +71,10 @@ export default function Login() {
       console.error("Error logging in:", error);
       alert("Error logging in");
     }
+  };
+
+  const handleBack = () => {
+    router.replace("/(drawer)/(tabs)");
   };
 
   return (
@@ -88,14 +99,13 @@ export default function Login() {
             position="relative"
             justifyContent="center"
             height={width * 0.115}
-            // marginBottom={width * 0.01}
           >
             <Button
               circular
               size="$2"
               background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
-              onPress={() => router.push("/(drawer)/(tabs)")}
+              onPress={handleBack}
               style={{
                 position: "absolute",
                 left: 0,

@@ -23,7 +23,6 @@ import {
   Spinner,
 } from "tamagui";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-import { useAuth } from "../../hooks/useAuth";
 
 interface Floor {
   id: number;
@@ -54,7 +53,6 @@ export default function TabTwoScreen() {
   const [selectedFloor, setSelectedFloor] = useState<Floor | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const screenWidth = Dimensions.get("window").width;
-  const { token, isLoading: isAuthLoading } = useAuth();
 
   useEffect(() => {
     fetchFloors();

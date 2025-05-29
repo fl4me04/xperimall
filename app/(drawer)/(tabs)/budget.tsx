@@ -36,6 +36,7 @@ export default function activityPlanner() {
   const { token, isLoading: isAuthLoading } = useAuth();
   const [showCategoryDialog, setShowCategoryDialog] = useState(false);
   const [showAmountDialog, setShowAmountDialog] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   const formatCurrency = (value: string) => {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -47,6 +48,11 @@ export default function activityPlanner() {
   };
 
   useEffect(() => {
+    if (!token) {
+      setShowLoginDialog(true);
+      return;
+    }
+
     console.log("Fetching categories from:", `${API_URL}/categories`);
     fetch(`${API_URL}/categories`)
       .then((res) => {
@@ -60,9 +66,13 @@ export default function activityPlanner() {
       .catch((err) => {
         console.error("Error fetching categories:", err);
       });
-  }, []);
+  }, [token]);
 
   const toggleCategory = (categoryId: number) => {
+    if (!token) {
+      setShowLoginDialog(true);
+      return;
+    }
     setSelectedCategories((prev) => {
       if (prev.includes(categoryId)) {
         return prev.filter((id) => id !== categoryId);
@@ -73,6 +83,11 @@ export default function activityPlanner() {
   };
 
   const fetchRecommendations = async () => {
+    if (!token) {
+      setShowLoginDialog(true);
+      return;
+    }
+
     if (selectedCategories.length === 0) {
       setShowCategoryDialog(true);
       return;
@@ -94,6 +109,7 @@ export default function activityPlanner() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(requestBody),
       });
@@ -122,6 +138,19 @@ export default function activityPlanner() {
       alert("Failed to fetch recommendations. Please try again.");
     }
     setLoading(false);
+  };
+
+  const handleLogin = () => {
+    setShowLoginDialog(false);
+    router.push({
+      pathname: "/(drawer)/(tabs)/authentication/login",
+      params: { returnTo: "/(drawer)/(tabs)/budget" }
+    });
+  };
+
+  const handleCancel = () => {
+    setShowLoginDialog(false);
+    router.push("/(drawer)/(tabs)");
   };
 
   return (
@@ -611,6 +640,93 @@ export default function activityPlanner() {
                     Return
                   </Button>
                 </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
+
+        <Dialog modal open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-login"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              key="content-login"
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                Login Required
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                Please login to access this feature.
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Button
+                  backgroundColor="#F7F5E6"
+                  color="#2B4433"
+                  borderRadius={20}
+                  width={100}
+                  onPress={handleCancel}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "#000",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  backgroundColor="#4A7C59"
+                  color="#fff"
+                  borderRadius={20}
+                  width={100}
+                  onPress={handleLogin}
+                  style={{
+                    borderWidth: 0,
+                  }}
+                >
+                  Login
+                </Button>
               </XStack>
             </Dialog.Content>
           </Dialog.Portal>

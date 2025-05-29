@@ -107,6 +107,45 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           router.push("/(drawer)/(tabs)");
         }}
       />
+      <DrawerItem
+        label={"Mall Directory"}
+        labelStyle={[
+          styles.navItemLabel,
+          { color: pathName == "/mallDirectory" ? "#4A7C59" : "#fff" },
+        ]}
+        icon={({ color, size }) => (
+          <Route
+            size={24}
+            color={pathName == "/mallDirectory" ? "#4A7C59" : "#fff"}
+          />
+        )}
+        style={{
+          backgroundColor:
+            pathName == "/mallDirectory" ? "#F7F5E6" : "#4A7C59",
+        }}
+        onPress={() => {
+          router.push("/(drawer)/(tabs)/mallDirectory");
+        }}
+      />
+      <DrawerItem
+        label={"Promotions"}
+        labelStyle={[
+          styles.navItemLabel,
+          { color: pathName == "/promotion" ? "#4A7C59" : "#fff" },
+        ]}
+        icon={({ color, size }) => (
+          <BadgePercent
+            size={24}
+            color={pathName == "/promotion" ? "#4A7C59" : "#fff"}
+          />
+        )}
+        style={{
+          backgroundColor: pathName == "/promotion" ? "#F7F5E6" : "#4A7C59",
+        }}
+        onPress={() => {
+          router.push("/(drawer)/(tabs)/promotion");
+        }}
+      />
       {!userData && (
         <DrawerItem
           label={"Login"}
@@ -166,45 +205,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             }}
             onPress={() => {
               router.push("/(drawer)/(tabs)/maps");
-            }}
-          />
-          <DrawerItem
-            label={"Mall Directory"}
-            labelStyle={[
-              styles.navItemLabel,
-              { color: pathName == "/mallDirectory" ? "#4A7C59" : "#fff" },
-            ]}
-            icon={({ color, size }) => (
-              <Route
-                size={24}
-                color={pathName == "/mallDirectory" ? "#4A7C59" : "#fff"}
-              />
-            )}
-            style={{
-              backgroundColor:
-                pathName == "/mallDirectory" ? "#F7F5E6" : "#4A7C59",
-            }}
-            onPress={() => {
-              router.push("/(drawer)/(tabs)/mallDirectory");
-            }}
-          />
-          <DrawerItem
-            label={"Promotions"}
-            labelStyle={[
-              styles.navItemLabel,
-              { color: pathName == "/promotion" ? "#4A7C59" : "#fff" },
-            ]}
-            icon={({ color, size }) => (
-              <BadgePercent
-                size={24}
-                color={pathName == "/promotion" ? "#4A7C59" : "#fff"}
-              />
-            )}
-            style={{
-              backgroundColor: pathName == "/promotion" ? "#F7F5E6" : "#4A7C59",
-            }}
-            onPress={() => {
-              router.push("/(drawer)/(tabs)/promotion");
             }}
           />
           <DrawerItem
