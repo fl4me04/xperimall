@@ -18,6 +18,13 @@ func main() {
 
 	r.Use(cors.Default())
 
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Xperimall Backend is running",
+		})
+	})
+
+	
 	routes.SetupRoutes(r)
 
 	port := os.Getenv("PORT")
@@ -26,7 +33,7 @@ func main() {
 	}
 
 	fmt.Println("🟢 Server starting on port: " + port)
-	err := r.Run("0.0.0.0:" + port)
+	err := r.Run(":" + port)
 	if err != nil {
 		fmt.Println("🔴 Failed to start server:", err)
 	}
