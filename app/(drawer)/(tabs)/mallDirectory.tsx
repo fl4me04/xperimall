@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -42,6 +42,7 @@ interface CategoryWithActivities {
 }
 
 export default function mallDirectory() {
+  const { floorId } = useLocalSearchParams();
   const [floors, setFloors] = useState<Floor[]>([]);
   const [selectedFloor, setSelectedFloor] = useState<Floor | null>(null);
   const [categoriesWithActivities, setCategoriesWithActivities] = useState<CategoryWithActivities[]>([]);
@@ -49,6 +50,17 @@ export default function mallDirectory() {
   useEffect(() => {
     fetchFloors();
   }, []);
+
+  useEffect(() => {
+    if (floorId && floors.length > 0) {
+      const floorIdNum = parseInt(floorId as string);
+      const floor = floors.find(f => f.id === floorIdNum);
+      if (floor) {
+        setSelectedFloor(floor);
+        fetchActivitiesByFloor(floorIdNum);
+      }
+    }
+  }, [floorId, floors]);
 
   const fetchFloors = async () => {
     try {
@@ -59,7 +71,7 @@ export default function mallDirectory() {
         name: f.Name,
       }));
       setFloors(mappedFloors);
-      if (mappedFloors.length > 0) {
+      if (mappedFloors.length > 0 && !floorId) {
         setSelectedFloor(mappedFloors[0]);
         fetchActivitiesByFloor(mappedFloors[0].id);
       }
@@ -212,14 +224,6 @@ interface DropdownComponentProps {
 }
 
 const DropdownComponent = ({ floors, selectedFloorId, onFloorChange }: DropdownComponentProps) => {
-  const [value, setValue] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (selectedFloorId !== undefined) {
-      setValue(selectedFloorId.toString());
-    }
-  }, [selectedFloorId]);
-
   const data = floors.map(floor => ({
     label: floor.name,
     value: floor.id.toString()
@@ -236,15 +240,14 @@ const DropdownComponent = ({ floors, selectedFloorId, onFloorChange }: DropdownC
       labelField="label"
       valueField="value"
       placeholder="Select Floor"
-      value={value}
+      value={selectedFloorId?.toString()}
       onChange={(item) => {
-        setValue(item.value);
         onFloorChange(parseInt(item.value));
       }}
       renderItem={(item) => (
         <View style={styles.item}>
           <Text style={styles.textItem}>{item.label}</Text>
-          {item.value === value && (
+          {item.value === selectedFloorId?.toString() && (
             <AntDesign style={styles.icon} color="#4A7C59" name="check" size={18} />
           )}
         </View>

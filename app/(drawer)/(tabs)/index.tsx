@@ -253,14 +253,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
-              onPress={() => router.push("/(drawer)/(tabs)/mallDirectory")}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/mallDirectory",
+                params: { floorId: 1 }
+              })}
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
-                Lower Ground
+                Lower Ground Floor
               </SizableText>
             </Button>
             <Button
@@ -268,43 +271,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/mallDirectory",
+                params: { floorId: 2 }
+              })}
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
-                Ground
-              </SizableText>
-            </Button>
-          </XStack>
-          <XStack space={width * 0.03}>
-            <Button
-              height={height * 0.06}
-              width={width * 0.4}
-              backgroundColor={"#4A7C59"}
-              borderRadius={"$10"}
-            >
-              <SizableText
-                color="white"
-                fontSize={"$5"}
-                style={{ fontFamily: "Poppins" }}
-              >
-                Upperground
-              </SizableText>
-            </Button>
-            <Button
-              height={height * 0.06}
-              width={width * 0.4}
-              backgroundColor={"#4A7C59"}
-              borderRadius={"$10"}
-            >
-              <SizableText
-                color="white"
-                fontSize={"$5"}
-                style={{ fontFamily: "Poppins" }}
-              >
-                Level 1
+                Lower Ground Mezzanine
               </SizableText>
             </Button>
           </XStack>
@@ -314,13 +291,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/mallDirectory",
+                params: { floorId: 3 }
+              })}
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
-                Level 2
+                Ground Floor
               </SizableText>
             </Button>
             <Button
@@ -328,13 +309,75 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/mallDirectory",
+                params: { floorId: 4 }
+              })}
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
                 style={{ fontFamily: "Poppins" }}
               >
-                Level 3
+                Upper Ground Floor
+              </SizableText>
+            </Button>
+          </XStack>
+          <XStack space={width * 0.03}>
+            <Button
+              height={height * 0.06}
+              width={width * 0.4}
+              backgroundColor={"#4A7C59"}
+              borderRadius={"$10"}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/mallDirectory",
+                params: { floorId: 5 }
+              })}
+            >
+              <SizableText
+                color="white"
+                fontSize={"$5"}
+                style={{ fontFamily: "Poppins" }}
+              >
+                1st Floor
+              </SizableText>
+            </Button>
+            <Button
+              height={height * 0.06}
+              width={width * 0.4}
+              backgroundColor={"#4A7C59"}
+              borderRadius={"$10"}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/mallDirectory",
+                params: { floorId: 6 }
+              })}
+            >
+              <SizableText
+                color="white"
+                fontSize={"$5"}
+                style={{ fontFamily: "Poppins" }}
+              >
+                2nd Floor
+              </SizableText>
+            </Button>
+          </XStack>
+          <XStack space={width * 0.03}>
+            <Button
+              height={height * 0.06}
+              width={width * 0.4}
+              backgroundColor={"#4A7C59"}
+              borderRadius={"$10"}
+              onPress={() => router.push({
+                pathname: "/(drawer)/(tabs)/mallDirectory",
+                params: { floorId: 7 }
+              })}
+            >
+              <SizableText
+                color="white"
+                fontSize={"$5"}
+                style={{ fontFamily: "Poppins" }}
+              >
+                3rd Floor
               </SizableText>
             </Button>
           </XStack>
