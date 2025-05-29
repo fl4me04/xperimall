@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-import { router } from "expo-router";
-import React from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -15,7 +15,69 @@ import {
 
 const { width, height } = Dimensions.get("window");
 
+interface Promotion {
+  id: number;
+  title: string;
+  description: string;
+  category_id: number;
+}
+
+const promotionImages = {
+  1: require("../../../assets/images/Maison.jpg"),
+  2: require("../../../assets/images/GongXi.jpg"),
+  3: require("../../../assets/images/Gyudon.jpg"),
+  4: require("../../../assets/images/Macarons.jpg"),
+  5: require("../../../assets/images/Sensatia.jpeg"),
+  6: require("../../../assets/images/Victoria.jpg"),
+  7: require("../../../assets/images/PullBear.jpg"),
+  8: require("../../../assets/images/Stadivarius.jpg"),
+};
+
+const categoryNames = {
+  1: "Beauty & Wellness",
+  2: "Arcade",
+  3: "Food & Beverages",
+  4: "Fashion",
+  5: "Coffee Shops",
+  6: "Bakery",
+  7: "Electronics",
+  8: "Supermarket",
+  9: "Bookstore",
+  10: "Cinema",
+};
+
 export default function promodetails() {
+  const { id } = useLocalSearchParams();
+  const [promotion, setPromotion] = useState<Promotion | null>(null);
+
+  useEffect(() => {
+    const fetchPromotion = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/promotions/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch promotion');
+        }
+        const data = await response.json();
+        setPromotion(data);
+      } catch (error) {
+        console.error('Error fetching promotion:', error);
+      }
+    };
+
+    fetchPromotion();
+  }, [id]);
+
+  if (!promotion) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <Navbar />
+        <YStack flex={1} justifyContent="center" alignItems="center">
+          <SizableText>Loading...</SizableText>
+        </YStack>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <Navbar />
@@ -31,7 +93,6 @@ export default function promodetails() {
           height={"auto"}
           padding={width * 0.07}
           space={width * 0.03}
-          //   paddingBottom={width * 0.01}
         >
           <XStack
             alignItems="center"
@@ -45,7 +106,7 @@ export default function promodetails() {
               size="$2"
               background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
-              onPress={() => router.push("/(drawer)/(tabs)")}
+              onPress={() => router.push("/(drawer)/(tabs)/promotion")}
               style={{
                 position: "absolute",
                 left: 0,
@@ -74,7 +135,7 @@ export default function promodetails() {
                 fontSize: 15,
               }}
             >
-              Food & Beverages
+              {categoryNames[promotion.category_id as keyof typeof categoryNames]}
             </SizableText>
             <XStack
               marginTop={8}
@@ -92,12 +153,12 @@ export default function promodetails() {
               <SizableText
                 style={{ fontSize: 19, color: "#fff", fontWeight: "500" }}
               >
-                MAISON FEERIE Disc. Up to 50% OFF
+                {promotion.title}
               </SizableText>
             </XStack>
             <XStack width={"100%"} height={height * 0.5} marginTop={15}>
               <Image
-                source={require("../../../assets/images/Maison.jpg")}
+                source={promotionImages[promotion.id as keyof typeof promotionImages]}
                 resizeMode="contain"
                 style={{ width: "100%", height: "100%" }}
               />
@@ -112,18 +173,7 @@ export default function promodetails() {
                 fontSize: 14,
               }}
             >
-              Your weekday just got way cooler with Maison Feerie! Enjoy 50% OFF
-              refreshing for all beverages & soft gelato.
-            </SizableText>
-            <SizableText
-              style={{
-                color: "#2B4433",
-                textAlign: "center",
-                fontFamily: "Poppins",
-                fontSize: 14,
-              }}
-            >
-              Tnc apply, swipe for the details or visit @maisonfeerie's account
+              {promotion.description}
             </SizableText>
           </YStack>
         </YStack>

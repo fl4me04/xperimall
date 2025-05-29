@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
-import { router } from "expo-router";
-import React, { useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { Dimensions, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -18,35 +18,116 @@ import { Dropdown } from "react-native-element-dropdown";
 
 const { width, height } = Dimensions.get("window");
 
-const foodList = [
-  "Auntie Anne’s",
-  "Bakmi GM",
-  "Beard Papa’s",
-  "Baskin Robbins",
-  "Chatime",
-  "Cold Stone",
-  "HokBen",
-  "J.CO Donuts & Coffee",
-  "Krispy Kreme",
-  "Pepper Lunch Express",
-  "Shihlin Taiwan Street Snacks",
-  "Starbucks",
-];
+interface Floor {
+  id: number;
+  name: string;
+}
 
-const fashionList = [
-  "Adidas",
-  "H&M",
-  "Zara",
-  "Uniqlo",
-  "Nike",
-  "Pull&Bear",
-  "Stradivarius",
-  "Mango",
-  "Victoria’s Secret",
-  "Sephora",
-];
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface Activity {
+  id: number;
+  name: string;
+  priceMin: number;
+  priceMax: number;
+  category: Category;
+}
+
+interface CategoryWithActivities {
+  category: Category;
+  activities: Activity[];
+}
 
 export default function mallDirectory() {
+  const { floorId } = useLocalSearchParams();
+  const [floors, setFloors] = useState<Floor[]>([]);
+  const [selectedFloor, setSelectedFloor] = useState<Floor | null>(null);
+  const [categoriesWithActivities, setCategoriesWithActivities] = useState<CategoryWithActivities[]>([]);
+
+  useEffect(() => {
+    fetchFloors();
+  }, []);
+
+  useEffect(() => {
+    if (floorId && floors.length > 0) {
+      const floorIdNum = parseInt(floorId as string);
+      const floor = floors.find(f => f.id === floorIdNum);
+      if (floor) {
+        setSelectedFloor(floor);
+        fetchActivitiesByFloor(floorIdNum);
+      }
+    }
+  }, [floorId, floors]);
+
+  const fetchFloors = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/floors");
+      const data = await response.json();
+      const mappedFloors = data.map((f: any) => ({
+        id: f.ID,
+        name: f.Name,
+      }));
+      setFloors(mappedFloors);
+      if (mappedFloors.length > 0 && !floorId) {
+        setSelectedFloor(mappedFloors[0]);
+        fetchActivitiesByFloor(mappedFloors[0].id);
+      }
+    } catch (error) {
+      console.error("Error fetching floors:", error);
+    }
+  };
+
+  const fetchActivitiesByFloor = async (floorId: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/floors/${floorId}/activities`
+      );
+      const data = await response.json();
+      
+      // Group activities by category
+      const activitiesByCategory = new Map<number, CategoryWithActivities>();
+      
+      data.forEach((activity: any) => {
+        const categoryId = activity.Category.ID;
+        if (!activitiesByCategory.has(categoryId)) {
+          activitiesByCategory.set(categoryId, {
+            category: {
+              id: activity.Category.ID,
+              name: activity.Category.Name,
+            },
+            activities: [],
+          });
+        }
+        
+        activitiesByCategory.get(categoryId)?.activities.push({
+          id: activity.ID,
+          name: activity.Name,
+          priceMin: activity.PriceMin,
+          priceMax: activity.PriceMax,
+          category: {
+            id: activity.Category.ID,
+            name: activity.Category.Name,
+          },
+        });
+      });
+      
+      setCategoriesWithActivities(Array.from(activitiesByCategory.values()));
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+    }
+  };
+
+  const handleFloorChange = (floorId: number) => {
+    const floor = floors.find((f) => f.id === floorId);
+    if (floor) {
+      setSelectedFloor(floor);
+      fetchActivitiesByFloor(floorId);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <Navbar />
@@ -90,115 +171,63 @@ export default function mallDirectory() {
               }}
             />
             <XStack marginLeft={25}>
-              <DropdownComponent />
+              <DropdownComponent floors={floors} selectedFloorId={selectedFloor?.id} onFloorChange={handleFloorChange} />
             </XStack>
           </XStack>
-          <YStack space={10} justifyContent="center">
-            <XStack
-              width={width * 0.5}
-              style={{
-                backgroundColor: "#4A7C59",
-                padding: 7,
-                borderRadius: 20,
-                borderWidth: 1.4,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <SizableText
-                style={{ fontSize: 20, color: "#fff", fontWeight: "500" }}
+
+          {categoriesWithActivities.map((categoryData) => (
+            <YStack key={categoryData.category.id} space={10} justifyContent="center">
+              <XStack
+                width={width * 0.5}
+                style={{
+                  backgroundColor: "#4A7C59",
+                  padding: 7,
+                  borderRadius: 20,
+                  borderWidth: 1.4,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                Food & Beverages
-              </SizableText>
-            </XStack>
-            <YStack space={5} padding={10} marginTop={-10}>
-              {foodList.map((item, index) => (
                 <SizableText
-                  key={index}
-                  style={{
-                    fontSize: 17,
-                    fontFamily: "Poppins",
-                    fontWeight: "500",
-                    color: "#2B4433",
-                  }}
+                  style={{ fontSize: 20, color: "#fff", fontWeight: "500" }}
                 >
-                  • {item}
+                  {categoryData.category.name}
                 </SizableText>
-              ))}
+              </XStack>
+              <YStack space={5} padding={10} marginTop={-10}>
+                {categoryData.activities.map((activity) => (
+                  <SizableText
+                    key={activity.id}
+                    style={{
+                      fontSize: 17,
+                      fontFamily: "Poppins",
+                      fontWeight: "500",
+                      color: "#2B4433",
+                    }}
+                  >
+                    • {activity.name} 
+                  </SizableText>
+                ))}
+              </YStack>
             </YStack>
-          </YStack>
-          <YStack space={10} justifyContent="center">
-            <XStack
-              width={width * 0.5}
-              style={{
-                backgroundColor: "#4A7C59",
-                padding: 7,
-                borderRadius: 20,
-                borderWidth: 1.4,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <SizableText
-                style={{ fontSize: 20, color: "#fff", fontWeight: "500" }}
-              >
-                Fashion
-              </SizableText>
-            </XStack>
-            <YStack space={5} padding={10} marginTop={-10}>
-              {fashionList.map((item, index) => (
-                <SizableText
-                  key={index}
-                  style={{
-                    fontSize: 17,
-                    fontFamily: "Poppins",
-                    fontWeight: "500",
-                    color: "#2B4433",
-                  }}
-                >
-                  • {item}
-                </SizableText>
-              ))}
-            </YStack>
-          </YStack>
+          ))}
         </YStack>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const data = [
-  { label: "Lower Ground", value: "1" },
-  { label: "Lower Ground Mezzanine", value: "2" },
-  { label: "Ground Floor", value: "3" },
-  { label: "Upper Ground Floor", value: "4" },
-  { label: "1st Floor", value: "5" },
-  { label: "2nd Floor", value: "6" },
-  { label: "3rd Floor", value: "7" },
-];
+interface DropdownComponentProps {
+  floors: Floor[];
+  selectedFloorId?: number;
+  onFloorChange: (floorId: number) => void;
+}
 
-const DropdownComponent = () => {
-  const [value, setValue] = useState(null);
-
-  interface DropdownItem {
-    label: string;
-    value: string;
-  }
-
-  interface RenderItemProps {
-    item: DropdownItem;
-  }
-
-  const renderItem = (item: DropdownItem) => {
-    return (
-      <View style={styles.item}>
-        <Text style={styles.textItem}>{item.label}</Text>
-        {item.value === value && (
-          <AntDesign style={styles.icon} color="black" name="check" size={20} />
-        )}
-      </View>
-    );
-  };
+const DropdownComponent = ({ floors, selectedFloorId, onFloorChange }: DropdownComponentProps) => {
+  const data = floors.map(floor => ({
+    label: floor.name,
+    value: floor.id.toString()
+  }));
 
   return (
     <Dropdown
@@ -211,19 +240,19 @@ const DropdownComponent = () => {
       labelField="label"
       valueField="value"
       placeholder="Select Floor"
-      value={value}
+      value={selectedFloorId?.toString()}
       onChange={(item) => {
-        setValue(item.value);
+        onFloorChange(parseInt(item.value));
       }}
-      // renderLeftIcon={() => (
-      //   <AntDesign
-      //     style={styles.icon}
-      //     color="#2B4433"
-      //     name="infocirlce"
-      //     size={28}
-      //   />
-      // )}
-      renderItem={renderItem}
+      renderItem={(item) => (
+        <View style={styles.item}>
+          <Text style={styles.textItem}>{item.label}</Text>
+          {item.value === selectedFloorId?.toString() && (
+            <AntDesign style={styles.icon} color="#4A7C59" name="check" size={18} />
+          )}
+        </View>
+      )}
+      activeColor="#F8F6E8"
     />
   );
 };
@@ -236,36 +265,45 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 12,
     padding: 12,
+    borderWidth: 1,
+    borderColor: "#D6D6C2",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   icon: {
     marginRight: 12,
   },
   item: {
-    padding: 15,
+    padding: 12,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0E8",
   },
   textItem: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: "Poppins",
     color: "#2B4433",
   },
   placeholderStyle: {
-    fontSize: 28,
+    fontSize: 20,
     fontFamily: "Poppins",
     color: "#2B4433",
     fontWeight: "600",
   },
   selectedTextStyle: {
-    fontSize: 28,
+    fontSize: 20,
     fontFamily: "Poppins",
     color: "#2B4433",
     fontWeight: "600",
   },
   iconStyle: {
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25,
   },
 });

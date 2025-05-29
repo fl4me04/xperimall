@@ -16,10 +16,6 @@ import {
 const { width, height } = Dimensions.get("window");
 
 export default function promotion() {
-  const buttonTap = () => {
-    console.log("Button tapped");
-  };
-
   const buttonImages = {
     button1: require("../../../assets/images/Maison.jpg"),
     button2: require("../../../assets/images/GongXi.jpg"),
@@ -53,7 +49,6 @@ export default function promotion() {
             position="relative"
             justifyContent="center"
             height={width * 0.115}
-            // marginBottom={width * 0.01}
           >
             <Button
               circular
@@ -101,7 +96,10 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={() => router.push("/(drawer)/(tabs)/promodetails")}
+                onPress={() => router.push({
+                  pathname: "/(drawer)/(tabs)/promodetails",
+                  params: { id: 1 }
+                })}
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -116,7 +114,10 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={buttonTap}
+                onPress={() => router.push({
+                  pathname: "/(drawer)/(tabs)/promodetails",
+                  params: { id: 2 }
+                })}
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -133,7 +134,10 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={buttonTap}
+                onPress={() => router.push({
+                  pathname: "/(drawer)/(tabs)/promodetails",
+                  params: { id: 3 }
+                })}
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -148,7 +152,10 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={buttonTap}
+                onPress={() => router.push({
+                  pathname: "/(drawer)/(tabs)/promodetails",
+                  params: { id: 4 }
+                })}
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -184,7 +191,10 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={buttonTap}
+                onPress={() => router.push({
+                  pathname: "/(drawer)/(tabs)/promodetails",
+                  params: { id: 5 }
+                })}
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -199,7 +209,10 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={buttonTap}
+                onPress={() => router.push({
+                  pathname: "/(drawer)/(tabs)/promodetails",
+                  params: { id: 6 }
+                })}
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -235,7 +248,10 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={buttonTap}
+                onPress={() => router.push({
+                  pathname: "/(drawer)/(tabs)/promodetails",
+                  params: { id: 7 }
+                })}
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -250,7 +266,10 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={buttonTap}
+                onPress={() => router.push({
+                  pathname: "/(drawer)/(tabs)/promodetails",
+                  params: { id: 8 }
+                })}
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"

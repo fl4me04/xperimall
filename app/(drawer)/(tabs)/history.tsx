@@ -11,6 +11,7 @@ import {
   XStack,
   YStack,
   Spinner,
+  Dialog,
 } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
@@ -40,11 +41,11 @@ export default function History() {
   const [groupedExpenses, setGroupedExpenses] = useState<GroupedExpenses[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { token, isLoading: isAuthLoading, checkAuth } = useAuth();
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   const fetchExpenses = async () => {
     if (!token) {
-      alert("Please login first");
-      router.push("/(drawer)/(tabs)/authentication/login");
+      setShowLoginDialog(true);
       return;
     }
 
@@ -72,8 +73,7 @@ export default function History() {
         error.message?.includes("401") ||
         error.message?.includes("unauthorized")
       ) {
-        alert("Session expired. Please login again.");
-        router.push("/(drawer)/(tabs)/authentication/login");
+        setShowLoginDialog(true);
       } else {
         alert(error.message || "Failed to fetch expenses. Please try again.");
       }
@@ -88,6 +88,8 @@ export default function History() {
     useCallback(() => {
       if (token) {
         fetchExpenses();
+      } else {
+        setShowLoginDialog(true);
       }
     }, [token])
   );
@@ -95,6 +97,8 @@ export default function History() {
   useEffect(() => {
     if (token) {
       fetchExpenses();
+    } else {
+      setShowLoginDialog(true);
     }
   }, [token]);
 
@@ -108,6 +112,11 @@ export default function History() {
   };
 
   const handleDateClick = (dateStr: string) => {
+    if (!token) {
+      setShowLoginDialog(true);
+      return;
+    }
+    
     // Parse the date string (e.g., "Monday, 23 February 2025")
     const dateParts = dateStr.split(", ")[1].split(" ");
     const day = dateParts[0];
@@ -122,6 +131,19 @@ export default function History() {
       pathname: "/(drawer)/(tabs)/historyTracker",
       params: { date: formattedDate },
     });
+  };
+
+  const handleLogin = () => {
+    setShowLoginDialog(false);
+    router.push({
+      pathname: "/(drawer)/(tabs)/authentication/login",
+      params: { returnTo: "/(drawer)/(tabs)/history" }
+    });
+  };
+
+  const handleCancel = () => {
+    setShowLoginDialog(false);
+    router.push("/(drawer)/(tabs)");
   };
 
   return (
@@ -267,6 +289,93 @@ export default function History() {
           </YStack>
         </YStack>
       </ScrollView>
+
+      <Dialog modal open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <Dialog.Portal>
+          <Dialog.Overlay
+            key="overlay"
+            animation="quick"
+            opacity={0.5}
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+          />
+          <Dialog.Content
+            bordered
+            elevate
+            key="content"
+            animation={[
+              "quick",
+              {
+                opacity: {
+                  overshootClamping: true,
+                },
+              },
+            ]}
+            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+            space
+            style={{
+              backgroundColor: "#2B4433",
+              borderRadius: 20,
+              padding: 20,
+              width: width * 0.8,
+              maxWidth: 400,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+            }}
+          >
+            <Dialog.Title
+              style={{
+                fontFamily: "Poppins",
+                fontWeight: "700",
+                fontSize: 20,
+                color: "#fff",
+              }}
+            >
+              Login Required
+            </Dialog.Title>
+            <Dialog.Description
+              style={{
+                fontFamily: "Poppins",
+                color: "#fff",
+                fontSize: 16,
+                marginBottom: 10,
+              }}
+            >
+              Please login to access this feature.
+            </Dialog.Description>
+            <XStack space="$3" justifyContent="flex-end">
+              <Button
+                backgroundColor="#F7F5E6"
+                color="#2B4433"
+                borderRadius={20}
+                width={100}
+                onPress={handleCancel}
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#000",
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                backgroundColor="#4A7C59"
+                color="#fff"
+                borderRadius={20}
+                width={100}
+                onPress={handleLogin}
+                style={{
+                  borderWidth: 0,
+                }}
+              >
+                Login
+              </Button>
+            </XStack>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog>
     </SafeAreaView>
   );
 }
