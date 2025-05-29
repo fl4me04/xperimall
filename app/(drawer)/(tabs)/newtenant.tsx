@@ -55,7 +55,7 @@ export default function NewTenant() {
   useEffect(() => {
     const fetchTenant = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/tenants/${id}`);
+        const response = await fetch(`https://xperimall-backend.onrender.com/api/tenants/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch tenant');
         }

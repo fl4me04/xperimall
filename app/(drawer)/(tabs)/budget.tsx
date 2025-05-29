@@ -17,7 +17,7 @@ import {
 import { Dimensions, ScrollView as RNScrollView } from "react-native";
 import { useAuth } from "../../hooks/useAuth";
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = "https://xperimall-backend.onrender.com/api";
 
 const { width, height } = Dimensions.get("window");
 

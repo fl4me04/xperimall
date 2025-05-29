@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
 
 const { width, height } = Dimensions.get("window");
-const API_URL = "http://localhost:8080";
+const API_URL = "https://xperimall-backend.onrender.com";
 
 interface Expense {
   id: number;

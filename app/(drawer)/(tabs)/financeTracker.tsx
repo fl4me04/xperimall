@@ -125,7 +125,7 @@ const PieChart = React.memo(({ expenses }: PieChartProps) => {
   );
 });
 
-const API_URL = "http://localhost:8080";
+const API_URL = "https://xperimall-backend.onrender.com";
 
 export default function FinanceTracker() {
   const [expenses, setExpenses] = useState<Expense[]>([]);

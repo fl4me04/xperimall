@@ -53,7 +53,7 @@ export default function promodetails() {
   useEffect(() => {
     const fetchPromotion = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/promotions/${id}`);
+        const response = await fetch(`https://xperimall-backend.onrender.com/api/promotions/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch promotion');
         }
