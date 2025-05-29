@@ -7,6 +7,7 @@ const API_URL = "https://xperimall-backend.onrender.com";
 export const useAuth = () => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isValidating, setIsValidating] = useState(false);
   const pathname = usePathname();
 
   const validateToken = async (token: string) => {
@@ -29,7 +30,10 @@ export const useAuth = () => {
   };
 
   const checkAuth = async () => {
+    if (isValidating) return;
+    
     try {
+      setIsValidating(true);
       const storedToken = await AsyncStorage.getItem('token');
       console.log("Retrieved stored token:", storedToken ? "Token exists" : "No token");
       
@@ -41,17 +45,20 @@ export const useAuth = () => {
         return;
       }
 
-      const isValid = await validateToken(storedToken);
-      console.log("Token validation result:", isValid);
-      
-      if (!isValid) {
-        console.log("Token is invalid, removing from storage");
-        await AsyncStorage.removeItem('token');
-        if (!pathname.includes('/authentication/')) {
-          router.replace('/(drawer)/(tabs)/authentication/login');
+      // Only validate token if we don't have a valid one yet
+      if (!token) {
+        const isValid = await validateToken(storedToken);
+        console.log("Token validation result:", isValid);
+        
+        if (!isValid) {
+          console.log("Token is invalid, removing from storage");
+          await AsyncStorage.removeItem('token');
+          if (!pathname.includes('/authentication/')) {
+            router.replace('/(drawer)/(tabs)/authentication/login');
+          }
+          setToken(null);
+          return;
         }
-        setToken(null);
-        return;
       }
 
       console.log("Setting valid token");
@@ -64,6 +71,7 @@ export const useAuth = () => {
       setToken(null);
     } finally {
       setIsLoading(false);
+      setIsValidating(false);
     }
   };
 
