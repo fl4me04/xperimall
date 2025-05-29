@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"os"
+	"time"
+
 	"XperimallBackend/database"
 	"XperimallBackend/routes"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -26,5 +29,12 @@ func main() {
 
 	routes.SetupRoutes(r)
 
-	r.Run(":8080")
+	// Port binding untuk Render
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Println("🟢 Server running on port", port)
+	r.Run("0.0.0.0:" + port)
 }
