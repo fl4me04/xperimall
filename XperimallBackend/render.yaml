@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: xperimall-backend
+    env: go
+    plan: free
+    buildCommand: go build -o app .
+    startCommand: ./app
+    envVars:
+      - key: DB_USER
+        value: root
+      - key: DB_PASS
+        value: your_password
+      - key: DB_HOST
+        value: your_db_host
+      - key: DB_PORT
+        value: 3306
+      - key: DB_NAME
+        value: railway
+      - key: JWT_SECRET
+        value: your_secret_key
