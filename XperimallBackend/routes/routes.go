@@ -23,6 +23,7 @@ func SetupRoutes(r *gin.Engine) {
 		api.GET("/floors", controllers.GetFloors)
 		api.GET("/floors/:floorId/activities", controllers.GetActivitiesByFloor)
 		api.GET("/tenants/:id", controllers.GetTenantByID)
+		api.GET("/promotions/:id", controllers.GetPromotionByID)
 	}
 
 	expenses := r.Group("/expenses")
