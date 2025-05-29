@@ -17,7 +17,7 @@ func main() {
 
 	database.ConnectDB()
 
-	// Configure CORS
+	// CORS
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
@@ -29,13 +29,14 @@ func main() {
 
 	routes.SetupRoutes(r)
 
-	// Port binding untuk Render
+	// Ambil PORT dari env, default 8080 jika kosong
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	fmt.Println("🟢 Server starting on port: " + port)
+	fmt.Println("🟢 Starting server on port: " + port)
+	// PENTING: harus pakai 0.0.0.0 agar Render bisa mendeteksi port
 	err := r.Run("0.0.0.0:" + port)
 	if err != nil {
 		fmt.Println("🔴 Failed to start server:", err)
