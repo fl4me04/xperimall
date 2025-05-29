@@ -7,7 +7,7 @@ import {
 } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, Image, Dimensions } from "react-native";
+import { SafeAreaView, ScrollView, Image, Dimensions, StyleSheet } from "react-native";
 import {
   Adapt,
   Button,
@@ -21,8 +21,12 @@ import {
   XStack,
   YStack,
   Spinner,
+  View,
+  Text,
 } from "tamagui";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
+import { Dropdown } from "react-native-element-dropdown";
+import { AntDesign } from "@expo/vector-icons";
 
 interface Floor {
   id: number;
@@ -201,8 +205,7 @@ export default function TabTwoScreen() {
               justifyContent="center"
               marginBottom={10}
             >
-              <SelectDemoItem
-                id="select-demo-1"
+              <DropdownComponent
                 floors={floors}
                 selectedFloorId={selectedFloor?.id}
                 onFloorChange={handleFloorChange}
@@ -297,114 +300,96 @@ export default function TabTwoScreen() {
   );
 }
 
-export function SelectDemoItem(
-  props: SelectProps & {
-    floors: Floor[];
-    selectedFloorId?: number;
-    onFloorChange: (floorId: number) => void;
-  }
-) {
-  const [val, setVal] = React.useState("");
+interface DropdownComponentProps {
+  floors: Floor[];
+  selectedFloorId?: number;
+  onFloorChange: (floorId: number) => void;
+}
 
-  useEffect(() => {
-    if (props.selectedFloorId !== undefined) {
-      setVal(props.selectedFloorId.toString());
-    }
-  }, [props.selectedFloorId]);
-
-  const handleValueChange = (value: string) => {
-    setVal(value);
-    props.onFloorChange(parseInt(value));
-  };
+const DropdownComponent = ({ floors, selectedFloorId, onFloorChange }: DropdownComponentProps) => {
+  const data = floors.map(floor => ({
+    label: floor.name,
+    value: floor.id.toString()
+  }));
 
   return (
-    <Select
-      value={val}
-      onValueChange={handleValueChange}
-      disablePreventBodyScroll
-      {...props}
-    >
-      <Select.Trigger
-        maxWidth={220}
-        iconAfter={ChevronDown}
-        style={{
-          backgroundColor: "#F8F6E8",
-          borderRadius: 25,
-          paddingHorizontal: 15,
-          paddingVertical: 10,
-          borderWidth: 1,
-          borderColor: "#D6D6C2",
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          elevation: 3,
-        }}
-      >
-        <Select.Value
-          style={{
-            color: "#5A5A4D",
-            fontWeight: "600",
-            fontSize: 16,
-          }}
-        />
-      </Select.Trigger>
-
-      <Select.Content zIndex={200000}>
-        <Select.Viewport
-          style={{
-            padding: 10,
-            backgroundColor: "#F8F6E8",
-          }}
-        >
-          <Select.Group>
-            <Select.Label
-              style={{
-                backgroundColor: "transparent",
-                fontSize: 14,
-                fontWeight: "600",
-                color: "#fff",
-                marginBottom: 8,
-              }}
-            >
-              Select Floor
-            </Select.Label>
-            {props.floors
-              ?.filter((floor) => floor && typeof floor.id === "number")
-              .map((floor, i) => (
-                <Select.Item
-                  index={i}
-                  key={floor.id}
-                  value={floor.id.toString()}
-                  style={{
-                    paddingVertical: 10,
-                    paddingHorizontal: 15,
-                    borderRadius: 15,
-                    backgroundColor:
-                      val === floor.id.toString() ? "#4A7C59" : "transparent",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Select.ItemText
-                    style={{
-                      color: "#000",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {floor.name}
-                  </Select.ItemText>
-                  <Select.ItemIndicator marginLeft="auto">
-                    <Check size={16} color="#fff" />
-                  </Select.ItemIndicator>
-                </Select.Item>
-              ))}
-          </Select.Group>
-        </Select.Viewport>
-      </Select.Content>
-    </Select>
+    <Dropdown
+      style={styles.dropdown}
+      placeholderStyle={styles.placeholderStyle}
+      selectedTextStyle={styles.selectedTextStyle}
+      iconStyle={styles.iconStyle}
+      data={data}
+      maxHeight={300}
+      labelField="label"
+      valueField="value"
+      placeholder="Select Floor"
+      value={selectedFloorId?.toString()}
+      onChange={(item) => {
+        onFloorChange(parseInt(item.value));
+      }}
+      renderItem={(item) => (
+        <View style={styles.item}>
+          <Text style={styles.textItem}>{item.label}</Text>
+          {item.value === selectedFloorId?.toString() && (
+            <AntDesign style={styles.icon} color="#4A7C59" name="check" size={18} />
+          )}
+        </View>
+      )}
+      activeColor="#F8F6E8"
+    />
   );
-}
+};
+
+const styles = StyleSheet.create({
+  dropdown: {
+    margin: 16,
+    width: width * 0.6,
+    height: 50,
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#D6D6C2",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  icon: {
+    marginRight: 12,
+  },
+  item: {
+    padding: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0E8",
+  },
+  textItem: {
+    flex: 1,
+    fontSize: 16,
+    fontFamily: "Poppins",
+    color: "#2B4433",
+  },
+  placeholderStyle: {
+    fontSize: 20,
+    fontFamily: "Poppins",
+    color: "#2B4433",
+    fontWeight: "600",
+  },
+  selectedTextStyle: {
+    fontSize: 20,
+    fontFamily: "Poppins",
+    color: "#2B4433",
+    fontWeight: "600",
+  },
+  iconStyle: {
+    width: 25,
+    height: 25,
+  },
+});
 
 const floorImageMap: { [key: string]: any } = {
   "Lower Ground Floor": require("../../../assets/images/lowerGroundFloor.png"),

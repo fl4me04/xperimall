@@ -137,6 +137,7 @@ export default function FinanceTracker() {
   const [showNoExpenseDialog, setShowNoExpenseDialog] = useState(false);
   const [showAmountDialog, setShowAmountDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   useEffect(() => {
     const getToken = async () => {
@@ -189,6 +190,19 @@ export default function FinanceTracker() {
     setAmount("");
   };
 
+  const handleLogin = () => {
+    setShowLoginDialog(false);
+    router.push({
+      pathname: "/(drawer)/(tabs)/authentication/login",
+      params: { returnTo: "/(drawer)/(tabs)/financeTracker" }
+    });
+  };
+
+  const handleCancel = () => {
+    setShowLoginDialog(false);
+    router.push("/(drawer)/(tabs)");
+  };
+
   const handleFinalize = async () => {
     if (isNavigating.current) return;
 
@@ -198,8 +212,7 @@ export default function FinanceTracker() {
     }
 
     if (!token) {
-      alert("Please login first");
-      router.push("/(drawer)/(tabs)/authentication/login");
+      setShowLoginDialog(true);
       return;
     }
 
@@ -245,8 +258,7 @@ export default function FinanceTracker() {
         error.message?.includes("401") ||
         error.message?.includes("unauthorized")
       ) {
-        alert("Session expired. Please login again.");
-        router.push("/(drawer)/(tabs)/authentication/login");
+        setShowLoginDialog(true);
       } else {
         alert(error.message || "Failed to save expenses. Please try again.");
       }
@@ -657,6 +669,96 @@ export default function FinanceTracker() {
                     Return
                   </Button>
                 </Dialog.Close>
+              </XStack>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog>
+
+        <Dialog modal open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+          <Dialog.Portal>
+            <Dialog.Overlay
+              key="overlay-login"
+              animation="quick"
+              opacity={0.5}
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+            <Dialog.Content
+              bordered
+              elevate
+              justifyContent="center"
+              alignItems="center"
+              key="content-login"
+              animateOnly={["transform", "opacity"]}
+              animation={[
+                "quick",
+                {
+                  opacity: {
+                    overshootClamping: true,
+                  },
+                },
+              ]}
+              enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+              exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+              space
+              style={{
+                backgroundColor: "#2B4433",
+                borderRadius: 20,
+                padding: 20,
+                width: width * 0.8,
+                maxWidth: 400,
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+              }}
+            >
+              <Dialog.Title
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "#fff",
+                }}
+              >
+                Login Required
+              </Dialog.Title>
+              <Dialog.Description
+                style={{
+                  fontFamily: "Poppins",
+                  color: "#fff",
+                  fontSize: 16,
+                  marginBottom: 10,
+                }}
+              >
+                Please login to access this feature.
+              </Dialog.Description>
+              <XStack space="$3" justifyContent="flex-end">
+                <Button
+                  backgroundColor="#F7F5E6"
+                  color="#2B4433"
+                  borderRadius={20}
+                  width={100}
+                  onPress={handleCancel}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "#000",
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  backgroundColor="#4A7C59"
+                  color="#fff"
+                  borderRadius={20}
+                  width={100}
+                  onPress={handleLogin}
+                  style={{
+                    borderWidth: 0,
+                  }}
+                >
+                  Login
+                </Button>
               </XStack>
             </Dialog.Content>
           </Dialog.Portal>
