@@ -31,8 +31,18 @@ func ConnectDB() {
 		return
 	}
 
+	// Di database.go
+	// ... (kode sebelumnya) ...
 	DB = db
 	log.Println("✅ Database connected successfully")
 
-	db.AutoMigrate(&models.User{}, &models.Category{}, &models.Activity{}, &models.Floor{})
+	log.Println("🏁 Starting database migration...")
+	// Tambahkan pengecekan error di sini!
+	err = db.AutoMigrate(&models.User{}, &models.Category{}, &models.Activity{}, &models.Floor{}) // Tambahkan model lain jika ada
+	if err != nil {
+		// Ini akan memberitahu kamu jika migrasi gagal di Render
+		log.Printf("❌ FAILED TO MIGRATE DATABASE ON RENDER: %v\n", err)
+	} else {
+		log.Println("✅ Database migration successful (or no changes needed) on Render.")
+	}
 }
