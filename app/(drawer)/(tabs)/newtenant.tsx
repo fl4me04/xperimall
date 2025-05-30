@@ -55,7 +55,7 @@ export default function NewTenant() {
   useEffect(() => {
     const fetchTenant = async () => {
       try {
-        const response = await fetch(`https://xperimall-backend.onrender.com/api/tenants/${id}`);
+        const response = await fetch(`http://localhost:8080/api/tenants/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch tenant');
         }
@@ -160,7 +160,7 @@ export default function NewTenant() {
                   pagingEnabled
                   snapToAlignment="center"
                   decelerationRate="fast"
-                  snapToInterval={width * 0.8}
+                  snapToInterval={width - 60}
                   initialScrollIndex={0}
                   centerContent
                   showsHorizontalScrollIndicator={false}
@@ -170,16 +170,16 @@ export default function NewTenant() {
                   )}
                   keyExtractor={(_, index) => index.toString()}
                   getItemLayout={(_, index) => ({
-                    length: width * 0.8,
-                    offset: width * 0.8 * index,
+                    length: width - 60,
+                    offset: (width - 60) * index,
                     index,
                   })}
-                  style={{ flexGrow: 0, width: width }}
+                  style={{ flexGrow: 0, width }}
                   contentContainerStyle={{
-                    paddingHorizontal: (width - width * 0.8) / 2,
+                    paddingHorizontal: 31.6,
                   }}
                   renderItem={({ item }) => (
-                    <View style={[styles.imageWrapper, { width: width * 0.8, overflow: 'hidden' }]}>
+                    <View style={styles.imageWrapper}>
                       <Image source={item} style={styles.image} />
                     </View>
                   )}
@@ -283,10 +283,10 @@ const styles = StyleSheet.create({
   sliderTop: {
     height: 420,
     marginBottom: 15,
-    alignItems: "center",
-    justifyContent: "center",
   },
   imageWrapper: {
+    width: width - 60,
+    marginHorizontal: 31.2,
     alignItems: "center",
     justifyContent: "center",
     overflow: "visible",
