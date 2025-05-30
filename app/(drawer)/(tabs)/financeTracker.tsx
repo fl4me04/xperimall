@@ -311,17 +311,16 @@ export default function FinanceTracker() {
               }}
             />
             <SizableText
+              width={width * 0.9}
+              alignSelf="center"
               style={{
+                fontSize: Math.min(23, width * 0.055),
+                lineHeight: Math.min(23, width * 0.055) * 1.3,
+                color: "#2B4433",
                 fontFamily: "Poppins",
-                fontWeight: "700",
-                fontSize: Math.min(28, width * 0.07),
-                color: "#000",
-                letterSpacing: 1,
-                alignSelf: "center",
-                textAlign: "center",
                 flexWrap: "wrap",
                 flexShrink: 1,
-                width: width * 0.8,
+                textAlign: "center",
               }}
             >
               Finance Tracker
