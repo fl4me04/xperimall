@@ -413,38 +413,52 @@ export default function activityPlanner() {
                   >
                     Recommendation
                   </SizableText>
-                  {recommendations.map((recommendation, index) => (
-                    <XStack
-                      key={recommendation.ID || index}
-                      justifyContent="center"
-                      alignItems="center"
-                      alignSelf="center"
+                  {recommendations.length === 0 ? (
+                    <SizableText
                       style={{
-                        borderRadius: 12,
-                        backgroundColor: "#4A7C59",
-                        width: "90%",
-                        height: height * 0.045,
-                        marginBottom: 6,
-                        marginVertical: 6,
-                        justifyContent: "center",
-                        padding: 10,
+                        fontFamily: "Poppins",
+                        color: "#666",
+                        fontSize: 14,
+                        textAlign: "center",
+                        padding: 20,
                       }}
                     >
-                      <SizableText
+                      {hasSearched ? "No recommendations found for your criteria" : "Enter your budget and select categories to get recommendations"}
+                    </SizableText>
+                  ) : (
+                    recommendations.map((recommendation, index) => (
+                      <XStack
+                        key={recommendation.ID || index}
+                        justifyContent="center"
+                        alignItems="center"
+                        alignSelf="center"
                         style={{
-                          fontFamily: "Poppins",
-                          color: "#fff",
-                          fontSize: 13,
-                          textWrap: "wrap",
-                          textAlign: "center",
+                          borderRadius: 12,
+                          backgroundColor: "#4A7C59",
+                          width: "90%",
+                          height: height * 0.045,
+                          marginBottom: 6,
+                          marginVertical: 6,
+                          justifyContent: "center",
+                          padding: 10,
                         }}
                       >
-                        {recommendation.Name} (Rp{" "}
-                        {formatCurrency(recommendation.PriceMin.toString())} -
-                        Rp {formatCurrency(recommendation.PriceMax.toString())})
-                      </SizableText>
-                    </XStack>
-                  ))}
+                        <SizableText
+                          style={{
+                            fontFamily: "Poppins",
+                            color: "#fff",
+                            fontSize: 13,
+                            textWrap: "wrap",
+                            textAlign: "center",
+                          }}
+                        >
+                          {recommendation.Name} (Rp{" "}
+                          {formatCurrency(recommendation.PriceMin.toString())} -
+                          Rp {formatCurrency(recommendation.PriceMax.toString())})
+                        </SizableText>
+                      </XStack>
+                    ))
+                  )}
                 </RNScrollView>
               </ZStack>
             </YStack>

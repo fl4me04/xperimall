@@ -348,8 +348,8 @@ export default function HistoryTracker() {
               <SizableText
                 width={width * 1}
                 style={{
-                  fontSize: Math.min(28, width * 0.8),
-                  lineHeight: Math.min(28, width * 0.8) * 1.1,
+                  fontSize: Math.min(22, width * 0.8),
+                  lineHeight: Math.min(22, width * 0.8) * 1.1,
                   color: "#2B4433",
                   fontFamily: "Poppins",
                   flexWrap: "wrap",
