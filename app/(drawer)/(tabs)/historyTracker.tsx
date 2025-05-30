@@ -21,7 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
 
 const { width, height } = Dimensions.get("window");
-const API_URL = "http://localhost:8080";
+const API_URL = "https://xperimall-backend.onrender.com";
 
 interface Expense {
   id: number;
@@ -145,10 +145,12 @@ export default function HistoryTracker() {
   const { token, isLoading: isAuthLoading, checkAuth } = useAuth();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       if (token && params.date) {
+        console.log("Fetching expenses for date:", params.date);
         fetchExpenses();
       }
     }, [token, params.date])
@@ -156,28 +158,64 @@ export default function HistoryTracker() {
 
   const fetchExpenses = async () => {
     if (!token) {
-      alert("Please login first");
-      router.push("/(drawer)/(tabs)/authentication/login");
+      setShowLoginDialog(true);
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${API_URL}/expenses/detail?date=${params.date}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      const date = params.date as string;
+      console.log("=== Fetching Expenses ===");
+      console.log("Date from params:", date);
+      console.log("Token:", token);
+      
+      // Validate date format
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(date)) {
+        console.error("Invalid date format:", date);
+        throw new Error("Invalid date format. Expected YYYY-MM-DD");
+      }
+      
+      const url = `${API_URL}/expenses/detail?date=${date}`;
+      console.log("Making API request to:", url);
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
 
+      console.log("Response status:", response.status);
+      
       if (response.ok) {
         const data = await response.json();
-        setExpenseData(data);
+        console.log("Received expense data:", data);
+        
+        // Ensure we have valid expense data
+        if (data && typeof data === 'object') {
+          // If data doesn't have expenses array, create it from the data
+          if (!data.expenses && Array.isArray(data)) {
+            setExpenseData({
+              date: date,
+              total: data.reduce((sum: number, exp: Expense) => sum + exp.amount, 0),
+              expenses: data
+            });
+          } else if (data.expenses && Array.isArray(data.expenses)) {
+            setExpenseData(data);
+          } else {
+            console.error("Invalid expense data format:", data);
+            throw new Error("Invalid expense data format received from server");
+          }
+        } else {
+          console.error("Invalid response data:", data);
+          throw new Error("Invalid response data from server");
+        }
       } else {
         const errorData = await response.json();
+        console.error("Error response:", errorData);
         throw new Error(errorData.message || "Failed to fetch expenses");
       }
     } catch (error: any) {
@@ -186,8 +224,7 @@ export default function HistoryTracker() {
         error.message?.includes("401") ||
         error.message?.includes("unauthorized")
       ) {
-        alert("Session expired. Please login again.");
-        router.push("/(drawer)/(tabs)/authentication/login");
+        setShowLoginDialog(true);
       } else {
         alert(error.message || "Failed to fetch expenses. Please try again.");
       }
@@ -196,28 +233,47 @@ export default function HistoryTracker() {
     }
   };
 
+  const handleLogin = () => {
+    setShowLoginDialog(false);
+    router.push({
+      pathname: "/(drawer)/(tabs)/authentication/login",
+      params: { returnTo: "/(drawer)/(tabs)/historyTracker" }
+    });
+  };
+
+  const handleCancel = () => {
+    setShowLoginDialog(false);
+    router.push("/(drawer)/(tabs)/history");
+  };
+
   const handleDelete = async () => {
     if (!token) {
-      alert("Please login first");
-      router.push("/(drawer)/(tabs)/authentication/login");
+      setShowLoginDialog(true);
       return;
     }
 
     try {
-      const response = await fetch(`${API_URL}/expenses?date=${params.date}`, {
+      const date = decodeURIComponent(params.date as string);
+      console.log("Token being used for delete:", token);
+      console.log("Making delete request to:", `${API_URL}/expenses?date=${date}`);
+      
+      const response = await fetch(`${API_URL}/expenses?date=${date}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
       });
 
+      console.log("Delete response status:", response.status);
       if (response.ok) {
         setShowDeleteModal(false);
         setShowSuccessDialog(true);
         router.push("/(drawer)/(tabs)/history");
       } else {
         const errorData = await response.json();
+        console.error("Delete error response:", errorData);
         throw new Error(errorData.message || "Failed to delete expenses");
       }
     } catch (error: any) {
@@ -226,8 +282,7 @@ export default function HistoryTracker() {
         error.message?.includes("401") ||
         error.message?.includes("unauthorized")
       ) {
-        alert("Session expired. Please login again.");
-        router.push("/(drawer)/(tabs)/authentication/login");
+        setShowLoginDialog(true);
       } else {
         alert(error.message || "Failed to delete expenses. Please try again.");
       }
@@ -337,8 +392,12 @@ export default function HistoryTracker() {
                     style={{
                       color: "#4A7C59",
                       fontWeight: "600",
-                      fontSize: 28,
+                      fontSize: Math.min(28, width * 0.07),
                       fontFamily: "Poppins",
+                      flexWrap: "wrap",
+                      flexShrink: 1,
+                      textAlign: "center",
+                      width: width * 0.8,
                     }}
                   >
                     {expenseData ? formatCurrency(expenseData.total) : "Rp 0"}
@@ -545,6 +604,96 @@ export default function HistoryTracker() {
                   Return
                 </Button>
               </Dialog.Close>
+            </XStack>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog>
+
+      <Dialog modal open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <Dialog.Portal>
+          <Dialog.Overlay
+            key="overlay-login"
+            animation="quick"
+            opacity={0.5}
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+          />
+          <Dialog.Content
+            bordered
+            elevate
+            justifyContent="center"
+            alignItems="center"
+            key="content-login"
+            animateOnly={["transform", "opacity"]}
+            animation={[
+              "quick",
+              {
+                opacity: {
+                  overshootClamping: true,
+                },
+              },
+            ]}
+            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+            space
+            style={{
+              backgroundColor: "#2B4433",
+              borderRadius: 20,
+              padding: 20,
+              width: width * 0.8,
+              maxWidth: 400,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: [{ translateX: -width * 0.4 }, { translateY: -100 }],
+            }}
+          >
+            <Dialog.Title
+              style={{
+                fontFamily: "Poppins",
+                fontWeight: "700",
+                fontSize: 20,
+                color: "#fff",
+              }}
+            >
+              Login Required
+            </Dialog.Title>
+            <Dialog.Description
+              style={{
+                fontFamily: "Poppins",
+                color: "#fff",
+                fontSize: 16,
+                marginBottom: 10,
+              }}
+            >
+              Please login to access this feature.
+            </Dialog.Description>
+            <XStack space="$3" justifyContent="flex-end">
+              <Button
+                backgroundColor="#F7F5E6"
+                color="#2B4433"
+                borderRadius={20}
+                width={100}
+                onPress={handleCancel}
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#000",
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                backgroundColor="#4A7C59"
+                color="#fff"
+                borderRadius={20}
+                width={100}
+                onPress={handleLogin}
+                style={{
+                  borderWidth: 0,
+                }}
+              >
+                Login
+              </Button>
             </XStack>
           </Dialog.Content>
         </Dialog.Portal>

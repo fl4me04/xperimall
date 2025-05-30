@@ -64,7 +64,7 @@ export default function mallDirectory() {
 
   const fetchFloors = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/floors");
+      const response = await fetch("https://xperimall-backend.onrender.com/api/floors");
       const data = await response.json();
       const mappedFloors = data.map((f: any) => ({
         id: f.ID,
@@ -83,7 +83,7 @@ export default function mallDirectory() {
   const fetchActivitiesByFloor = async (floorId: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/floors/${floorId}/activities`
+        `https://xperimall-backend.onrender.com/api/floors/${floorId}/activities`
       );
       const data = await response.json();
       

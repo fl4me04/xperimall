@@ -102,7 +102,7 @@ export default function register() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/authentication/register",
+        "https://xperimall-backend.onrender.com/authentication/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -173,10 +173,11 @@ export default function register() {
             padding: 20,
             width: "90%",
             maxWidth: 400,
+            maxHeight: "80%",
             position: "absolute",
             top: "50%",
             left: "50%",
-            transform: [{ translateX: -200 }, { translateY: -200 }],
+            transform: [{ translateX: -width * 0.45 }, { translateY: -height * 0.4 }],
           }}
         >
           <Dialog.Title
@@ -186,56 +187,63 @@ export default function register() {
               fontSize: 20,
               fontWeight: "700",
               marginBottom: 10,
+              textAlign: "center",
             }}
           >
             Terms and Conditions
           </Dialog.Title>
-          <Dialog.Description style={{ fontFamily: "Poppins" }}>
-            <ScrollView style={{ maxHeight: 300 }}>
+          <ScrollView 
+            style={{ 
+              maxHeight: height * 0.5,
+              marginBottom: 10,
+            }}
+            showsVerticalScrollIndicator={true}
+          >
+            <YStack space={10}>
               <SizableText
                 style={{
                   fontFamily: "Poppins",
-                  lineHeight: 20,
+                  lineHeight: 24,
                   color: "#fff",
                   fontSize: 14,
                 }}
               >
-                1. Acceptance of Terms{"\n\n"}
+                1. Acceptance of Terms{"\n"}
                 By accessing and using this application, you accept and agree to
                 be bound by the terms and provision of this agreement.{"\n\n"}
-                2. Use License{"\n\n"}
+                2. Use License{"\n"}
                 Permission is granted to temporarily download one copy of the
                 application per device for personal, non-commercial transitory
                 viewing only.{"\n\n"}
-                3. User Account{"\n\n"}
+                3. User Account{"\n"}
                 You are responsible for maintaining the confidentiality of your
                 account and password.{"\n\n"}
-                4. Privacy Policy{"\n\n"}
+                4. Privacy Policy{"\n"}
                 Your use of this application is also governed by our Privacy
                 Policy.{"\n\n"}
-                5. Disclaimer{"\n\n"}
+                5. Disclaimer{"\n"}
                 The materials on this application are provided on an 'as is'
                 basis.{"\n\n"}
-                6. Limitations{"\n\n"}
+                6. Limitations{"\n"}
                 In no event shall this application or its suppliers be liable
                 for any damages.{"\n\n"}
-                7. Accuracy of Materials{"\n\n"}
+                7. Accuracy of Materials{"\n"}
                 The materials appearing in this application could include
                 technical, typographical, or photographic errors.{"\n\n"}
-                8. Links{"\n\n"}
+                8. Links{"\n"}
                 This application has not reviewed all of the sites linked to its
                 application and is not responsible for the contents of any such
                 linked site.{"\n\n"}
-                9. Modifications{"\n\n"}
+                9. Modifications{"\n"}
                 This application may revise these terms of service at any time
                 without notice.{"\n\n"}
-                10. Governing Law{"\n\n"}
+                10. Governing Law{"\n"}
                 These terms and conditions are governed by and construed in
                 accordance with the laws.
               </SizableText>
-            </ScrollView>
-          </Dialog.Description>
-          <XStack space="$3" justifyContent="flex-end" marginTop={10}>
+            </YStack>
+          </ScrollView>
+          <XStack space="$3" justifyContent="center" marginTop={10}>
             <Button
               onPress={() => {
                 setShowTerms(false);
@@ -317,9 +325,19 @@ export default function register() {
           </XStack>
           <YStack padding={25}>
             <YStack space={15} justifyContent="center">
-              <SizableText
-                style={{ fontSize: 26, color: "#000", fontFamily: "Poppins" }}
-              >
+            <SizableText
+            width={width * 0.9}
+            alignSelf="center"
+            style={{
+              fontSize: Math.min(23, width * 0.055),
+              lineHeight: Math.min(23, width * 0.055) * 1.3,
+              color: "#2B4433",
+              fontFamily: "Poppins",
+              flexWrap: "wrap",
+              flexShrink: 1,
+              textAlign: "center",
+            }}
+          >
                 Sign Up
               </SizableText>
               <YStack space={10}>
@@ -426,7 +444,7 @@ export default function register() {
                             color: dob ? "black" : "#0000006B",
                           }}
                         >
-                          {dob || "Date Of Birth (DD-MM-YYYY)"}
+                          {dob || "Date Of Birth"}
                         </SizableText>
                       </Button>
                       {showDatePicker && (

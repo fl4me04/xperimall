@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"XperimallBackend/database"
 	"XperimallBackend/routes"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -14,17 +16,25 @@ func main() {
 
 	database.ConnectDB()
 
-	// Configure CORS
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
+	r.Use(cors.Default())
 
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Xperimall Backend is running",
+		})
+	})
+
+	
 	routes.SetupRoutes(r)
 
-	r.Run(":8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Println("🟢 Server starting on port: " + port)
+	err := r.Run(":" + port)
+	if err != nil {
+		fmt.Println("🔴 Failed to start server:", err)
+	}
 }

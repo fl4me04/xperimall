@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
 
 const { width, height } = Dimensions.get("window");
-const API_URL = "http://localhost:8080";
+const API_URL = "https://xperimall-backend.onrender.com";
 
 interface Expense {
   id: number;
@@ -88,19 +88,19 @@ export default function History() {
     useCallback(() => {
       if (token) {
         fetchExpenses();
-      } else {
+      } else if (!isAuthLoading) {
         setShowLoginDialog(true);
       }
-    }, [token])
+    }, [token, isAuthLoading])
   );
 
   useEffect(() => {
     if (token) {
       fetchExpenses();
-    } else {
+    } else if (!isAuthLoading) {
       setShowLoginDialog(true);
     }
-  }, [token]);
+  }, [token, isAuthLoading]);
 
   const formatCurrency = (amount: number) => {
     return amount.toLocaleString("id-ID", {
@@ -117,20 +117,44 @@ export default function History() {
       return;
     }
     
-    // Parse the date string (e.g., "Monday, 23 February 2025")
-    const dateParts = dateStr.split(", ")[1].split(" ");
-    const day = dateParts[0];
-    const month =
-      new Date(Date.parse(dateParts[1] + " 1, 2000")).getMonth() + 1;
-    const year = dateParts[2];
-    const formattedDate = `${year}-${month
-      .toString()
-      .padStart(2, "0")}-${day.padStart(2, "0")}`;
-
-    router.push({
-      pathname: "/(drawer)/(tabs)/historyTracker",
-      params: { date: formattedDate },
-    });
+    try {
+      console.log("=== Date Click Handler ===");
+      console.log("Original date string:", dateStr);
+      
+      // Parse the date string (e.g., "Thursday, 29 May 2025")
+      const dateParts = dateStr.split(", ")[1].split(" ");
+      const day = parseInt(dateParts[0]);
+      const monthName = dateParts[1];
+      const year = parseInt(dateParts[2]);
+      
+      // Convert month name to number (1-12)
+      const monthMap: { [key: string]: number } = {
+        'January': 1, 'February': 2, 'March': 3, 'April': 4,
+        'May': 5, 'June': 6, 'July': 7, 'August': 8,
+        'September': 9, 'October': 10, 'November': 11, 'December': 12
+      };
+      
+      const month = monthMap[monthName];
+      
+      console.log("Parsed date parts:", { day, month, year, monthName });
+      
+      // Ensure all parts are valid numbers
+      if (isNaN(day) || isNaN(month) || isNaN(year)) {
+        console.error("Invalid date parts:", { day, month, year, monthName });
+        return;
+      }
+      
+      const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+      console.log("Formatted date for API:", formattedDate);
+      
+      router.push({
+        pathname: "/(drawer)/(tabs)/historyTracker",
+        params: { date: formattedDate },
+      });
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      alert("Error processing date. Please try again.");
+    }
   };
 
   const handleLogin = () => {
@@ -189,15 +213,18 @@ export default function History() {
               }}
             />
             <SizableText
-              style={{
-                fontFamily: "Poppins",
-                fontWeight: "700",
-                fontSize: 28,
-                color: "#000",
-                letterSpacing: 1,
-                alignSelf: "center",
-              }}
-            >
+            width={width * 0.9}
+            alignSelf="center"
+            style={{
+              fontSize: Math.min(23, width * 0.055),
+              lineHeight: Math.min(23, width * 0.055) * 1.3,
+              color: "#2B4433",
+              fontFamily: "Poppins",
+              flexWrap: "wrap",
+              flexShrink: 1,
+              textAlign: "center",
+            }}
+          >
               History
             </SizableText>
           </XStack>
