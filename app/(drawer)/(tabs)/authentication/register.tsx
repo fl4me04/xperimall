@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Platform, Modal, View, Dimensions } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -30,6 +30,7 @@ import {
 } from "@tamagui/lucide-icons";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "tamagui/linear-gradient";
+import React from "react";
 
 const { width, height } = Dimensions.get("window");
 
@@ -177,7 +178,10 @@ export default function register() {
             position: "absolute",
             top: "50%",
             left: "50%",
-            transform: [{ translateX: -width * 0.45 }, { translateY: -height * 0.4 }],
+            transform: [
+              { translateX: -width * 0.45 },
+              { translateY: -height * 0.4 },
+            ],
           }}
         >
           <Dialog.Title
@@ -192,8 +196,8 @@ export default function register() {
           >
             Terms and Conditions
           </Dialog.Title>
-          <ScrollView 
-            style={{ 
+          <ScrollView
+            style={{
               maxHeight: height * 0.5,
               marginBottom: 10,
             }}
@@ -287,7 +291,7 @@ export default function register() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -320,24 +324,26 @@ export default function register() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
           </XStack>
           <YStack padding={25}>
             <YStack space={15} justifyContent="center">
-            <SizableText
-            width={width * 0.9}
-            alignSelf="center"
-            style={{
-              fontSize: Math.min(23, width * 0.055),
-              lineHeight: Math.min(23, width * 0.055) * 1.3,
-              color: "#2B4433",
-              fontFamily: "Poppins",
-              flexWrap: "wrap",
-              flexShrink: 1,
-              textAlign: "center",
-            }}
-          >
+              <SizableText
+                width={width * 0.9}
+                alignSelf="center"
+                style={{
+                  fontSize: Math.min(23, width * 0.055),
+                  lineHeight: Math.min(23, width * 0.055) * 1.3,
+                  color: "#2B4433",
+                  fontFamily: "Poppins",
+                  flexWrap: "wrap",
+                  flexShrink: 1,
+                  textAlign: "center",
+                }}
+              >
                 Sign Up
               </SizableText>
               <YStack space={10}>

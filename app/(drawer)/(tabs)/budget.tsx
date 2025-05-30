@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Button,
@@ -16,6 +16,7 @@ import {
 } from "tamagui";
 import { Dimensions, ScrollView as RNScrollView } from "react-native";
 import { useAuth } from "../../hooks/useAuth";
+import React from "react";
 
 const API_URL = "https://xperimall-backend.onrender.com/api";
 
@@ -144,7 +145,7 @@ export default function activityPlanner() {
     setShowLoginDialog(false);
     router.push({
       pathname: "/(drawer)/(tabs)/authentication/login",
-      params: { returnTo: "/(drawer)/(tabs)/budget" }
+      params: { returnTo: "/(drawer)/(tabs)/budget" },
     });
   };
 
@@ -160,7 +161,7 @@ export default function activityPlanner() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -193,21 +194,23 @@ export default function activityPlanner() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
             <SizableText
-            width={width * 0.9}
-            alignSelf="center"
-            style={{
-              fontSize: Math.min(23, width * 0.055),
-              lineHeight: Math.min(23, width * 0.055) * 1.3,
-              color: "#2B4433",
-              fontFamily: "Poppins",
-              flexWrap: "wrap",
-              flexShrink: 1,
-              textAlign: "center",
-            }}
-          >
+              alignSelf="center"
+              width={width * 0.9}
+              style={{
+                fontSize: Math.min(32, width * 0.8),
+                lineHeight: Math.min(32, width * 0.8) * 1.3,
+                color: "#2B4433",
+                fontFamily: "Poppins",
+                flexShrink: 1,
+                textAlign: "center",
+                maxWidth: width * 0.7,
+              }}
+            >
               Your Activity Guide
             </SizableText>
           </XStack>
@@ -405,6 +408,7 @@ export default function activityPlanner() {
                       fontSize: 16,
                       alignSelf: "center",
                       paddingBottom: 10,
+                      paddingTop: 20,
                     }}
                   >
                     Recommendation
@@ -435,7 +439,9 @@ export default function activityPlanner() {
                           textAlign: "center",
                         }}
                       >
-                        {recommendation.Name} (Rp {formatCurrency(recommendation.PriceMin.toString())} - Rp {formatCurrency(recommendation.PriceMax.toString())})
+                        {recommendation.Name} (Rp{" "}
+                        {formatCurrency(recommendation.PriceMin.toString())} -
+                        Rp {formatCurrency(recommendation.PriceMax.toString())})
                       </SizableText>
                     </XStack>
                   ))}

@@ -1,5 +1,5 @@
 import { Dimensions, SafeAreaView } from "react-native";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Anchor,
   Button,
@@ -14,6 +14,7 @@ import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
 
 const { width, height } = Dimensions.get("window");
 
@@ -24,7 +25,9 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showFillFieldsDialog, setShowFillFieldsDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [returnTo, setReturnTo] = useState<"/(drawer)/(tabs)" | string>("/(drawer)/(tabs)");
+  const [returnTo, setReturnTo] = useState<"/(drawer)/(tabs)" | string>(
+    "/(drawer)/(tabs)"
+  );
 
   useEffect(() => {
     if (params.returnTo) {
@@ -60,18 +63,21 @@ export default function Login() {
             email: email,
           };
           await AsyncStorage.setItem("userData", JSON.stringify(userData));
-          
+
           // Clear form
           setEmail("");
           setPassword("");
-          
+
           // Show success dialog
           setShowSuccessDialog(true);
-          
+
           // Wait a bit before navigating to ensure storage is complete
           setTimeout(() => {
             // Use router.replace to navigate to the return path
-            if (returnTo && returnTo !== "/(drawer)/(tabs)/authentication/login") {
+            if (
+              returnTo &&
+              returnTo !== "/(drawer)/(tabs)/authentication/login"
+            ) {
               router.replace(returnTo as any);
             } else {
               router.replace("/(drawer)/(tabs)");
@@ -101,7 +107,7 @@ export default function Login() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -116,13 +122,14 @@ export default function Login() {
             position="relative"
             justifyContent="center"
             height={width * 0.115}
+            // marginBottom={width * 0.01}
           >
             <Button
               circular
               size="$2"
               background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
-              onPress={handleBack}
+              onPress={() => router.push("/(drawer)/(tabs)")}
               style={{
                 position: "absolute",
                 left: 0,
@@ -133,24 +140,26 @@ export default function Login() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
           </XStack>
           <YStack padding={25}>
             <YStack space={15} justifyContent="center">
-            <SizableText
-            width={width * 0.9}
-            alignSelf="center"
-            style={{
-              fontSize: Math.min(23, width * 0.055),
-              lineHeight: Math.min(23, width * 0.055) * 1.3,
-              color: "#2B4433",
-              fontFamily: "Poppins",
-              flexWrap: "wrap",
-              flexShrink: 1,
-              textAlign: "center",
-            }}
-          >
+              <SizableText
+                width={width * 0.9}
+                alignSelf="center"
+                style={{
+                  fontSize: Math.min(23, width * 0.055),
+                  lineHeight: Math.min(23, width * 0.055) * 1.3,
+                  color: "#2B4433",
+                  fontFamily: "Poppins",
+                  flexWrap: "wrap",
+                  flexShrink: 1,
+                  textAlign: "center",
+                }}
+              >
                 Sign In
               </SizableText>
               <YStack space={10}>

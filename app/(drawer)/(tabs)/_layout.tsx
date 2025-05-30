@@ -1,7 +1,7 @@
 import { Tabs, usePathname } from "expo-router";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Platform, Dimensions } from "react-native";
-
+import React from "react";
 import {
   BadgePercent,
   CircleDollarSign,
@@ -41,7 +41,7 @@ export default function TabLayout() {
         name="maps"
         options={{
           title: "Maps",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <Map size={isSmallScreen ? 20 : 26} color={color} />
           ),
         }}
@@ -50,7 +50,7 @@ export default function TabLayout() {
         name="mallDirectory"
         options={{
           title: "Directory",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <Store size={isSmallScreen ? 20 : 26} color={color} />
           ),
         }}
@@ -59,7 +59,7 @@ export default function TabLayout() {
         name="budget"
         options={{
           title: "Budget",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <View
               style={{
                 width: isSmallScreen ? 50 : 67,
@@ -82,7 +82,7 @@ export default function TabLayout() {
         name="promotion"
         options={{
           title: "Promo",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <BadgePercent size={isSmallScreen ? 20 : 26} color={color} />
           ),
         }}
@@ -91,7 +91,7 @@ export default function TabLayout() {
         name="history"
         options={{
           title: "History",
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: ({ color }: { color: string }) => (
             <History size={isSmallScreen ? 20 : 26} color={color} />
           ),
         }}

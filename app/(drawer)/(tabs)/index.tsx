@@ -1,5 +1,5 @@
 import { Dimensions, Image, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Button,
@@ -14,6 +14,7 @@ import Slider from "@/components/Slider";
 import { Navbar } from "@/components/Navbar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import React from "react";
 
 interface UserData {
   name: string;
@@ -72,7 +73,7 @@ export default function HomeScreen() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -85,8 +86,8 @@ export default function HomeScreen() {
           <SizableText
             width={width * 0.9}
             style={{
-              fontSize: Math.min(23, width * 0.055),
-              lineHeight: Math.min(23, width * 0.055) * 1.3,
+              fontSize: Math.min(28, width * 0.8),
+              lineHeight: Math.min(28, width * 0.8) * 1.3,
               color: "#2B4433",
               fontFamily: "Poppins",
               flexWrap: "wrap",
@@ -143,8 +144,8 @@ export default function HomeScreen() {
             width={width * 0.9}
             alignSelf="center"
             style={{
-              fontSize: Math.min(23, width * 0.055),
-              lineHeight: Math.min(23, width * 0.055) * 1.3,
+              fontSize: Math.min(28, width * 0.8),
+              lineHeight: Math.min(28, width * 0.8) * 1.3,
               color: "#2B4433",
               fontFamily: "Poppins",
               flexWrap: "wrap",
@@ -158,11 +159,13 @@ export default function HomeScreen() {
             <Button
               width={width * 0.4}
               height={width * 0.4}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/newtenant",
-                params: { id: 1 }
-              })}
-              borderRadius={width * 0.02}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/newtenant",
+                  params: { id: 1 },
+                })
+              }
+              borderRadius={width * 0.06}
               padding="$0"
               backgroundColor="transparent"
               overflow="hidden"
@@ -176,11 +179,13 @@ export default function HomeScreen() {
             <Button
               width={width * 0.4}
               height={width * 0.4}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/newtenant",
-                params: { id: 2 }
-              })}
-              borderRadius={width * 0.02}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/newtenant",
+                  params: { id: 2 },
+                })
+              }
+              borderRadius={width * 0.06}
               padding="$0"
               backgroundColor="transparent"
               overflow="hidden"
@@ -196,11 +201,13 @@ export default function HomeScreen() {
             <Button
               width={width * 0.4}
               height={width * 0.4}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/newtenant",
-                params: { id: 3 }
-              })}
-              borderRadius={width * 0.02}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/newtenant",
+                  params: { id: 3 },
+                })
+              }
+              borderRadius={width * 0.06}
               padding="$0"
               backgroundColor="transparent"
               overflow="hidden"
@@ -214,11 +221,13 @@ export default function HomeScreen() {
             <Button
               width={width * 0.4}
               height={width * 0.4}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/newtenant",
-                params: { id: 4 }
-              })}
-              borderRadius={width * 0.02}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/newtenant",
+                  params: { id: 4 },
+                })
+              }
+              borderRadius={width * 0.06}
               padding="$0"
               backgroundColor="transparent"
               overflow="hidden"
@@ -241,8 +250,8 @@ export default function HomeScreen() {
             width={width * 0.9}
             alignSelf="center"
             style={{
-              fontSize: Math.min(23, width * 0.055),
-              lineHeight: Math.min(23, width * 0.055) * 1.3,
+              fontSize: Math.min(28, width * 0.8),
+              lineHeight: Math.min(28, width * 0.8) * 1.3,
               color: "#2B4433",
               fontFamily: "Poppins",
               flexWrap: "wrap",
@@ -258,14 +267,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/mallDirectory",
-                params: { floorId: 1 }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/mallDirectory",
+                  params: { floorId: 1 },
+                })
+              }
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
+                textAlign="center"
                 style={{ fontFamily: "Poppins" }}
               >
                 Lower Ground Floor
@@ -276,14 +288,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/mallDirectory",
-                params: { floorId: 2 }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/mallDirectory",
+                  params: { floorId: 2 },
+                })
+              }
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
+                textAlign="center"
                 style={{ fontFamily: "Poppins" }}
               >
                 Lower Ground Mezzanine
@@ -296,14 +311,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/mallDirectory",
-                params: { floorId: 3 }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/mallDirectory",
+                  params: { floorId: 3 },
+                })
+              }
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
+                textAlign="center"
                 style={{ fontFamily: "Poppins" }}
               >
                 Ground Floor
@@ -314,14 +332,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/mallDirectory",
-                params: { floorId: 4 }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/mallDirectory",
+                  params: { floorId: 4 },
+                })
+              }
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
+                textAlign="center"
                 style={{ fontFamily: "Poppins" }}
               >
                 Upper Ground Floor
@@ -334,14 +355,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/mallDirectory",
-                params: { floorId: 5 }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/mallDirectory",
+                  params: { floorId: 5 },
+                })
+              }
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
+                textAlign="center"
                 style={{ fontFamily: "Poppins" }}
               >
                 1st Floor
@@ -352,14 +376,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/mallDirectory",
-                params: { floorId: 6 }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/mallDirectory",
+                  params: { floorId: 6 },
+                })
+              }
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
+                textAlign="center"
                 style={{ fontFamily: "Poppins" }}
               >
                 2nd Floor
@@ -372,14 +399,17 @@ export default function HomeScreen() {
               width={width * 0.4}
               backgroundColor={"#4A7C59"}
               borderRadius={"$10"}
-              onPress={() => router.push({
-                pathname: "/(drawer)/(tabs)/mallDirectory",
-                params: { floorId: 7 }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(drawer)/(tabs)/mallDirectory",
+                  params: { floorId: 7 },
+                })
+              }
             >
               <SizableText
                 color="white"
                 fontSize={"$5"}
+                textAlign="center"
                 style={{ fontFamily: "Poppins" }}
               >
                 3rd Floor

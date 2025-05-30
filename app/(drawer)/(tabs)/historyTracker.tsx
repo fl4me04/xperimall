@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { G, Path, Circle, Text as SvgText, TSpan } from "react-native-svg";
@@ -19,6 +19,7 @@ import {
 } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
+import React from "react";
 
 const { width, height } = Dimensions.get("window");
 const API_URL = "https://xperimall-backend.onrender.com";
@@ -63,78 +64,73 @@ const PieChart = React.memo(({ expenses }: { expenses: Expense[] }) => {
       )
     : [];
 
+  // Calculate label positions for overlay
+  const total = expenses.reduce((sum, e) => sum + e.amount, 0);
+  let prev = 0;
+  const labelPositions = expenses.map((expense, i) => {
+    const angle = ((prev + expense.amount / 2) / total) * 2 * Math.PI;
+    prev += expense.amount;
+    const r = ((width * 0.8) / 2) * 0.55; // match SVG r=0.55
+    const x = Math.cos(angle) * r + (width * 0.8) / 2;
+    const y = Math.sin(angle) * r + (width * 0.8) / 2;
+    return { x, y, tenant: expense.tenant, amount: expense.amount };
+  });
+
   return (
-    <Svg width={width * 0.8} height={width * 0.8} viewBox="0 0 2 2">
-      <G>
-        {expenses.length === 1 ? (
-          <>
+    <YStack>
+      <Svg width={width * 0.8} height={width * 0.8} viewBox="0 0 2 2">
+        <G>
+          {expenses.length === 1 ? (
             <Circle cx={1} cy={1} r={1} fill={colors[0]} />
-            <SvgText
-              x={1}
-              y={0.9}
-              fill="#fff"
-              fontSize={0.07}
-              fontWeight="400"
-              textAnchor="middle"
-              alignmentBaseline="middle"
-              fontFamily="Poppins"
-            >
-              {expenses[0].tenant}
-              <TSpan
-                x={1}
-                dy={0.12}
-                fontSize={0.07}
-                fontWeight="bold"
-                fontFamily="Poppins"
-              >
-                Rp {expenses[0].amount.toLocaleString("id-ID")}
-              </TSpan>
-            </SvgText>
-          </>
-        ) : pieSlices.length > 0 ? (
-          <>
-            {pieSlices.map((slice, i) => (
+          ) : pieSlices.length > 0 ? (
+            pieSlices.map((slice, i) => (
               <Path key={i} d={slice.d} fill={slice.color} />
-            ))}
-            {expenses.map((expense, i) => {
-              const total = expenses.reduce((sum, e) => sum + e.amount, 0);
-              let prev = 0;
-              for (let j = 0; j < i; j++) prev += expenses[j].amount;
-              const angle = ((prev + expense.amount / 2) / total) * 2 * Math.PI;
-              const r = 0.55;
-              const x = Math.cos(angle) * r + 1;
-              const y = Math.sin(angle) * r + 1;
-              return (
-                <SvgText
-                  key={i}
-                  x={x}
-                  y={y}
-                  fill="#fff"
-                  fontSize={0.07}
-                  fontWeight="400"
-                  textAnchor="middle"
-                  alignmentBaseline="middle"
-                  fontFamily="Poppins"
-                >
-                  {expense.tenant}
-                  <TSpan
-                    x={x}
-                    dy={0.12}
-                    fontSize={0.07}
-                    fontWeight="bold"
-                    fontFamily="Poppins"
-                  >
-                    Rp {expense.amount.toLocaleString("id-ID")}
-                  </TSpan>
-                </SvgText>
-              );
-            })}
-          </>
-        ) : (
-          <Circle cx={1} cy={1} r={1} fill="#4A7C59" />
-        )}
-      </G>
-    </Svg>
+            ))
+          ) : (
+            <Circle cx={1} cy={1} r={1} fill="#4A7C59" />
+          )}
+        </G>
+      </Svg>
+      {/* Overlay labels */}
+      {expenses.length > 0 &&
+        labelPositions.map((pos, i) => (
+          <YStack
+            key={i}
+            position="absolute"
+            left={pos.x - 40}
+            top={pos.y - 20}
+            width={80}
+            alignItems="center"
+            pointerEvents="none"
+          >
+            <SizableText
+              color="#fff"
+              fontSize={12}
+              style={{
+                fontFamily: "Poppins",
+                textAlign: "center",
+              }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {pos.tenant}
+            </SizableText>
+            <SizableText
+              color="#fff"
+              fontSize={12}
+              style={{
+                fontFamily: "Poppins",
+                textAlign: "center",
+                fontWeight: "bold",
+              }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              Rp {pos.amount.toLocaleString("id-ID")}
+            </SizableText>
+          </YStack>
+        ))}
+    </YStack>
   );
 });
 
@@ -168,40 +164,43 @@ export default function HistoryTracker() {
       console.log("=== Fetching Expenses ===");
       console.log("Date from params:", date);
       console.log("Token:", token);
-      
+
       // Validate date format
       const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
       if (!dateRegex.test(date)) {
         console.error("Invalid date format:", date);
         throw new Error("Invalid date format. Expected YYYY-MM-DD");
       }
-      
+
       const url = `${API_URL}/expenses/detail?date=${date}`;
       console.log("Making API request to:", url);
-      
+
       const response = await fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
       console.log("Response status:", response.status);
-      
+
       if (response.ok) {
         const data = await response.json();
         console.log("Received expense data:", data);
-        
+
         // Ensure we have valid expense data
-        if (data && typeof data === 'object') {
+        if (data && typeof data === "object") {
           // If data doesn't have expenses array, create it from the data
           if (!data.expenses && Array.isArray(data)) {
             setExpenseData({
               date: date,
-              total: data.reduce((sum: number, exp: Expense) => sum + exp.amount, 0),
-              expenses: data
+              total: data.reduce(
+                (sum: number, exp: Expense) => sum + exp.amount,
+                0
+              ),
+              expenses: data,
             });
           } else if (data.expenses && Array.isArray(data.expenses)) {
             setExpenseData(data);
@@ -237,7 +236,7 @@ export default function HistoryTracker() {
     setShowLoginDialog(false);
     router.push({
       pathname: "/(drawer)/(tabs)/authentication/login",
-      params: { returnTo: "/(drawer)/(tabs)/historyTracker" }
+      params: { returnTo: "/(drawer)/(tabs)/historyTracker" },
     });
   };
 
@@ -255,14 +254,17 @@ export default function HistoryTracker() {
     try {
       const date = decodeURIComponent(params.date as string);
       console.log("Token being used for delete:", token);
-      console.log("Making delete request to:", `${API_URL}/expenses?date=${date}`);
-      
+      console.log(
+        "Making delete request to:",
+        `${API_URL}/expenses?date=${date}`
+      );
+
       const response = await fetch(`${API_URL}/expenses?date=${date}`, {
         method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
@@ -305,7 +307,7 @@ export default function HistoryTracker() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -338,18 +340,23 @@ export default function HistoryTracker() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
             <XStack width={width * 0.5} justifyContent="center">
               <SizableText
+                width={width * 1}
                 style={{
+                  fontSize: Math.min(28, width * 0.8),
+                  lineHeight: Math.min(28, width * 0.8) * 1.1,
+                  color: "#2B4433",
                   fontFamily: "Poppins",
-                  fontWeight: "700",
-                  fontSize: 25,
-                  color: "#4A7C59",
+                  flexWrap: "wrap",
+                  flexShrink: 1,
+                  textAlign: "center",
                   letterSpacing: 1,
                   alignSelf: "center",
-                  textAlign: "center",
                   textWrap: "wrap",
                 }}
               >
@@ -384,16 +391,17 @@ export default function HistoryTracker() {
                       fontSize: 25,
                       color: "#000",
                       marginBottom: height * 0.02,
+                      marginTop: height * 0.02,
                     }}
                   >
                     Total Expense:
                   </SizableText>
                   <SizableText
-                   width={width * 0.9}
+                    width={width * 0.9}
                     alignSelf="center"
                     style={{
-                      fontSize: Math.min(23, width * 0.055),
-                      lineHeight: Math.min(23, width * 0.055) * 1.3,
+                      fontSize: Math.min(28, width * 0.08),
+                      lineHeight: Math.min(28, width * 0.08) * 1.3,
                       color: "#4A7C59",
                       fontFamily: "Poppins",
                       flexWrap: "wrap",

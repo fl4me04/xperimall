@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Dimensions, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -15,6 +15,7 @@ import {
 } from "tamagui";
 import { AntDesign } from "@expo/vector-icons";
 import { Dropdown } from "react-native-element-dropdown";
+import React from "react";
 
 const { width, height } = Dimensions.get("window");
 
@@ -45,7 +46,9 @@ export default function mallDirectory() {
   const { floorId } = useLocalSearchParams();
   const [floors, setFloors] = useState<Floor[]>([]);
   const [selectedFloor, setSelectedFloor] = useState<Floor | null>(null);
-  const [categoriesWithActivities, setCategoriesWithActivities] = useState<CategoryWithActivities[]>([]);
+  const [categoriesWithActivities, setCategoriesWithActivities] = useState<
+    CategoryWithActivities[]
+  >([]);
 
   useEffect(() => {
     fetchFloors();
@@ -54,7 +57,7 @@ export default function mallDirectory() {
   useEffect(() => {
     if (floorId && floors.length > 0) {
       const floorIdNum = parseInt(floorId as string);
-      const floor = floors.find(f => f.id === floorIdNum);
+      const floor = floors.find((f) => f.id === floorIdNum);
       if (floor) {
         setSelectedFloor(floor);
         fetchActivitiesByFloor(floorIdNum);
@@ -64,7 +67,9 @@ export default function mallDirectory() {
 
   const fetchFloors = async () => {
     try {
-      const response = await fetch("https://xperimall-backend.onrender.com/api/floors");
+      const response = await fetch(
+        "https://xperimall-backend.onrender.com/api/floors"
+      );
       const data = await response.json();
       const mappedFloors = data.map((f: any) => ({
         id: f.ID,
@@ -86,10 +91,10 @@ export default function mallDirectory() {
         `https://xperimall-backend.onrender.com/api/floors/${floorId}/activities`
       );
       const data = await response.json();
-      
+
       // Group activities by category
       const activitiesByCategory = new Map<number, CategoryWithActivities>();
-      
+
       data.forEach((activity: any) => {
         const categoryId = activity.Category.ID;
         if (!activitiesByCategory.has(categoryId)) {
@@ -101,7 +106,7 @@ export default function mallDirectory() {
             activities: [],
           });
         }
-        
+
         activitiesByCategory.get(categoryId)?.activities.push({
           id: activity.ID,
           name: activity.Name,
@@ -113,7 +118,7 @@ export default function mallDirectory() {
           },
         });
       });
-      
+
       setCategoriesWithActivities(Array.from(activitiesByCategory.values()));
     } catch (error) {
       console.error("Error fetching activities:", error);
@@ -135,7 +140,7 @@ export default function mallDirectory() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -168,17 +173,28 @@ export default function mallDirectory() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
             <XStack marginLeft={25}>
-              <DropdownComponent floors={floors} selectedFloorId={selectedFloor?.id} onFloorChange={handleFloorChange} />
+              <DropdownComponent
+                floors={floors}
+                selectedFloorId={selectedFloor?.id}
+                onFloorChange={handleFloorChange}
+              />
             </XStack>
           </XStack>
 
           {categoriesWithActivities.map((categoryData) => (
-            <YStack key={categoryData.category.id} space={10} justifyContent="center">
+            <YStack
+              key={categoryData.category.id}
+              space={10}
+              justifyContent="center"
+              marginBottom={10}
+            >
               <XStack
-                width={width * 0.5}
+                width={"100%"}
                 style={{
                   backgroundColor: "#4A7C59",
                   padding: 7,
@@ -189,7 +205,14 @@ export default function mallDirectory() {
                 }}
               >
                 <SizableText
-                  style={{ fontSize: 20, color: "#fff", fontWeight: "500" }}
+                  justifyContent="center"
+                  alignItems="center"
+                  style={{
+                    fontFamily: "Poppins",
+                    fontSize: 20,
+                    color: "#fff",
+                    fontWeight: "500",
+                  }}
                 >
                   {categoryData.category.name}
                 </SizableText>
@@ -205,7 +228,7 @@ export default function mallDirectory() {
                       color: "#2B4433",
                     }}
                   >
-                    • {activity.name} 
+                    • {activity.name}
                   </SizableText>
                 ))}
               </YStack>
@@ -223,11 +246,20 @@ interface DropdownComponentProps {
   onFloorChange: (floorId: number) => void;
 }
 
-const DropdownComponent = ({ floors, selectedFloorId, onFloorChange }: DropdownComponentProps) => {
-  const data = floors.map(floor => ({
+const DropdownComponent = ({
+  floors,
+  selectedFloorId,
+  onFloorChange,
+}: DropdownComponentProps) => {
+  const data = floors.map((floor) => ({
     label: floor.name,
-    value: floor.id.toString()
+    value: floor.id.toString(),
   }));
+
+  interface DropdownItem {
+    label: string;
+    value: string;
+  }
 
   return (
     <Dropdown
@@ -235,20 +267,25 @@ const DropdownComponent = ({ floors, selectedFloorId, onFloorChange }: DropdownC
       placeholderStyle={styles.placeholderStyle}
       selectedTextStyle={styles.selectedTextStyle}
       iconStyle={styles.iconStyle}
-      data={data}
+      data={data as DropdownItem[]}
       maxHeight={300}
       labelField="label"
       valueField="value"
       placeholder="Select Floor"
       value={selectedFloorId?.toString()}
-      onChange={(item) => {
+      onChange={(item: DropdownItem) => {
         onFloorChange(parseInt(item.value));
       }}
-      renderItem={(item) => (
+      renderItem={(item: DropdownItem) => (
         <View style={styles.item}>
           <Text style={styles.textItem}>{item.label}</Text>
           {item.value === selectedFloorId?.toString() && (
-            <AntDesign style={styles.icon} color="#4A7C59" name="check" size={18} />
+            <AntDesign
+              style={styles.icon}
+              color="#4A7C59"
+              name="check"
+              size={18}
+            />
           )}
         </View>
       )}
