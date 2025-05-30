@@ -4,15 +4,22 @@ import { Button, SizableText, XStack } from "tamagui";
 import { Dimensions } from "react-native";
 
 export function Navbar() {
-  const { width } = Dimensions.get("window");
   const navigation = useNavigation();
+  const { width, height } = Dimensions.get("window");
+
+  // Responsive values
+  const padding = Math.max(10, width * 0.025);
+  const navHeight = Math.max(60, height * 0.12);
+  const fontSize = Math.max(15, width * 0.045);
+  const buttonLeft = Math.max(10, width * 0.025);
+  const buttonBottom = Math.max(10, navHeight * 0.1);
 
   return (
     <XStack
-      padding={10}
+      padding={padding}
       backgroundColor={"#4A7C59"}
       width={"100%"}
-      height={100}
+      height={navHeight}
       justifyContent="center"
       alignItems="flex-end"
       position="absolute"
@@ -23,7 +30,6 @@ export function Navbar() {
     >
       <Button
         animation="bouncy"
-        elevation="$4"
         hoverStyle={{
           scale: 1.05,
         }}
@@ -35,10 +41,12 @@ export function Navbar() {
         height={"auto"}
         icon={<Menu color="white" />}
         backgroundColor="transparent"
+        chromeless
         style={{
           position: "absolute",
-          left: 10,
-          bottom: 10,
+          left: buttonLeft,
+          bottom: buttonBottom,
+          zIndex: 1,
         }}
       />
       <SizableText
@@ -46,7 +54,7 @@ export function Navbar() {
         textAlign="center"
         style={{
           fontFamily: "LexendGiga",
-          fontSize: 17,
+          fontSize: fontSize,
           color: "white",
         }}
       >

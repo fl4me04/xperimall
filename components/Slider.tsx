@@ -6,7 +6,8 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import React, { FunctionComponent, useEffect, useRef, useState } from "react";
+import { FunctionComponent, useEffect, useRef, useState } from "react";
+import React from "react";
 
 const images = [
   require("@/assets/images/CPNS.jpg"),

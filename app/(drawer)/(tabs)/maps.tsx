@@ -6,8 +6,14 @@ import {
   ChevronUp,
 } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, Image, Dimensions, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  Image,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
 import {
   Adapt,
   Button,
@@ -27,6 +33,7 @@ import {
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
+import React from "react";
 
 interface Floor {
   id: number;
@@ -65,7 +72,9 @@ export default function TabTwoScreen() {
   const fetchFloors = async () => {
     try {
       console.log("Fetching floors...");
-      const response = await fetch("https://xperimall-backend.onrender.com/api/floors");
+      const response = await fetch(
+        "https://xperimall-backend.onrender.com/api/floors"
+      );
       const data = await response.json();
       console.log("Floors data:", data);
       const mappedFloors = data.map((f: any) => ({
@@ -131,7 +140,7 @@ export default function TabTwoScreen() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -164,22 +173,22 @@ export default function TabTwoScreen() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
             <SizableText
-            width={width * 0.9}
-            alignSelf="center"
-            style={{
-              fontSize: Math.min(23, width * 0.055),
-              lineHeight: Math.min(23, width * 0.055) * 1.3,
-              color: "#2B4433",
-              fontFamily: "Poppins",
-              flexWrap: "wrap",
-              flexShrink: 1,
-              textAlign: "center",
-              fontWeight: "700",
-            }}
-          >
+              width={width * 0.9}
+              style={{
+                fontSize: Math.min(32, width * 0.8),
+                lineHeight: Math.min(32, width * 0.8) * 1.3,
+                color: "#2B4433",
+                fontFamily: "Poppins",
+                flexWrap: "wrap",
+                flexShrink: 1,
+                textAlign: "center",
+              }}
+            >
               Mall Map
             </SizableText>
           </XStack>
@@ -310,11 +319,20 @@ interface DropdownComponentProps {
   onFloorChange: (floorId: number) => void;
 }
 
-const DropdownComponent = ({ floors, selectedFloorId, onFloorChange }: DropdownComponentProps) => {
-  const data = floors.map(floor => ({
+const DropdownComponent = ({
+  floors,
+  selectedFloorId,
+  onFloorChange,
+}: DropdownComponentProps) => {
+  const data = floors.map((floor) => ({
     label: floor.name,
-    value: floor.id.toString()
+    value: floor.id.toString(),
   }));
+
+  interface DropdownItem {
+    label: string;
+    value: string;
+  }
 
   return (
     <Dropdown
@@ -322,20 +340,25 @@ const DropdownComponent = ({ floors, selectedFloorId, onFloorChange }: DropdownC
       placeholderStyle={styles.placeholderStyle}
       selectedTextStyle={styles.selectedTextStyle}
       iconStyle={styles.iconStyle}
-      data={data}
+      data={data as DropdownItem[]}
       maxHeight={300}
       labelField="label"
       valueField="value"
       placeholder="Select Floor"
       value={selectedFloorId?.toString()}
-      onChange={(item) => {
+      onChange={(item: DropdownItem) => {
         onFloorChange(parseInt(item.value));
       }}
-      renderItem={(item) => (
+      renderItem={(item: DropdownItem) => (
         <View style={styles.item}>
           <Text style={styles.textItem}>{item.label}</Text>
           {item.value === selectedFloorId?.toString() && (
-            <AntDesign style={styles.icon} color="#4A7C59" name="check" size={18} />
+            <AntDesign
+              style={styles.icon}
+              color="#4A7C59"
+              name="check"
+              size={18}
+            />
           )}
         </View>
       )}

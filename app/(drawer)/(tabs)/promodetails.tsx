@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -12,6 +12,7 @@ import {
   XStack,
   YStack,
 } from "tamagui";
+import React from "react";
 
 const { width, height } = Dimensions.get("window");
 
@@ -53,14 +54,16 @@ export default function promodetails() {
   useEffect(() => {
     const fetchPromotion = async () => {
       try {
-        const response = await fetch(`https://xperimall-backend.onrender.com/api/promotions/${id}`);
+        const response = await fetch(
+          `https://xperimall-backend.onrender.com/api/promotions/${id}`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch promotion');
+          throw new Error("Failed to fetch promotion");
         }
         const data = await response.json();
         setPromotion(data);
       } catch (error) {
-        console.error('Error fetching promotion:', error);
+        console.error("Error fetching promotion:", error);
       }
     };
 
@@ -85,7 +88,7 @@ export default function promodetails() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -117,6 +120,8 @@ export default function promodetails() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
           </XStack>
@@ -135,7 +140,11 @@ export default function promodetails() {
                 fontSize: 15,
               }}
             >
-              {categoryNames[promotion.category_id as keyof typeof categoryNames]}
+              {
+                categoryNames[
+                  promotion.category_id as keyof typeof categoryNames
+                ]
+              }
             </SizableText>
             <XStack
               marginTop={8}
@@ -158,13 +167,20 @@ export default function promodetails() {
             </XStack>
             <XStack width={"100%"} height={height * 0.5} marginTop={15}>
               <Image
-                source={promotionImages[promotion.id as keyof typeof promotionImages]}
+                source={
+                  promotionImages[promotion.id as keyof typeof promotionImages]
+                }
                 resizeMode="contain"
                 style={{ width: "100%", height: "100%" }}
               />
             </XStack>
           </YStack>
-          <YStack justifyContent="center" alignItems="center" space={20} marginTop={10}>
+          <YStack
+            justifyContent="center"
+            alignItems="center"
+            space={20}
+            marginTop={10}
+          >
             <SizableText
               style={{
                 color: "#2B4433",

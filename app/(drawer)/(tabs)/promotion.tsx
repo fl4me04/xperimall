@@ -34,7 +34,7 @@ export default function promotion() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -66,6 +66,8 @@ export default function promotion() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
           </XStack>
@@ -96,10 +98,12 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={() => router.push({
-                  pathname: "/(drawer)/(tabs)/promodetails",
-                  params: { id: 1 }
-                })}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(drawer)/(tabs)/promodetails",
+                    params: { id: 1 },
+                  })
+                }
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -114,10 +118,12 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={() => router.push({
-                  pathname: "/(drawer)/(tabs)/promodetails",
-                  params: { id: 2 }
-                })}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(drawer)/(tabs)/promodetails",
+                    params: { id: 2 },
+                  })
+                }
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -134,10 +140,12 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={() => router.push({
-                  pathname: "/(drawer)/(tabs)/promodetails",
-                  params: { id: 3 }
-                })}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(drawer)/(tabs)/promodetails",
+                    params: { id: 3 },
+                  })
+                }
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -152,10 +160,12 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={() => router.push({
-                  pathname: "/(drawer)/(tabs)/promodetails",
-                  params: { id: 4 }
-                })}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(drawer)/(tabs)/promodetails",
+                    params: { id: 4 },
+                  })
+                }
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -191,10 +201,12 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={() => router.push({
-                  pathname: "/(drawer)/(tabs)/promodetails",
-                  params: { id: 5 }
-                })}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(drawer)/(tabs)/promodetails",
+                    params: { id: 5 },
+                  })
+                }
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -209,10 +221,12 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={() => router.push({
-                  pathname: "/(drawer)/(tabs)/promodetails",
-                  params: { id: 6 }
-                })}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(drawer)/(tabs)/promodetails",
+                    params: { id: 6 },
+                  })
+                }
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -248,10 +262,12 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={() => router.push({
-                  pathname: "/(drawer)/(tabs)/promodetails",
-                  params: { id: 7 }
-                })}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(drawer)/(tabs)/promodetails",
+                    params: { id: 7 },
+                  })
+                }
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"
@@ -266,10 +282,12 @@ export default function promotion() {
               <Button
                 width={width * 0.4}
                 height={width * 0.5}
-                onPress={() => router.push({
-                  pathname: "/(drawer)/(tabs)/promodetails",
-                  params: { id: 8 }
-                })}
+                onPress={() =>
+                  router.push({
+                    pathname: "/(drawer)/(tabs)/promodetails",
+                    params: { id: 8 },
+                  })
+                }
                 borderRadius={width * 0.02}
                 padding="$0"
                 backgroundColor="transparent"

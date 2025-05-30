@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router, useFocusEffect } from "expo-router";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Dimensions, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { G, Path, Circle, Text as SvgText, TSpan } from "react-native-svg";
@@ -16,6 +16,7 @@ import {
   Dialog,
 } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
 
 const { width, height } = Dimensions.get("window");
 
@@ -50,78 +51,73 @@ const PieChart = React.memo(({ expenses }: PieChartProps) => {
     ? createPieSlices(expenses.map(({ amount, color }) => ({ amount, color })))
     : [];
 
+  // Calculate label positions for overlay
+  const total = expenses.reduce((sum, e) => sum + e.amount, 0);
+  let prev = 0;
+  const labelPositions = expenses.map((expense, i) => {
+    const angle = ((prev + expense.amount / 2) / total) * 2 * Math.PI;
+    prev += expense.amount;
+    const r = ((width * 0.8) / 2) * 0.55; // match SVG r=0.55
+    const x = Math.cos(angle) * r + (width * 0.8) / 2;
+    const y = Math.sin(angle) * r + (width * 0.8) / 2;
+    return { x, y, tenant: expense.tenant, amount: expense.amount };
+  });
+
   return (
-    <Svg width={width * 0.8} height={width * 0.8} viewBox="0 0 2 2">
-      <G>
-        {expenses.length === 1 ? (
-          <>
+    <YStack>
+      <Svg width={width * 0.8} height={width * 0.8} viewBox="0 0 2 2">
+        <G>
+          {expenses.length === 1 ? (
             <Circle cx={1} cy={1} r={1} fill={expenses[0].color} />
-            <SvgText
-              x={1}
-              y={0.9}
-              fill="#fff"
-              fontSize={0.07}
-              fontWeight="400"
-              textAnchor="middle"
-              alignmentBaseline="middle"
-              fontFamily="Poppins"
-            >
-              {expenses[0].tenant}
-              <TSpan
-                x={1}
-                dy={0.12}
-                fontSize={0.07}
-                fontWeight="bold"
-                fontFamily="Poppins"
-              >
-                Rp {expenses[0].amount.toLocaleString("id-ID")}
-              </TSpan>
-            </SvgText>
-          </>
-        ) : pieSlices.length > 0 ? (
-          <>
-            {pieSlices.map((slice, i) => (
+          ) : pieSlices.length > 0 ? (
+            pieSlices.map((slice, i) => (
               <Path key={i} d={slice.d} fill={slice.color} />
-            ))}
-            {expenses.map((expense, i) => {
-              const total = expenses.reduce((sum, e) => sum + e.amount, 0);
-              let prev = 0;
-              for (let j = 0; j < i; j++) prev += expenses[j].amount;
-              const angle = ((prev + expense.amount / 2) / total) * 2 * Math.PI;
-              const r = 0.55;
-              const x = Math.cos(angle) * r + 1;
-              const y = Math.sin(angle) * r + 1;
-              return (
-                <SvgText
-                  key={i}
-                  x={x}
-                  y={y}
-                  fill="#fff"
-                  fontSize={0.07}
-                  fontWeight="400"
-                  textAnchor="middle"
-                  alignmentBaseline="middle"
-                  fontFamily="Poppins"
-                >
-                  {expense.tenant}
-                  <TSpan
-                    x={x}
-                    dy={0.12}
-                    fontSize={0.07}
-                    fontWeight="bold"
-                    fontFamily="Poppins"
-                  >
-                    Rp {expense.amount.toLocaleString("id-ID")}
-                  </TSpan>
-                </SvgText>
-              );
-            })}
-          </>
-        ) : (
-          <Circle cx={1} cy={1} r={1} fill="#4A7C59" />
-        )}
-      </G>
-    </Svg>
+            ))
+          ) : (
+            <Circle cx={1} cy={1} r={1} fill="#4A7C59" />
+          )}
+        </G>
+      </Svg>
+      {/* Overlay labels */}
+      {expenses.length > 0 &&
+        labelPositions.map((pos, i) => (
+          <YStack
+            key={i}
+            position="absolute"
+            left={pos.x - 40}
+            top={pos.y - 20}
+            width={80}
+            alignItems="center"
+            pointerEvents="none"
+          >
+            <SizableText
+              color="#fff"
+              fontSize={12}
+              style={{
+                fontFamily: "Poppins",
+                textAlign: "center",
+              }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {pos.tenant}
+            </SizableText>
+            <SizableText
+              color="#fff"
+              fontSize={12}
+              style={{
+                fontFamily: "Poppins",
+                textAlign: "center",
+                fontWeight: "bold",
+              }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              Rp {pos.amount.toLocaleString("id-ID")}
+            </SizableText>
+          </YStack>
+        ))}
+    </YStack>
   );
 });
 
@@ -194,7 +190,7 @@ export default function FinanceTracker() {
     setShowLoginDialog(false);
     router.push({
       pathname: "/(drawer)/(tabs)/authentication/login",
-      params: { returnTo: "/(drawer)/(tabs)/financeTracker" }
+      params: { returnTo: "/(drawer)/(tabs)/financeTracker" },
     });
   };
 
@@ -275,7 +271,7 @@ export default function FinanceTracker() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -297,7 +293,7 @@ export default function FinanceTracker() {
               size="$2"
               background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
-              onPress={() => router.push("/(drawer)/(tabs)")}
+              onPress={() => router.push("/(drawer)/(tabs)/history")}
               style={{
                 position: "absolute",
                 left: 0,
@@ -308,14 +304,15 @@ export default function FinanceTracker() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
             <SizableText
               width={width * 0.9}
-              alignSelf="center"
               style={{
-                fontSize: Math.min(23, width * 0.055),
-                lineHeight: Math.min(23, width * 0.055) * 1.3,
+                fontSize: Math.min(32, width * 0.8),
+                lineHeight: Math.min(32, width * 0.8) * 1.3,
                 color: "#2B4433",
                 fontFamily: "Poppins",
                 flexWrap: "wrap",

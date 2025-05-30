@@ -14,6 +14,9 @@ import { Navbar } from "@/components/Navbar"; // Pastikan path ini benar
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useEffect, useState } from "react";
+import React from "react";
+
+const { width, height } = Dimensions.get("window");
 
 const tenantImages = {
   1: [
@@ -70,23 +73,42 @@ export default function NewTenant() {
   useEffect(() => {
     const fetchTenant = async () => {
       try {
-        const response = await fetch(`https://xperimall-backend.onrender.com/api/tenants/${id}`);
+        const response = await fetch(
+          `https://xperimall-backend.onrender.com/api/tenants/${id}`
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch tenant');
+          throw new Error("Failed to fetch tenant");
         }
         const data = await response.json();
         setTenant(data);
-        setCurrentIndex(0); // Reset index saat tenant baru dimuat
       } catch (error) {
-        console.error('Error fetching tenant:', error);
+        console.error("Error fetching tenant:", error);
       }
     };
 
     fetchTenant();
   }, [id]);
 
-  const currentImages = tenant ? (tenantImages[tenant.id as keyof typeof tenantImages] || tenantImages[1]) : [];
+  const currentImages = tenant
+    ? tenantImages[tenant.id as keyof typeof tenantImages] || tenantImages[1]
+    : [];
 
+  const middleIndex =
+    currentImages.length > 0 ? Math.floor(currentImages.length / 2) : 0;
+
+  // Scroll to middle when images or tenant change
+  useEffect(() => {
+    if (currentImages.length > 0 && flatListRef.current) {
+      setCurrentIndex(middleIndex);
+      setTimeout(() => {
+        flatListRef.current?.scrollToIndex({
+          index: middleIndex,
+          animated: false,
+        });
+      }, 0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tenant, currentImages.length]);
 
   const stopAutoScroll = () => {
     if (intervalIdRef.current) {
@@ -104,7 +126,7 @@ export default function NewTenant() {
     if (currentImages.length <= 1) return; // Tidak perlu auto scroll jika gambar hanya 1 atau kurang
 
     intervalIdRef.current = setInterval(() => {
-      setCurrentIndex(prevIndex => {
+      setCurrentIndex((prevIndex) => {
         const nextIndex = (prevIndex + 1) % currentImages.length;
         if (flatListRef.current) {
           flatListRef.current.scrollToIndex({
@@ -116,7 +138,7 @@ export default function NewTenant() {
       });
     }, AUTOSCROLL_DELAY);
   };
-  
+
   useEffect(() => {
     // Mulai auto scroll jika ada tenant dan lebih dari 1 gambar
     if (tenant && currentImages.length > 1) {
@@ -128,26 +150,30 @@ export default function NewTenant() {
     };
   }, [tenant, currentImages.length]); // Dependensi: auto scroll dimulai/diupdate jika tenant atau jumlah gambar berubah
 
-
   const onScrollBeginDrag = () => {
     stopAutoScroll(); // Hentikan auto scroll saat pengguna mulai drag manual
   };
 
-  const onMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const onMomentumScrollEnd = (
+    event: NativeSyntheticEvent<NativeScrollEvent>
+  ) => {
     const offsetX = event.nativeEvent.contentOffset.x;
     // Hitung indeks baru berdasarkan posisi scroll, pastikan tidak keluar batas
     const newCalculatedIndex = Math.round(offsetX / TOTAL_ITEM_WIDTH_FOR_SNAP);
-    const newIndex = Math.max(0, Math.min(currentImages.length - 1, newCalculatedIndex));
-    
+    const newIndex = Math.max(
+      0,
+      Math.min(currentImages.length - 1, newCalculatedIndex)
+    );
+
     setCurrentIndex(newIndex); // Update state currentIndex
 
     // Jadwalkan auto scroll untuk dimulai lagi setelah jeda
-    if (resumeScrollTimeoutRef.current) clearTimeout(resumeScrollTimeoutRef.current);
+    if (resumeScrollTimeoutRef.current)
+      clearTimeout(resumeScrollTimeoutRef.current);
     resumeScrollTimeoutRef.current = setTimeout(() => {
       startAutoScroll();
     }, USER_INTERACTION_RESUME_DELAY);
   };
-
 
   if (!tenant) {
     return (
@@ -160,7 +186,6 @@ export default function NewTenant() {
     );
   }
 
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <Navbar />
@@ -168,7 +193,7 @@ export default function NewTenant() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -188,15 +213,24 @@ export default function NewTenant() {
             <Button
               circular
               size="$2"
-              backgroundColor="#2B4433"
+              background="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
-              onPress={() => router.back()}
-              position="absolute"
-              left={0}
-              top={0}
-              zIndex={1}
+              onPress={() => router.push("/(drawer)/(tabs)")}
+              style={{
+                position: "absolute",
+                left: 0,
+                backgroundColor: "#2B4433",
+                borderWidth: 0,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
+              }}
             />
-            <YStack space={5} justifyContent="center" alignItems="center">
+            <YStack justifyContent="center" alignItems="center">
               <SizableText
                 style={{
                   fontFamily: "Poppins",
@@ -210,19 +244,25 @@ export default function NewTenant() {
               >
                 Now Open
               </SizableText>
-              <SizableText
-                style={{
-                  fontFamily: "Poppins",
-                  fontWeight: "700",
-                  fontSize: 20,
-                  lineHeight: 20 * 1.3,
-                  color: "#2B4433",
-                  letterSpacing: 1,
-                  alignSelf: "center",
-                }}
+              <XStack
+                width={width * 0.5}
+                justifyContent="center"
+                alignItems="center"
               >
-                {tenant.name}!
-              </SizableText>
+                <SizableText
+                  style={{
+                    fontFamily: "Poppins",
+                    fontWeight: "700",
+                    fontSize: 28,
+                    lineHeight: 28 * 1,
+                    color: "#2B4433",
+                    alignSelf: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  {tenant.name}!
+                </SizableText>
+              </XStack>
             </YStack>
           </XStack>
 
@@ -237,7 +277,7 @@ export default function NewTenant() {
                   snapToAlignment="start"
                   decelerationRate="fast"
                   snapToInterval={TOTAL_ITEM_WIDTH_FOR_SNAP}
-                  initialScrollIndex={0} // Mulai dari gambar pertama
+                  initialScrollIndex={middleIndex} // Mulai dari gambar pertama
                   showsHorizontalScrollIndicator={false}
                   onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { x: animatedValue } } }],
@@ -261,8 +301,11 @@ export default function NewTenant() {
                         styles.imageWrapper,
                         {
                           width: ACTUAL_ITEM_WIDTH,
-                          marginRight: index === currentImages.length - 1 ? 0 : SPACE_BETWEEN_ITEMS,
-                        }
+                          marginRight:
+                            index === currentImages.length - 1
+                              ? 0
+                              : SPACE_BETWEEN_ITEMS,
+                        },
                       ]}
                     >
                       <Image source={item} style={styles.image} />
@@ -337,11 +380,7 @@ export default function NewTenant() {
               borderRadius={"$10"}
               onPress={() => router.push("/(drawer)/(tabs)/mallDirectory")}
             >
-              <SizableText
-                color="white"
-                fontSize={"$4"}
-                fontFamily="Poppins"
-              >
+              <SizableText color="white" fontSize={"$4"} fontFamily="Poppins">
                 Show Mall Directory
               </SizableText>
             </Button>

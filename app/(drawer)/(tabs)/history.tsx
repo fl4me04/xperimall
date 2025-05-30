@@ -1,7 +1,8 @@
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router, useFocusEffect } from "expo-router";
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import React from "react";
 import { Dimensions, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -116,37 +117,48 @@ export default function History() {
       setShowLoginDialog(true);
       return;
     }
-    
+
     try {
       console.log("=== Date Click Handler ===");
       console.log("Original date string:", dateStr);
-      
+
       // Parse the date string (e.g., "Thursday, 29 May 2025")
       const dateParts = dateStr.split(", ")[1].split(" ");
       const day = parseInt(dateParts[0]);
       const monthName = dateParts[1];
       const year = parseInt(dateParts[2]);
-      
+
       // Convert month name to number (1-12)
       const monthMap: { [key: string]: number } = {
-        'January': 1, 'February': 2, 'March': 3, 'April': 4,
-        'May': 5, 'June': 6, 'July': 7, 'August': 8,
-        'September': 9, 'October': 10, 'November': 11, 'December': 12
+        January: 1,
+        February: 2,
+        March: 3,
+        April: 4,
+        May: 5,
+        June: 6,
+        July: 7,
+        August: 8,
+        September: 9,
+        October: 10,
+        November: 11,
+        December: 12,
       };
-      
+
       const month = monthMap[monthName];
-      
+
       console.log("Parsed date parts:", { day, month, year, monthName });
-      
+
       // Ensure all parts are valid numbers
       if (isNaN(day) || isNaN(month) || isNaN(year)) {
         console.error("Invalid date parts:", { day, month, year, monthName });
         return;
       }
-      
-      const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+
+      const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day
+        .toString()
+        .padStart(2, "0")}`;
       console.log("Formatted date for API:", formattedDate);
-      
+
       router.push({
         pathname: "/(drawer)/(tabs)/historyTracker",
         params: { date: formattedDate },
@@ -161,7 +173,7 @@ export default function History() {
     setShowLoginDialog(false);
     router.push({
       pathname: "/(drawer)/(tabs)/authentication/login",
-      params: { returnTo: "/(drawer)/(tabs)/history" }
+      params: { returnTo: "/(drawer)/(tabs)/history" },
     });
   };
 
@@ -177,7 +189,7 @@ export default function History() {
         contentContainerStyle={{
           flexGrow: 1,
           backgroundColor: "#fff",
-          paddingTop: 100,
+          paddingTop: 80,
         }}
       >
         <YStack
@@ -192,7 +204,7 @@ export default function History() {
             position="relative"
             justifyContent="center"
             height={width * 0.115}
-            marginBottom={width * 0.01}
+            marginBottom={width * 0.02}
           >
             <Button
               circular
@@ -210,21 +222,22 @@ export default function History() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
+                zIndex: 10,
+                pointerEvents: "auto",
               }}
             />
             <SizableText
-            width={width * 0.9}
-            alignSelf="center"
-            style={{
-              fontSize: Math.min(23, width * 0.055),
-              lineHeight: Math.min(23, width * 0.055) * 1.3,
-              color: "#2B4433",
-              fontFamily: "Poppins",
-              flexWrap: "wrap",
-              flexShrink: 1,
-              textAlign: "center",
-            }}
-          >
+              width={width * 0.9}
+              style={{
+                fontSize: Math.min(32, width * 0.8),
+                lineHeight: Math.min(32, width * 0.8) * 1.3,
+                color: "#2B4433",
+                fontFamily: "Poppins",
+                flexWrap: "wrap",
+                flexShrink: 1,
+                textAlign: "center",
+              }}
+            >
               History
             </SizableText>
           </XStack>
@@ -273,20 +286,27 @@ export default function History() {
                   >
                     <YStack space={width * 0.02} padding={width * 0.01}>
                       <SizableText
+                        width={width * 0.9}
                         style={{
-                          fontSize: 18,
+                          fontSize: Math.min(20, width * 0.08),
+                          lineHeight: Math.min(20, width * 0.08) * 1.3,
                           color: "#4D4D4D",
                           fontFamily: "Poppins",
+                          flexWrap: "wrap",
+                          flexShrink: 1,
                         }}
                       >
                         {group.date}
                       </SizableText>
                       <SizableText
+                        width={width * 0.9}
                         style={{
-                          fontSize: 22,
+                          fontSize: Math.min(26, width * 0.08),
+                          lineHeight: Math.min(26, width * 0.08) * 1.3,
                           color: "#4A7C59",
                           fontFamily: "Poppins",
-                          fontWeight: "600",
+                          flexWrap: "wrap",
+                          flexShrink: 1,
                         }}
                       >
                         {formatCurrency(group.total)}

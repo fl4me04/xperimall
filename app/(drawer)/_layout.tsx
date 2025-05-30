@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Drawer } from "expo-router/drawer";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -17,6 +17,7 @@ import {
   Route,
   User,
 } from "@tamagui/lucide-icons";
+import React from "react";
 
 interface UserData {
   name: string;
@@ -120,8 +121,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           />
         )}
         style={{
-          backgroundColor:
-            pathName == "/mallDirectory" ? "#F7F5E6" : "#4A7C59",
+          backgroundColor: pathName == "/mallDirectory" ? "#F7F5E6" : "#4A7C59",
         }}
         onPress={() => {
           router.push("/(drawer)/(tabs)/mallDirectory");
