@@ -48,7 +48,7 @@ export default function activityPlanner() {
   };
 
   useEffect(() => {
-    if (!token) {
+    if (!token && !isAuthLoading) {
       setShowLoginDialog(true);
       return;
     }
@@ -66,7 +66,7 @@ export default function activityPlanner() {
       .catch((err) => {
         console.error("Error fetching categories:", err);
       });
-  }, [token]);
+  }, [token, isAuthLoading]);
 
   const toggleCategory = (categoryId: number) => {
     if (!token) {
@@ -196,15 +196,18 @@ export default function activityPlanner() {
               }}
             />
             <SizableText
-              style={{
-                fontFamily: "Poppins",
-                fontWeight: "700",
-                fontSize: 28,
-                color: "#000",
-                letterSpacing: 1,
-                alignSelf: "center",
-              }}
-            >
+            width={width * 0.9}
+            alignSelf="center"
+            style={{
+              fontSize: Math.min(23, width * 0.055),
+              lineHeight: Math.min(23, width * 0.055) * 1.3,
+              color: "#2B4433",
+              fontFamily: "Poppins",
+              flexWrap: "wrap",
+              flexShrink: 1,
+              textAlign: "center",
+            }}
+          >
               Your Activity Guide
             </SizableText>
           </XStack>
@@ -276,6 +279,7 @@ export default function activityPlanner() {
                 justifyContent="center"
                 style={{
                   padding: 140,
+                  overflow: "hidden",
                 }}
               >
                 <RNScrollView
@@ -286,7 +290,7 @@ export default function activityPlanner() {
                     gap: 10,
                     padding: 10,
                   }}
-                  showsVerticalScrollIndicator={false}
+                  showsVerticalScrollIndicator={true}
                 >
                   <XStack
                     flexWrap="wrap"
@@ -385,95 +389,51 @@ export default function activityPlanner() {
                 alignItems="center"
                 justifyContent="center"
                 marginTop={20}
+                style={{ overflow: "hidden" }}
               >
-                <YStack
-                  justifyContent="center"
-                  alignItems="center"
-                  position="absolute"
-                  top={15}
-                  left={0}
-                  right={0}
-                  bottom={15}
-                  space={5}
-                  style={{ maxHeight: 200 }}
-                >
-                  {loading ? (
-                    <SizableText marginBottom={2}>Loading...</SizableText>
-                  ) : !hasSearched ? (
-                    <SizableText
+                <RNScrollView style={{ width: "100%" }}>
+                  <SizableText
+                    marginBottom={2}
+                    style={{
+                      fontFamily: "Poppins",
+                      color: "#000",
+                      fontSize: 16,
+                      alignSelf: "center",
+                      paddingBottom: 10,
+                    }}
+                  >
+                    Recommendation
+                  </SizableText>
+                  {recommendations.map((recommendation, index) => (
+                    <XStack
+                      key={recommendation.ID || index}
+                      justifyContent="center"
+                      alignItems="center"
+                      alignSelf="center"
                       style={{
-                        fontFamily: "Poppins",
-                        color: "#666",
-                        textAlign: "center",
-                        padding: 20,
+                        borderRadius: 12,
+                        backgroundColor: "#4A7C59",
+                        width: "90%",
+                        height: height * 0.045,
+                        marginBottom: 6,
+                        marginVertical: 6,
+                        justifyContent: "center",
                       }}
                     >
-                      Please select at least one category and enter your budget
-                      to get recommendations
-                    </SizableText>
-                  ) : recommendations.length === 0 ? (
-                    <SizableText
-                      style={{
-                        fontFamily: "Poppins",
-                        color: "#666",
-                        textAlign: "center",
-                        padding: 20,
-                      }}
-                    >
-                      No recommendations found for your selected categories and
-                      budget. Try adjusting your budget or selecting different
-                      categories.
-                    </SizableText>
-                  ) : (
-                    <RNScrollView style={{ width: "100%" }}>
                       <SizableText
-                        marginBottom={2}
                         style={{
                           fontFamily: "Poppins",
-                          color: "#000",
-                          fontSize: 16,
-                          alignSelf: "center",
-                          paddingBottom: 10,
+                          color: "#fff",
+                          fontSize: 13,
+                          textWrap: "wrap",
+                          textAlign: "center",
                         }}
                       >
-                        Recommendation
+                        {recommendation.Name} (Rp {formatCurrency(recommendation.PriceMin.toString())} - Rp {formatCurrency(recommendation.PriceMax.toString())})
                       </SizableText>
-                      {recommendations.map((recommendation, index) => (
-                        <XStack
-                          key={recommendation.ID || index}
-                          justifyContent="center"
-                          alignItems="center"
-                          alignSelf="center"
-                          style={{
-                            borderRadius: 12,
-                            backgroundColor: "#4A7C59",
-                            width: "90%",
-                            height: height * 0.045,
-                            marginBottom: 6,
-                            marginVertical: 6,
-                            justifyContent: "center",
-                          }}
-                        >
-                          <SizableText
-                            style={{
-                              fontFamily: "Poppins",
-                              color: "#fff",
-                              fontSize: 13,
-                              textWrap: "wrap",
-                              textAlign: "center",
-                            }}
-                          >
-                            {recommendation.Name} (Rp{" "}
-                            {formatCurrency(recommendation.PriceMin.toString())}{" "}
-                            - Rp{" "}
-                            {formatCurrency(recommendation.PriceMax.toString())}
-                            )
-                          </SizableText>
-                        </XStack>
-                      ))}
-                    </RNScrollView>
-                  )}
-                </YStack>
+                    </XStack>
+                  ))}
+                </RNScrollView>
               </ZStack>
             </YStack>
           </YStack>

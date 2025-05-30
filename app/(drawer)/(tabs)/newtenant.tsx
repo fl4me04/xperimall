@@ -8,7 +8,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { Navbar } from "@/components/Navbar";
+import { Navbar } from "@/components/Navbar"; // Pastikan path ini benar
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useEffect, useState } from "react";
@@ -36,7 +36,13 @@ const tenantImages = {
   ],
 };
 
-const { width, height } = Dimensions.get("screen");
+const screenWidth = Dimensions.get("screen").width;
+const screenHeight = Dimensions.get("screen").height;
+
+// Konfigurasi Carousel
+const ACTUAL_ITEM_WIDTH = screenWidth * 0.8; // Lebar visual gambar utama
+const SPACE_BETWEEN_ITEMS = 16; // Jarak antar gambar (misalnya 16px)
+const TOTAL_ITEM_WIDTH_FOR_SNAP = ACTUAL_ITEM_WIDTH + SPACE_BETWEEN_ITEMS; // Lebar total per item untuk snapping
 
 interface Tenant {
   id: number;
@@ -95,40 +101,35 @@ export default function NewTenant() {
         <YStack
           width={"auto"}
           height={"auto"}
-          padding={width * 0.07}
-          space={width * 0.03}
-          paddingBottom={width * 0.01}
+          padding={screenWidth * 0.07}
+          space={screenWidth * 0.03}
+          paddingBottom={screenWidth * 0.01}
         >
           <XStack
             alignItems="center"
             position="relative"
             justifyContent="center"
-            height={width * 0.115}
+            height={screenWidth * 0.115}
+            marginBottom={screenWidth * 0.04}
           >
             <Button
               circular
               size="$2"
-              background="#2B4433"
+              backgroundColor="#2B4433"
               icon={<ArrowLeft size={20} color={"white"} />}
-              onPress={() => router.push("/(drawer)/(tabs)")}
-              style={{
-                position: "absolute",
-                left: 0,
-                backgroundColor: "#2B4433",
-                borderWidth: 0,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-                elevation: 3,
-              }}
+              onPress={() => router.back()} // Menggunakan router.back() lebih umum
+              position="absolute"
+              left={0}
+              top={0} 
+              zIndex={1} // Pastikan button di atas elemen lain jika ada tumpukan
             />
-            <YStack space={10} justifyContent="center" alignItems="center">
+            <YStack space={5} justifyContent="center" alignItems="center">
               <SizableText
                 style={{
                   fontFamily: "Poppins",
                   fontWeight: "100",
                   fontSize: 28,
+                  lineHeight: 28 * 1.3,
                   color: "#2B4433",
                   letterSpacing: 1,
                   alignSelf: "center",
@@ -141,6 +142,7 @@ export default function NewTenant() {
                   fontFamily: "Poppins",
                   fontWeight: "700",
                   fontSize: 20,
+                  lineHeight: 20 * 1.3,
                   color: "#2B4433",
                   letterSpacing: 1,
                   alignSelf: "center",
@@ -150,19 +152,21 @@ export default function NewTenant() {
               </SizableText>
             </YStack>
           </XStack>
+
           <YStack>
             <View style={styles.sliderContainer}>
-              <View style={styles.sliderTop}>
+              {/* Container FlatList tidak perlu diubah dari sebelumnya */}
+              <View style={styles.sliderTop}> 
                 <FlatList
                   ref={flatListRef}
                   data={currentImages}
                   horizontal
-                  pagingEnabled
-                  snapToAlignment="center"
+                  pagingEnabled={false} // pagingEnabled bisa jadi true atau false, tergantung efek yang diinginkan dengan snapToInterval
+                  snapToAlignment="start" // Coba "start"
                   decelerationRate="fast"
-                  snapToInterval={width - 60}
+                  snapToInterval={TOTAL_ITEM_WIDTH_FOR_SNAP}
                   initialScrollIndex={0}
-                  centerContent
+                  // centerContent // Mungkin tidak diperlukan jika paddingHorizontal sudah benar
                   showsHorizontalScrollIndicator={false}
                   onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { x: animatedValue } } }],
@@ -170,16 +174,27 @@ export default function NewTenant() {
                   )}
                   keyExtractor={(_, index) => index.toString()}
                   getItemLayout={(_, index) => ({
-                    length: width - 60,
-                    offset: (width - 60) * index,
+                    length: TOTAL_ITEM_WIDTH_FOR_SNAP,
+                    offset: TOTAL_ITEM_WIDTH_FOR_SNAP * index,
                     index,
                   })}
-                  style={{ flexGrow: 0, width }}
+                  style={{ width: screenWidth, flexGrow: 0 }}
                   contentContainerStyle={{
-                    paddingHorizontal: 31.6,
+                    // Padding ini memastikan area KONTEN gambar utama (ACTUAL_ITEM_WIDTH) berada di tengah.
+                    // Sisa ruang di sisi kiri dan kanan akan diisi oleh bagian dari SPACE_BETWEEN_ITEMS dan area kosong.
+                    paddingHorizontal: (screenWidth - ACTUAL_ITEM_WIDTH) / 2,
                   }}
-                  renderItem={({ item }) => (
-                    <View style={styles.imageWrapper}>
+                  renderItem={({ item, index }) => (
+                    <View 
+                      style={[
+                        styles.imageWrapper, 
+                        { 
+                          width: ACTUAL_ITEM_WIDTH,
+                          // Memberi jarak di kanan, kecuali untuk item terakhir
+                          marginRight: index === currentImages.length - 1 ? 0 : SPACE_BETWEEN_ITEMS,
+                        }
+                      ]}
+                    >
                       <Image source={item} style={styles.image} />
                     </View>
                   )}
@@ -188,9 +203,9 @@ export default function NewTenant() {
               <View style={styles.dotsWrapper}>
                 {currentImages.map((_, index) => {
                   const inputRange = [
-                    (index - 1) * width,
-                    index * width,
-                    (index + 1) * width,
+                    (index - 1) * TOTAL_ITEM_WIDTH_FOR_SNAP,
+                    index * TOTAL_ITEM_WIDTH_FOR_SNAP,
+                    (index + 1) * TOTAL_ITEM_WIDTH_FOR_SNAP,
                   ];
                   const dotColor = animatedValue.interpolate({
                     inputRange,
@@ -207,16 +222,17 @@ export default function NewTenant() {
               </View>
             </View>
           </YStack>
+
           <YStack
-            marginTop={10}
+            marginTop={20}
             justifyContent="center"
             alignItems="center"
-            style={{
-              backgroundColor: "#4A7C59",
-              padding: 10,
-              borderRadius: 15,
-              borderWidth: 1.4,
-            }}
+            backgroundColor="#4A7C59"
+            padding={15}
+            borderRadius={15}
+            borderWidth={1.4}
+            borderColor="#4A7C59"
+            space={5}
           >
             <SizableText
               style={{
@@ -224,6 +240,7 @@ export default function NewTenant() {
                 fontFamily: "Poppins",
                 color: "#fff",
                 textAlign: "center",
+                lineHeight: 15 * 1.4,
               }}
             >
               Central Park Jakarta - {tenant.location}
@@ -234,15 +251,17 @@ export default function NewTenant() {
                 fontFamily: "Poppins",
                 color: "#fff",
                 textAlign: "center",
+                lineHeight: 15 * 1.4,
               }}
             >
               Jl. Letjen S. Parman, Tanjung Duren, Jakarta Barat
             </SizableText>
           </YStack>
-          <YStack justifyContent="center" alignItems="center">
+
+          <YStack marginTop={20} justifyContent="center" alignItems="center">
             <Button
-              height={height * 0.05}
-              width={width * 0.5}
+              height={screenHeight * 0.05}
+              width={screenWidth * 0.5}
               backgroundColor={"#2B4433"}
               borderRadius={"$10"}
               onPress={() => router.push("/(drawer)/(tabs)/mallDirectory")}
@@ -250,19 +269,21 @@ export default function NewTenant() {
               <SizableText
                 color="white"
                 fontSize={"$4"}
-                style={{ fontFamily: "Poppins" }}
+                fontFamily="Poppins"
               >
                 Show Mall Directory
               </SizableText>
             </Button>
           </YStack>
-          <YStack marginTop={10} marginBottom={20}>
+
+          <YStack marginTop={20} marginBottom={20}>
             <SizableText
               style={{
                 fontSize: 15,
                 fontFamily: "Poppins",
                 color: "#000",
                 textAlign: "justify",
+                lineHeight: 15 * 1.5,
               }}
             >
               {tenant.description}
@@ -281,20 +302,22 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   sliderTop: {
-    height: 420,
+    height: 420, 
     marginBottom: 15,
-  },
-  imageWrapper: {
-    width: width - 60,
-    marginHorizontal: 31.2,
     alignItems: "center",
     justifyContent: "center",
-    overflow: "visible",
-    zIndex: 1,
+    width: screenWidth, 
+  },
+  imageWrapper: {
+    // width: ACTUAL_ITEM_WIDTH, // Diatur inline
+    height: 420, 
+    // alignItems: "center", // Tidak selalu perlu jika image 100%
+    // justifyContent: "center", // Tidak selalu perlu jika image 100%
+    overflow: "hidden", 
   },
   image: {
     width: "100%",
-    height: 420,
+    height: "100%", 
     borderRadius: 20,
     resizeMode: "cover",
   },
@@ -302,12 +325,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 10, 
   },
   dot: {
     width: 7,
     height: 7,
     borderRadius: 7,
-    backgroundColor: "#9BA88D",
+    backgroundColor: "#9BA88D", 
     marginHorizontal: 6,
   },
 });

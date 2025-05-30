@@ -392,8 +392,12 @@ export default function HistoryTracker() {
                     style={{
                       color: "#4A7C59",
                       fontWeight: "600",
-                      fontSize: 28,
+                      fontSize: Math.min(28, width * 0.07),
                       fontFamily: "Poppins",
+                      flexWrap: "wrap",
+                      flexShrink: 1,
+                      textAlign: "center",
+                      width: width * 0.8,
                     }}
                   >
                     {expenseData ? formatCurrency(expenseData.total) : "Rp 0"}

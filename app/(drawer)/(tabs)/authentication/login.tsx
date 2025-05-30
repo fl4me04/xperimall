@@ -138,9 +138,19 @@ export default function Login() {
           </XStack>
           <YStack padding={25}>
             <YStack space={15} justifyContent="center">
-              <SizableText
-                style={{ fontSize: 26, color: "#000", fontFamily: "Poppins" }}
-              >
+            <SizableText
+            width={width * 0.9}
+            alignSelf="center"
+            style={{
+              fontSize: Math.min(23, width * 0.055),
+              lineHeight: Math.min(23, width * 0.055) * 1.3,
+              color: "#2B4433",
+              fontFamily: "Poppins",
+              flexWrap: "wrap",
+              flexShrink: 1,
+              textAlign: "center",
+            }}
+          >
                 Sign In
               </SizableText>
               <YStack space={10}>

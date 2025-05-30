@@ -314,10 +314,14 @@ export default function FinanceTracker() {
               style={{
                 fontFamily: "Poppins",
                 fontWeight: "700",
-                fontSize: 28,
+                fontSize: Math.min(28, width * 0.07),
                 color: "#000",
                 letterSpacing: 1,
                 alignSelf: "center",
+                textAlign: "center",
+                flexWrap: "wrap",
+                flexShrink: 1,
+                width: width * 0.8,
               }}
             >
               Finance Tracker
