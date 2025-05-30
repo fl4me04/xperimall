@@ -253,8 +253,8 @@ export default function NewTenant() {
                   style={{
                     fontFamily: "Poppins",
                     fontWeight: "700",
-                    fontSize: 28,
-                    lineHeight: 28 * 1,
+                    fontSize: Math.min(22, width * 0.8),
+                    lineHeight: Math.min(22, width * 0.8) * 1.1,
                     color: "#2B4433",
                     alignSelf: "center",
                     textAlign: "center",
