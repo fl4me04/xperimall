@@ -1,8 +1,10 @@
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { Menu } from "@tamagui/lucide-icons";
 import { Button, SizableText, XStack } from "tamagui";
+import { Dimensions } from "react-native";
 
 export function Navbar() {
+  const { width } = Dimensions.get("window");
   const navigation = useNavigation();
 
   return (
@@ -21,6 +23,7 @@ export function Navbar() {
     >
       <Button
         animation="bouncy"
+        elevation="$4"
         hoverStyle={{
           scale: 1.05,
         }}
@@ -32,20 +35,20 @@ export function Navbar() {
         height={"auto"}
         icon={<Menu color="white" />}
         backgroundColor="transparent"
-        chromeless
         style={{
           position: "absolute",
           left: 10,
           bottom: 10,
-          zIndex: 1,
         }}
       />
       <SizableText
         flex={1}
-        fontFamily="LexendGiga"
-        fontSize={17}
-        color="white"
         textAlign="center"
+        style={{
+          fontFamily: "LexendGiga",
+          fontSize: 17,
+          color: "white",
+        }}
       >
         CENTRAL PARK JAKARTA
       </SizableText>
