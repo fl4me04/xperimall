@@ -40,7 +40,7 @@ export default function Login() {
 
     try {
       const response = await fetch(
-        "https://xperimall-backend.onrender.com/authentication/login",
+        "http://localhost:8080/authentication/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -51,42 +51,25 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        try {
-          // Store the JWT token
-          await AsyncStorage.setItem("token", data.token);
-          // Store user data
-          const userData = {
-            name: data.username,
-            email: email,
-          };
-          await AsyncStorage.setItem("userData", JSON.stringify(userData));
-          
-          // Clear form
-          setEmail("");
-          setPassword("");
-          
-          // Show success dialog
-          setShowSuccessDialog(true);
-          
-          // Wait a bit before navigating to ensure storage is complete
-          setTimeout(() => {
-            // Use router.replace to navigate to the return path
-            if (returnTo && returnTo !== "/(drawer)/(tabs)/authentication/login") {
-              router.replace(returnTo as any);
-            } else {
-              router.replace("/(drawer)/(tabs)");
-            }
-          }, 500);
-        } catch (storageError) {
-          console.error("Error storing auth data:", storageError);
-          alert("Error saving login information. Please try again.");
-        }
+        // Store the JWT token
+        await AsyncStorage.setItem("token", data.token);
+        // Store user data
+        const userData = {
+          name: data.username,
+          email: email,
+        };
+        await AsyncStorage.setItem("userData", JSON.stringify(userData));
+        setEmail("");
+        setPassword("");
+        setShowSuccessDialog(true);
+        // Use router.replace to navigate to the return path
+        router.replace(returnTo as any);
       } else {
         alert(data.message || "Login failed");
       }
     } catch (error) {
       console.error("Error logging in:", error);
-      alert("Error logging in. Please check your connection and try again.");
+      alert("Error logging in");
     }
   };
 
@@ -138,19 +121,9 @@ export default function Login() {
           </XStack>
           <YStack padding={25}>
             <YStack space={15} justifyContent="center">
-            <SizableText
-            width={width * 0.9}
-            alignSelf="center"
-            style={{
-              fontSize: Math.min(23, width * 0.055),
-              lineHeight: Math.min(23, width * 0.055) * 1.3,
-              color: "#2B4433",
-              fontFamily: "Poppins",
-              flexWrap: "wrap",
-              flexShrink: 1,
-              textAlign: "center",
-            }}
-          >
+              <SizableText
+                style={{ fontSize: 26, color: "#000", fontFamily: "Poppins" }}
+              >
                 Sign In
               </SizableText>
               <YStack space={10}>

@@ -2,26 +2,21 @@ import { useEffect, useState } from 'react';
 import { router, usePathname } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = "https://xperimall-backend.onrender.com";
+const API_URL = "http://localhost:8080";
 
 export const useAuth = () => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isValidating, setIsValidating] = useState(false);
   const pathname = usePathname();
 
   const validateToken = async (token: string) => {
     try {
-      console.log("Validating token:", token);
       const response = await fetch(`${API_URL}/authentication/user`, {
-        method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
         },
       });
-      console.log("Token validation response status:", response.status);
       return response.ok;
     } catch (error) {
       console.error('Error validating token:', error);
@@ -30,12 +25,8 @@ export const useAuth = () => {
   };
 
   const checkAuth = async () => {
-    if (isValidating) return;
-    
     try {
-      setIsValidating(true);
       const storedToken = await AsyncStorage.getItem('token');
-      console.log("Retrieved stored token:", storedToken ? "Token exists" : "No token");
       
       if (!storedToken) {
         if (!pathname.includes('/authentication/')) {
@@ -45,23 +36,17 @@ export const useAuth = () => {
         return;
       }
 
-      // Only validate token if we don't have a valid one yet
-      if (!token) {
-        const isValid = await validateToken(storedToken);
-        console.log("Token validation result:", isValid);
-        
-        if (!isValid) {
-          console.log("Token is invalid, removing from storage");
-          await AsyncStorage.removeItem('token');
-          if (!pathname.includes('/authentication/')) {
-            router.replace('/(drawer)/(tabs)/authentication/login');
-          }
-          setToken(null);
-          return;
+      const isValid = await validateToken(storedToken);
+      
+      if (!isValid) {
+        await AsyncStorage.removeItem('token');
+        if (!pathname.includes('/authentication/')) {
+          router.replace('/(drawer)/(tabs)/authentication/login');
         }
+        setToken(null);
+        return;
       }
 
-      console.log("Setting valid token");
       setToken(storedToken);
     } catch (error) {
       console.error('Error checking auth:', error);
@@ -71,7 +56,6 @@ export const useAuth = () => {
       setToken(null);
     } finally {
       setIsLoading(false);
-      setIsValidating(false);
     }
   };
 
