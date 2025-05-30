@@ -28,7 +28,6 @@ export default function HomeScreen() {
   useEffect(() => {
     loadUserData();
 
-    // Add interval to check for user data changes
     const checkUserData = async () => {
       const storedUserData = await AsyncStorage.getItem("userData");
       if (storedUserData) {
@@ -84,13 +83,15 @@ export default function HomeScreen() {
           paddingBottom={width * 0.02}
         >
           <SizableText
-            width={"auto"}
-            height={"auto"}
+            width={width * 0.9}
             style={{
-              fontSize: 25,
+              fontSize: Math.min(23, width * 0.055),
+              lineHeight: Math.min(23, width * 0.055) * 1.3,
               color: "#2B4433",
               fontFamily: "Poppins",
-              // fontWeight: "500",
+              flexWrap: "wrap",
+              flexShrink: 1,
+              textAlign: "left",
             }}
           >
             Hello, {userData ? userData.name : "Guest"}!
@@ -139,14 +140,16 @@ export default function HomeScreen() {
           padding={width * 0.05}
         >
           <SizableText
-            width={"auto"}
-            height={"auto"}
+            width={width * 0.9}
             alignSelf="center"
-            justifyContent="center"
             style={{
-              fontSize: 25,
+              fontSize: Math.min(23, width * 0.055),
+              lineHeight: Math.min(23, width * 0.055) * 1.3,
               color: "#2B4433",
               fontFamily: "Poppins",
+              flexWrap: "wrap",
+              flexShrink: 1,
+              textAlign: "center",
             }}
           >
             What's New on Central Park
@@ -235,14 +238,16 @@ export default function HomeScreen() {
           padding={width * 0.05}
         >
           <SizableText
-            width={"auto"}
-            height={"auto"}
+            width={width * 0.9}
             alignSelf="center"
-            justifyContent="center"
             style={{
-              fontSize: 25,
+              fontSize: Math.min(23, width * 0.055),
+              lineHeight: Math.min(23, width * 0.055) * 1.3,
               color: "#2B4433",
               fontFamily: "Poppins",
+              flexWrap: "wrap",
+              flexShrink: 1,
+              textAlign: "center",
             }}
           >
             Directory

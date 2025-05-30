@@ -167,15 +167,19 @@ export default function TabTwoScreen() {
               }}
             />
             <SizableText
-              style={{
-                fontFamily: "Poppins",
-                fontWeight: "700",
-                fontSize: 28,
-                color: "#000",
-                letterSpacing: 1,
-                alignSelf: "center",
-              }}
-            >
+            width={width * 0.9}
+            alignSelf="center"
+            style={{
+              fontSize: Math.min(23, width * 0.055),
+              lineHeight: Math.min(23, width * 0.055) * 1.3,
+              color: "#2B4433",
+              fontFamily: "Poppins",
+              flexWrap: "wrap",
+              flexShrink: 1,
+              textAlign: "center",
+              fontWeight: "700",
+            }}
+          >
               Mall Map
             </SizableText>
           </XStack>
