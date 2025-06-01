@@ -54,7 +54,7 @@ function createPieSlices(expenses: { amount: number; color: string }[]) {
 }
 
 const PieChart = React.memo(({ expenses }: { expenses: Expense[] }) => {
-  const colors = ["#4A7C59", "#C47A7B", "#9BA88D", "#F7F5E6", "#4D4D4D"];
+  const colors = ["#4A7C59", "#C47A7B", "#9BA88D", "#4D4D4D"];
   const pieSlices = expenses.length
     ? createPieSlices(
         expenses.map((expense, index) => ({

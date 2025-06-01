@@ -79,7 +79,57 @@ export default function register() {
     return `${year}-${month}-${day}`;
   }
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    const passwordRegex = /^(?=.*\d).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  const calculateAge = (birthDate: Date) => {
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age;
+  };
+
   const handleRegister = async () => {
+    setError("");
+
+    if (name.length < 4) {
+      setError("Name must be at least 4 characters long");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError("Password must be at least 8 characters long and contain at least one number");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    const age = calculateAge(date);
+    if (age < 13) {
+      setError("You must be at least 13 years old to register");
+      return;
+    }
+
     if (!termsAccepted) {
       setError("Please accept the Terms & Conditions");
       return;
@@ -87,11 +137,6 @@ export default function register() {
 
     if (!name || !email || !password || !confirmPassword || !gender || !dob) {
       setError("All fields are required!");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match!");
       return;
     }
 
@@ -120,10 +165,7 @@ export default function register() {
 
       const data = await response.json();
       if (!response.ok) {
-        if (
-          data.message &&
-          data.message.toLowerCase().includes("Duplicate entry")
-        ) {
+        if (data.message && data.message.toLowerCase().includes("Duplicate entry")) {
           setError("Email already exists!");
         } else {
           throw new Error(data.message || "Registration failed");
@@ -691,9 +733,12 @@ export function SelectGender({
           native={!!props.native}
           modal
           dismissOnSnapToBottom
-          animation="medium"
+          snapPoints={[25]}
+          position={0}
+          zIndex={100000}
         >
-          <Sheet.Frame>
+          <Sheet.Frame padding="$4">
+            <Sheet.Handle />
             <Sheet.ScrollView>
               <Adapt.Contents />
             </Sheet.ScrollView>
@@ -728,7 +773,7 @@ export function SelectGender({
         </Select.ScrollUpButton>
         <Select.Viewport minWidth={200}>
           <Select.Group>
-            <Select.Label>Genders</Select.Label>
+            <Select.Label style={{ fontFamily: "Poppins", color: "#2B4433" }}>Select Gender</Select.Label>
             {React.useMemo(
               () =>
                 Genders.map((item, i) => (
@@ -737,31 +782,15 @@ export function SelectGender({
                     key={item.name}
                     value={item.name.toLowerCase()}
                   >
-                    <Select.ItemText>{item.name}</Select.ItemText>
+                    <Select.ItemText style={{ fontFamily: "Poppins" }}>{item.name}</Select.ItemText>
                     <Select.ItemIndicator marginLeft="auto">
-                      <Check size={16} />
+                      <Check size={16} color="#4A7C59" />
                     </Select.ItemIndicator>
                   </Select.Item>
                 )),
               [Genders]
             )}
           </Select.Group>
-          {props.native && (
-            <YStack
-              position="absolute"
-              right={0}
-              top={0}
-              bottom={0}
-              alignItems="center"
-              justifyContent="center"
-              width={"$4"}
-              pointerEvents="none"
-            >
-              <ChevronDown
-                size={getFontSize((props.size as FontSizeTokens) ?? "$true")}
-              />
-            </YStack>
-          )}
         </Select.Viewport>
 
         <Select.ScrollDownButton
