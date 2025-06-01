@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time" 
 
 	"XperimallBackend/database"
 	"XperimallBackend/routes"
@@ -12,8 +13,14 @@ import (
 )
 
 func main() {
-	r := gin.Default()
+	loc, err := time.LoadLocation("Asia/Jakarta")
+	if err != nil {
+		panic("❌ Gagal load timezone Asia/Jakarta: " + err.Error())
+	}
+	time.Local = loc
 
+	r := gin.Default()
+	
 	database.ConnectDB()
 
 	r.Use(cors.Default())
@@ -24,7 +31,6 @@ func main() {
 		})
 	})
 
-	
 	routes.SetupRoutes(r)
 
 	port := os.Getenv("PORT")
@@ -33,7 +39,7 @@ func main() {
 	}
 
 	fmt.Println("🟢 Server starting on port: " + port)
-	err := r.Run(":" + port)
+	err = r.Run(":" + port)
 	if err != nil {
 		fmt.Println("🔴 Failed to start server:", err)
 	}
