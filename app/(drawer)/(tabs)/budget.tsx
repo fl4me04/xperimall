@@ -230,23 +230,22 @@ export default function activityPlanner() {
             >
               1. Enter your Budget
             </SizableText>
-            <Input
-              flex={1}
-              placeholder="Insert Amount (Rp.)"
-              value={`Rp ${formatCurrency(inputAmount)}`}
-              onChangeText={(value) =>
-                handleAmountChange(value.replace(/^Rp\s?/, ""))
-              }
-              style={{
-                width: "100%",
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "#000",
-                padding: 10,
-                backgroundColor: "#F7F5E6",
-                fontFamily: "Inter",
-              }}
-            />
+            <XStack alignItems="center" space="$2">
+              <Input
+                flex={1}
+                size="$3"
+                placeholder="Insert Amount (Rp.)"
+                value={`Rp ${formatCurrency(inputAmount)}`}
+                onChangeText={(value) =>
+                  handleAmountChange(value.replace(/^Rp\s?/, ""))
+                }
+                style={{
+                  backgroundColor: "#F7F5E6",
+                  borderColor: "#000",
+                  fontFamily: "Inter",
+                }}
+              />
+            </XStack>
           </YStack>
           <YStack
             alignItems="flex-start"

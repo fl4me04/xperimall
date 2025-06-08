@@ -389,68 +389,64 @@ export default function register() {
                 Sign Up
               </SizableText>
               <YStack space={10}>
-                <Input
-                  flex={1}
-                  placeholder="Enter your Name"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Inter",
-                  }}
-                  value={name}
-                  onChangeText={setName}
-                />
-                <Input
-                  flex={1}
-                  placeholder="Enter your E-mail"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Inter",
-                  }}
-                  value={email}
-                  onChangeText={setEmail}
-                />
-                <Input
-                  flex={1}
-                  placeholder="Enter your Password"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Inter",
-                  }}
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                />
-                <Input
-                  flex={1}
-                  placeholder="Re-enter your Password"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Inter",
-                  }}
-                  secureTextEntry
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                />
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your Name"
+                    value={name}
+                    onChangeText={setName}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your E-mail"
+                    value={email}
+                    onChangeText={setEmail}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your Password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Re-enter your Password"
+                    secureTextEntry
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
                 <XStack space={10}>
                   <SelectGender gender={gender} setGender={setGender} />
                   {Platform.OS === "web" ? (
@@ -514,21 +510,20 @@ export default function register() {
                     </>
                   )}
                 </XStack>
-                <Input
-                  flex={1}
-                  placeholder="Referral Code (Optional)"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Inter",
-                  }}
-                  value={referralCode}
-                  onChangeText={setReferralCode}
-                />
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Referral Code (Optional)"
+                    value={referralCode}
+                    onChangeText={setReferralCode}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
               </YStack>
               <XStack justifyContent="center" alignItems="center" space={10}>
                 <Checkbox

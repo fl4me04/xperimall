@@ -163,38 +163,36 @@ export default function Login() {
                 Sign In
               </SizableText>
               <YStack space={10}>
-                <Input
-                  flex={1}
-                  placeholder="Enter your E-mail"
-                  value={email}
-                  onChangeText={setEmail}
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Inter",
-                  }}
-                />
-                <Input
-                  flex={1}
-                  placeholder="Enter your Password"
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Inter",
-                  }}
-                  onSubmitEditing={handleLogin}
-                />
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your E-mail"
+                    value={email}
+                    onChangeText={setEmail}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your Password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                    onSubmitEditing={handleLogin}
+                  />
+                </XStack>
               </YStack>
               <XStack justifyContent="center" alignItems="center">
                 <Anchor
