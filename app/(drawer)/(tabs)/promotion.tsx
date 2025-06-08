@@ -13,7 +13,7 @@ import {
   YStack,
 } from "tamagui";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 export default function promotion() {
   const buttonImages = {
@@ -27,6 +27,21 @@ export default function promotion() {
     button8: require("../../../assets/images/Stadivarius.jpg"),
   };
 
+  const sections = [
+    {
+      title: "Food & Beverages",
+      items: [1, 2, 3, 4],
+    },
+    {
+      title: "Beauty & Wellness",
+      items: [5, 6],
+    },
+    {
+      title: "Fashion",
+      items: [7, 8],
+    },
+  ];
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <Navbar />
@@ -38,17 +53,15 @@ export default function promotion() {
         }}
       >
         <YStack
-          width={"auto"}
-          height={"auto"}
           padding={width * 0.07}
-          space={width * 0.03}
-          paddingBottom={width * 0.01}
+          space={width * 0.05}
+          paddingBottom={width * 0.03}
         >
           <XStack
             alignItems="center"
-            position="relative"
             justifyContent="center"
             height={width * 0.115}
+            position="relative"
           >
             <Button
               circular
@@ -66,241 +79,108 @@ export default function promotion() {
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
                 elevation: 3,
-                zIndex: 10,
-                pointerEvents: "auto",
               }}
             />
           </XStack>
-          <YStack
-            space={width * 0.03}
-            alignItems="center"
-            marginBottom={20}
-            marginTop={-20}
-          >
-            <XStack
-              width={width * 0.5}
-              style={{
-                backgroundColor: "#4A7C59",
-                padding: 7,
-                borderRadius: 20,
-                borderWidth: 1.4,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
+
+          {sections.map((section, index) => (
+            <YStack
+              key={index}
+              space={width * 0.04}
+              alignItems="center"
+              marginBottom={index === sections.length - 1 ? 0 : 30}
             >
-              <SizableText
-                style={{ fontSize: 20, color: "#fff", fontWeight: "500", fontFamily: "Inter" }}
+              <XStack
+                width={width * 0.5}
+                style={{
+                  backgroundColor: "#4A7C59",
+                  padding: 8,
+                  borderRadius: 20,
+                  borderWidth: 1.4,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                  elevation: 3,
+                }}
               >
-                Food & Beverages
-              </SizableText>
-            </XStack>
-            <XStack space={width * 0.03} justifyContent="center">
-              <Button
-                width={width * 0.4}
-                height={width * 0.5}
-                onPress={() =>
-                  router.push({
-                    pathname: "/(drawer)/(tabs)/promodetails",
-                    params: { id: 1 },
-                  })
+                <SizableText
+                  style={{
+                    fontSize: 16,
+                    color: "#fff",
+                    fontWeight: "600",
+                    fontFamily: "Inter",
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  {section.title}
+                </SizableText>
+              </XStack>
+
+              {Array.from({ length: Math.ceil(section.items.length / 2) }).map(
+                (_, rowIdx) => {
+                  const startIdx = rowIdx * 2;
+                  const pair = section.items.slice(startIdx, startIdx + 2);
+                  return (
+                    <XStack
+                      key={rowIdx}
+                      space={width * 0.04}
+                      justifyContent="center"
+                      marginTop={rowIdx > 0 ? width * 0.04 : 0}
+                    >
+                      {pair.map((itemId) => (
+                        <YStack
+                          key={itemId}
+                          width={width * 0.4}
+                          borderRadius={16}
+                          overflow="hidden"
+                          backgroundColor="#fff"
+                          elevation={4}
+                          style={{
+                            shadowColor: "#000",
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.15,
+                            shadowRadius: 6,
+                          }}
+                        >
+                          <Button
+                            onPress={() =>
+                              router.push({
+                                pathname: "/(drawer)/(tabs)/promodetails",
+                                params: { id: itemId },
+                              })
+                            }
+                            padding="$0"
+                            backgroundColor="transparent"
+                            style={{
+                              width: "100%",
+                              height: width * 0.5,
+                            }}
+                            animation="bouncy"
+                            scale={0.95}
+                            hoverStyle={{ scale: 0.98 }}
+                            pressStyle={{ scale: 0.92 }}
+                          >
+                            <Image
+                              resizeMode="cover"
+                              source={buttonImages[`button${itemId}` as keyof typeof buttonImages]}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                borderRadius: 16,
+                              }}
+                            />
+                          </Button>
+                        </YStack>
+                      ))}
+                    </XStack>
+                  );
                 }
-                borderRadius={width * 0.02}
-                padding="$0"
-                backgroundColor="transparent"
-                overflow="hidden"
-              >
-                <Image
-                  resizeMode="contain"
-                  source={buttonImages["button1"]}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Button>
-              <Button
-                width={width * 0.4}
-                height={width * 0.5}
-                onPress={() =>
-                  router.push({
-                    pathname: "/(drawer)/(tabs)/promodetails",
-                    params: { id: 2 },
-                  })
-                }
-                borderRadius={width * 0.02}
-                padding="$0"
-                backgroundColor="transparent"
-                overflow="hidden"
-              >
-                <Image
-                  resizeMode="contain"
-                  source={buttonImages["button2"]}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Button>
-            </XStack>
-            <XStack space={width * 0.03} justifyContent="center">
-              <Button
-                width={width * 0.4}
-                height={width * 0.5}
-                onPress={() =>
-                  router.push({
-                    pathname: "/(drawer)/(tabs)/promodetails",
-                    params: { id: 3 },
-                  })
-                }
-                borderRadius={width * 0.02}
-                padding="$0"
-                backgroundColor="transparent"
-                overflow="hidden"
-              >
-                <Image
-                  resizeMode="contain"
-                  source={buttonImages["button3"]}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Button>
-              <Button
-                width={width * 0.4}
-                height={width * 0.5}
-                onPress={() =>
-                  router.push({
-                    pathname: "/(drawer)/(tabs)/promodetails",
-                    params: { id: 4 },
-                  })
-                }
-                borderRadius={width * 0.02}
-                padding="$0"
-                backgroundColor="transparent"
-                overflow="hidden"
-              >
-                <Image
-                  resizeMode="contain"
-                  source={buttonImages["button4"]}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Button>
-            </XStack>
-          </YStack>
-          <YStack space={width * 0.03} alignItems="center" marginBottom={20}>
-            <XStack
-              width={width * 0.5}
-              style={{
-                backgroundColor: "#4A7C59",
-                padding: 7,
-                borderRadius: 20,
-                borderWidth: 1.4,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <SizableText
-                style={{ fontSize: 20, color: "#fff", fontWeight: "500", fontFamily: "Inter" }}
-              >
-                Beauty & Wellness
-              </SizableText>
-            </XStack>
-            <XStack space={width * 0.03} justifyContent="center">
-              <Button
-                width={width * 0.4}
-                height={width * 0.5}
-                onPress={() =>
-                  router.push({
-                    pathname: "/(drawer)/(tabs)/promodetails",
-                    params: { id: 5 },
-                  })
-                }
-                borderRadius={width * 0.02}
-                padding="$0"
-                backgroundColor="transparent"
-                overflow="hidden"
-              >
-                <Image
-                  resizeMode="contain"
-                  source={buttonImages["button5"]}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Button>
-              <Button
-                width={width * 0.4}
-                height={width * 0.5}
-                onPress={() =>
-                  router.push({
-                    pathname: "/(drawer)/(tabs)/promodetails",
-                    params: { id: 6 },
-                  })
-                }
-                borderRadius={width * 0.02}
-                padding="$0"
-                backgroundColor="transparent"
-                overflow="hidden"
-              >
-                <Image
-                  resizeMode="stretch"
-                  source={buttonImages["button6"]}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Button>
-            </XStack>
-          </YStack>
-          <YStack space={width * 0.03} alignItems="center" marginBottom={20}>
-            <XStack
-              width={width * 0.5}
-              style={{
-                backgroundColor: "#4A7C59",
-                padding: 7,
-                borderRadius: 20,
-                borderWidth: 1.4,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <SizableText
-                style={{ fontSize: 20, color: "#fff", fontWeight: "500", fontFamily: "Inter" }}
-              >
-                Fashion
-              </SizableText>
-            </XStack>
-            <XStack space={width * 0.03} justifyContent="center">
-              <Button
-                width={width * 0.4}
-                height={width * 0.5}
-                onPress={() =>
-                  router.push({
-                    pathname: "/(drawer)/(tabs)/promodetails",
-                    params: { id: 7 },
-                  })
-                }
-                borderRadius={width * 0.02}
-                padding="$0"
-                backgroundColor="transparent"
-                overflow="hidden"
-              >
-                <Image
-                  resizeMode="contain"
-                  source={buttonImages["button7"]}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Button>
-              <Button
-                width={width * 0.4}
-                height={width * 0.5}
-                onPress={() =>
-                  router.push({
-                    pathname: "/(drawer)/(tabs)/promodetails",
-                    params: { id: 8 },
-                  })
-                }
-                borderRadius={width * 0.02}
-                padding="$0"
-                backgroundColor="transparent"
-                overflow="hidden"
-              >
-                <Image
-                  resizeMode="stretch"
-                  source={buttonImages["button8"]}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Button>
-            </XStack>
-          </YStack>
+              )}
+            </YStack>
+          ))}
         </YStack>
       </ScrollView>
     </SafeAreaView>
