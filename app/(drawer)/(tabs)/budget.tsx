@@ -446,7 +446,8 @@ export default function activityPlanner() {
                           style={{
                             fontFamily: "Inter",
                             color: "#fff",
-                            fontSize: 13,
+                            fontSize: Math.min(13, width * 0.03),
+                            lineHeight: Math.min(13, width * 0.03) * 1.3,
                             textWrap: "wrap",
                             textAlign: "center",
                           }}
