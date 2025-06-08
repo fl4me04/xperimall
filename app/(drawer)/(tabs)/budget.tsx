@@ -205,7 +205,7 @@ export default function activityPlanner() {
                 fontSize: Math.min(32, width * 0.8),
                 lineHeight: Math.min(32, width * 0.8) * 1.3,
                 color: "#2B4433",
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 flexShrink: 1,
                 textAlign: "center",
                 maxWidth: width * 0.7,
@@ -244,7 +244,7 @@ export default function activityPlanner() {
                 borderColor: "#000",
                 padding: 10,
                 backgroundColor: "#F7F5E6",
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
               }}
             />
           </YStack>
@@ -356,7 +356,7 @@ export default function activityPlanner() {
                 justifyContent="center"
                 onPress={fetchRecommendations}
               >
-                <SizableText style={{ fontFamily: "Poppins", color: "#fff" }}>
+                <SizableText style={{ fontFamily: "Inter", color: "#fff" }}>
                   Generate
                 </SizableText>
               </Button>
@@ -403,7 +403,7 @@ export default function activityPlanner() {
                   <SizableText
                     marginBottom={2}
                     style={{
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       color: "#000",
                       fontSize: 16,
                       alignSelf: "center",
@@ -416,7 +416,7 @@ export default function activityPlanner() {
                   {recommendations.length === 0 ? (
                     <SizableText
                       style={{
-                        fontFamily: "Poppins",
+                        fontFamily: "Inter",
                         color: "#666",
                         fontSize: 14,
                         textAlign: "center",
@@ -445,7 +445,7 @@ export default function activityPlanner() {
                       >
                         <SizableText
                           style={{
-                            fontFamily: "Poppins",
+                            fontFamily: "Inter",
                             color: "#fff",
                             fontSize: 13,
                             textWrap: "wrap",
@@ -510,7 +510,7 @@ export default function activityPlanner() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -520,7 +520,7 @@ export default function activityPlanner() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
@@ -593,7 +593,7 @@ export default function activityPlanner() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -603,7 +603,7 @@ export default function activityPlanner() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
@@ -669,7 +669,7 @@ export default function activityPlanner() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -679,7 +679,7 @@ export default function activityPlanner() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,

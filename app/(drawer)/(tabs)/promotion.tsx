@@ -89,7 +89,7 @@ export default function promotion() {
               }}
             >
               <SizableText
-                style={{ fontSize: 20, color: "#fff", fontWeight: "500" }}
+                style={{ fontSize: 20, color: "#fff", fontWeight: "500", fontFamily: "Inter" }}
               >
                 Food & Beverages
               </SizableText>
@@ -192,7 +192,7 @@ export default function promotion() {
               }}
             >
               <SizableText
-                style={{ fontSize: 20, color: "#fff", fontWeight: "500" }}
+                style={{ fontSize: 20, color: "#fff", fontWeight: "500", fontFamily: "Inter" }}
               >
                 Beauty & Wellness
               </SizableText>
@@ -253,7 +253,7 @@ export default function promotion() {
               }}
             >
               <SizableText
-                style={{ fontSize: 20, color: "#fff", fontWeight: "500" }}
+                style={{ fontSize: 20, color: "#fff", fontWeight: "500", fontFamily: "Inter" }}
               >
                 Fashion
               </SizableText>

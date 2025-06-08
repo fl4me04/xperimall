@@ -233,7 +233,7 @@ export default function NewTenant() {
             <YStack justifyContent="center" alignItems="center">
               <SizableText
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "100",
                   fontSize: 28,
                   lineHeight: 28 * 1.3,
@@ -251,7 +251,7 @@ export default function NewTenant() {
               >
                 <SizableText
                   style={{
-                    fontFamily: "Poppins",
+                    fontFamily: "Inter",
                     fontWeight: "700",
                     fontSize: Math.min(22, width * 0.8),
                     lineHeight: Math.min(22, width * 0.8) * 1.1,
@@ -351,7 +351,7 @@ export default function NewTenant() {
             <SizableText
               style={{
                 fontSize: 15,
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 color: "#fff",
                 textAlign: "center",
                 lineHeight: 15 * 1.4,
@@ -362,7 +362,7 @@ export default function NewTenant() {
             <SizableText
               style={{
                 fontSize: 15,
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 color: "#fff",
                 textAlign: "center",
                 lineHeight: 15 * 1.4,
@@ -380,7 +380,7 @@ export default function NewTenant() {
               borderRadius={"$10"}
               onPress={() => router.push("/(drawer)/(tabs)/mallDirectory")}
             >
-              <SizableText color="white" fontSize={"$4"} fontFamily="Poppins">
+              <SizableText color="white" fontSize={"$4"} fontFamily="Inter">
                 Show Mall Directory
               </SizableText>
             </Button>
@@ -390,7 +390,7 @@ export default function NewTenant() {
             <SizableText
               style={{
                 fontSize: 15,
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 color: "#000",
                 textAlign: "justify",
                 lineHeight: 15 * 1.5,

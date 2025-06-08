@@ -89,7 +89,7 @@ export default function HomeScreen() {
               fontSize: Math.min(28, width * 0.8),
               lineHeight: Math.min(28, width * 0.8) * 1.3,
               color: "#2B4433",
-              fontFamily: "Poppins",
+              fontFamily: "Inter",
               flexWrap: "wrap",
               flexShrink: 1,
               textAlign: "left",
@@ -115,7 +115,7 @@ export default function HomeScreen() {
               onChangeText={setSearchText}
               borderWidth={0}
               backgroundColor="transparent"
-              fontFamily={"Poppins"}
+              fontFamily={"Inter"}
             />
             <Button
               icon={Filter}
@@ -147,7 +147,7 @@ export default function HomeScreen() {
               fontSize: Math.min(28, width * 0.8),
               lineHeight: Math.min(28, width * 0.8) * 1.3,
               color: "#2B4433",
-              fontFamily: "Poppins",
+              fontFamily: "Inter",
               flexWrap: "wrap",
               flexShrink: 1,
               textAlign: "center",
@@ -253,7 +253,7 @@ export default function HomeScreen() {
               fontSize: Math.min(28, width * 0.8),
               lineHeight: Math.min(28, width * 0.8) * 1.3,
               color: "#2B4433",
-              fontFamily: "Poppins",
+              fontFamily: "Inter",
               flexWrap: "wrap",
               flexShrink: 1,
               textAlign: "center",
@@ -278,7 +278,7 @@ export default function HomeScreen() {
                 color="white"
                 fontSize={"$5"}
                 textAlign="center"
-                style={{ fontFamily: "Poppins" }}
+                style={{ fontFamily: "Inter" }}
               >
                 Lower Ground Floor
               </SizableText>
@@ -299,7 +299,7 @@ export default function HomeScreen() {
                 color="white"
                 fontSize={"$5"}
                 textAlign="center"
-                style={{ fontFamily: "Poppins" }}
+                style={{ fontFamily: "Inter" }}
               >
                 Lower Ground Mezzanine
               </SizableText>
@@ -322,7 +322,7 @@ export default function HomeScreen() {
                 color="white"
                 fontSize={"$5"}
                 textAlign="center"
-                style={{ fontFamily: "Poppins" }}
+                style={{ fontFamily: "Inter" }}
               >
                 Ground Floor
               </SizableText>
@@ -343,7 +343,7 @@ export default function HomeScreen() {
                 color="white"
                 fontSize={"$5"}
                 textAlign="center"
-                style={{ fontFamily: "Poppins" }}
+                style={{ fontFamily: "Inter" }}
               >
                 Upper Ground Floor
               </SizableText>
@@ -366,7 +366,7 @@ export default function HomeScreen() {
                 color="white"
                 fontSize={"$5"}
                 textAlign="center"
-                style={{ fontFamily: "Poppins" }}
+                style={{ fontFamily: "Inter" }}
               >
                 1st Floor
               </SizableText>
@@ -387,7 +387,7 @@ export default function HomeScreen() {
                 color="white"
                 fontSize={"$5"}
                 textAlign="center"
-                style={{ fontFamily: "Poppins" }}
+                style={{ fontFamily: "Inter" }}
               >
                 2nd Floor
               </SizableText>
@@ -410,7 +410,7 @@ export default function HomeScreen() {
                 color="white"
                 fontSize={"$5"}
                 textAlign="center"
-                style={{ fontFamily: "Poppins" }}
+                style={{ fontFamily: "Inter" }}
               >
                 3rd Floor
               </SizableText>
