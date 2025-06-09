@@ -8,61 +8,90 @@ import {
   Button,
   Image,
   ScrollView,
-  SizableText,
+  Text,
   XStack,
   YStack,
+  ZStack,
+  SizableText,
 } from "tamagui";
 
 const { width } = Dimensions.get("window");
 
+const promoCategories = [
+  {
+    name: "Food & Beverages",
+    promos: [
+      {
+        id: 1,
+        title: "Maison Sale",
+        image: require("../../../assets/images/Maison.jpg"),
+      },
+      {
+        id: 2,
+        title: "GongXi Promo",
+        image: require("../../../assets/images/GongXi.jpg"),
+      },
+      {
+        id: 3,
+        title: "Gyudon Madness",
+        image: require("../../../assets/images/Gyudon.jpg"),
+      },
+      {
+        id: 4,
+        title: "Macarons Treat",
+        image: require("../../../assets/images/Macarons.jpg"),
+      },
+    ],
+  },
+  {
+    name: "Beauty & Wellness",
+    promos: [
+      {
+        id: 5,
+        title: "Sensatia Glow",
+        image: require("../../../assets/images/Sensatia.jpeg"),
+      },
+      {
+        id: 6,
+        title: "Victoria Secret",
+        image: require("../../../assets/images/Victoria.jpg"),
+      },
+    ],
+  },
+  {
+    name: "Fashion",
+    promos: [
+      {
+        id: 7,
+        title: "Pull & Bear Style",
+        image: require("../../../assets/images/PullBear.jpg"),
+      },
+      {
+        id: 8,
+        title: "Stradivarius Look",
+        image: require("../../../assets/images/Stadivarius.jpg"),
+      },
+    ],
+  },
+];
+
+// Helper: chunk promos into rows of 2
+const chunkArray = (array: any[], size: number) => {
+  const chunked = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunked.push(array.slice(i, i + size));
+  }
+  return chunked;
+};
+
 export default function promotion() {
-  const buttonImages = {
-    button1: require("../../../assets/images/Maison.jpg"),
-    button2: require("../../../assets/images/GongXi.jpg"),
-    button3: require("../../../assets/images/Gyudon.jpg"),
-    button4: require("../../../assets/images/Macarons.jpg"),
-    button5: require("../../../assets/images/Sensatia.jpeg"),
-    button6: require("../../../assets/images/Victoria.jpg"),
-    button7: require("../../../assets/images/PullBear.jpg"),
-    button8: require("../../../assets/images/Stadivarius.jpg"),
-  };
-
-  const sections = [
-    {
-      title: "Food & Beverages",
-      items: [1, 2, 3, 4],
-    },
-    {
-      title: "Beauty & Wellness",
-      items: [5, 6],
-    },
-    {
-      title: "Fashion",
-      items: [7, 8],
-    },
-  ];
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <Navbar />
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          backgroundColor: "#fff",
-          paddingTop: 80,
-        }}
-      >
-        <YStack
-          padding={width * 0.07}
-          space={width * 0.05}
-          paddingBottom={width * 0.03}
-        >
-          <XStack
-            alignItems="center"
-            justifyContent="center"
-            height={width * 0.115}
-            position="relative"
-          >
+      <ScrollView contentContainerStyle={{ paddingTop: 80, paddingBottom: 30 }}>
+        <YStack paddingHorizontal={width * 0.07} space={width * 0.05}>
+          {/* Header */}
+          <XStack alignItems="center" justifyContent="space-between">
             <Button
               circular
               size="$2"
@@ -70,8 +99,6 @@ export default function promotion() {
               icon={<ArrowLeft size={20} color={"white"} />}
               onPress={() => router.push("/(drawer)/(tabs)")}
               style={{
-                position: "absolute",
-                left: 0,
                 backgroundColor: "#2B4433",
                 borderWidth: 0,
                 shadowColor: "#000",
@@ -81,104 +108,84 @@ export default function promotion() {
                 elevation: 3,
               }}
             />
+            <SizableText style={{ fontSize: 22, fontWeight: "700", color: "#2B4433" }}>
+              Promotions
+            </SizableText>
+            <XStack width={32} />
           </XStack>
 
-          {sections.map((section, index) => (
-            <YStack
-              key={index}
-              space={width * 0.04}
-              alignItems="center"
-              marginBottom={index === sections.length - 1 ? 0 : 30}
-            >
-              <XStack
-                width={width * 0.5}
+          {/* Content */}
+          {promoCategories.map((category, idx) => (
+            <YStack key={idx} space={width * 0.03} marginTop={30} alignItems="center">
+              {/* Category Title */}
+              <Text
                 style={{
-                  backgroundColor: "#4A7C59",
-                  padding: 8,
-                  borderRadius: 20,
-                  borderWidth: 1.4,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 3,
+                  fontSize: 18,
+                  fontWeight: "600",
+                  color: "#4A7C59",
+                  marginBottom: 10,
+                  textAlign: "center",
                 }}
               >
-                <SizableText
-                  style={{
-                    fontSize: 16,
-                    color: "#fff",
-                    fontWeight: "600",
-                    fontFamily: "Inter",
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  {section.title}
-                </SizableText>
-              </XStack>
+                {category.name}
+              </Text>
 
-              {Array.from({ length: Math.ceil(section.items.length / 2) }).map(
-                (_, rowIdx) => {
-                  const startIdx = rowIdx * 2;
-                  const pair = section.items.slice(startIdx, startIdx + 2);
-                  return (
-                    <XStack
-                      key={rowIdx}
-                      space={width * 0.04}
-                      justifyContent="center"
-                      marginTop={rowIdx > 0 ? width * 0.04 : 0}
+              {/* Cards in 2 per row */}
+              {chunkArray(category.promos, 2).map((row, rowIdx) => (
+                <XStack
+                  key={rowIdx}
+                  justifyContent="space-between"
+                  width="100%"
+                  marginBottom={width * 0.04}
+                >
+                  {row.map((promo) => (
+                    <Button
+                      key={promo.id}
+                      width={(width * 0.85 - width * 0.04) / 2}
+                      height={width * 0.5}
+                      borderRadius={16}
+                      padding={0}
+                      backgroundColor="transparent"
+                      onPress={() =>
+                        router.push({
+                          pathname: "/(drawer)/(tabs)/promodetails",
+                          params: { id: promo.id },
+                        })
+                      }
+                      style={{
+                        shadowColor: "#000",
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 4,
+                        elevation: 3,
+                      }}
                     >
-                      {pair.map((itemId) => (
+                      <ZStack width="100%" height="100%" borderRadius={16} overflow="hidden">
+                        <Image
+                          source={promo.image}
+                          resizeMode="cover"
+                          style={{ width: "100%", height: "100%" }}
+                        />
                         <YStack
-                          key={itemId}
-                          width={width * 0.4}
-                          borderRadius={16}
-                          overflow="hidden"
-                          backgroundColor="#fff"
-                          elevation={4}
-                          style={{
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.15,
-                            shadowRadius: 6,
-                          }}
+                          position="absolute"
+                          bottom={0}
+                          width="100%"
+                          paddingVertical={8}
+                          paddingHorizontal={12}
+                          backgroundColor="rgba(0,0,0,0.4)"
                         >
-                          <Button
-                            onPress={() =>
-                              router.push({
-                                pathname: "/(drawer)/(tabs)/promodetails",
-                                params: { id: itemId },
-                              })
-                            }
-                            padding="$0"
-                            backgroundColor="transparent"
-                            style={{
-                              width: "100%",
-                              height: width * 0.5,
-                            }}
-                            animation="bouncy"
-                            scale={0.95}
-                            hoverStyle={{ scale: 0.98 }}
-                            pressStyle={{ scale: 0.92 }}
-                          >
-                            <Image
-                              resizeMode="cover"
-                              source={buttonImages[`button${itemId}` as keyof typeof buttonImages]}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                borderRadius: 16,
-                              }}
-                            />
-                          </Button>
+                          <Text color="#fff" fontWeight="600" fontSize={14}>
+                            {promo.title}
+                          </Text>
                         </YStack>
-                      ))}
-                    </XStack>
-                  );
-                }
-              )}
+                      </ZStack>
+                    </Button>
+                  ))}
+                  {row.length === 1 && (
+                    <XStack width={(width * 0.85 - width * 0.04) / 2} />
+                  )}
+                </XStack>
+              ))}
             </YStack>
           ))}
         </YStack>
