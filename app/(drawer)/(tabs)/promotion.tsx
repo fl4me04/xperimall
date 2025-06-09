@@ -115,7 +115,7 @@ export default function promotion() {
                 color: "#2B4433",
                 marginLeft: 10,
                 textAlign: "center",
-                fontFamily: "DmSerifDisplay",
+                fontFamily: "DmSerifDisplay-Regular",
                 
               }}
             >
