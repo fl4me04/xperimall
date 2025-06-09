@@ -208,7 +208,7 @@ export default function mallDirectory() {
                   justifyContent="center"
                   alignItems="center"
                   style={{
-                    fontFamily: "Poppins",
+                    fontFamily: "Inter",
                     fontSize: 20,
                     color: "#fff",
                     fontWeight: "500",
@@ -223,7 +223,7 @@ export default function mallDirectory() {
                     key={activity.id}
                     style={{
                       fontSize: 17,
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       fontWeight: "500",
                       color: "#2B4433",
                     }}
@@ -324,18 +324,18 @@ const styles = StyleSheet.create({
   textItem: {
     flex: 1,
     fontSize: 16,
-    fontFamily: "Poppins",
+    fontFamily: "Inter",
     color: "#2B4433",
   },
   placeholderStyle: {
     fontSize: 20,
-    fontFamily: "Poppins",
+    fontFamily: "Inter",
     color: "#2B4433",
     fontWeight: "600",
   },
   selectedTextStyle: {
     fontSize: 20,
-    fontFamily: "Poppins",
+    fontFamily: "Inter",
     color: "#2B4433",
     fontWeight: "600",
   },

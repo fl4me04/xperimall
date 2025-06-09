@@ -205,7 +205,7 @@ export default function activityPlanner() {
                 fontSize: Math.min(32, width * 0.8),
                 lineHeight: Math.min(32, width * 0.8) * 1.3,
                 color: "#2B4433",
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 flexShrink: 1,
                 textAlign: "center",
                 maxWidth: width * 0.7,
@@ -230,23 +230,22 @@ export default function activityPlanner() {
             >
               1. Enter your Budget
             </SizableText>
-            <Input
-              flex={1}
-              placeholder="Insert Amount (Rp.)"
-              value={`Rp ${formatCurrency(inputAmount)}`}
-              onChangeText={(value) =>
-                handleAmountChange(value.replace(/^Rp\s?/, ""))
-              }
-              style={{
-                width: "100%",
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "#000",
-                padding: 10,
-                backgroundColor: "#F7F5E6",
-                fontFamily: "Poppins",
-              }}
-            />
+            <XStack alignItems="center" space="$2">
+              <Input
+                flex={1}
+                size="$3"
+                placeholder="Insert Amount (Rp.)"
+                value={`Rp ${formatCurrency(inputAmount)}`}
+                onChangeText={(value) =>
+                  handleAmountChange(value.replace(/^Rp\s?/, ""))
+                }
+                style={{
+                  backgroundColor: "#F7F5E6",
+                  borderColor: "#000",
+                  fontFamily: "Inter",
+                }}
+              />
+            </XStack>
           </YStack>
           <YStack
             alignItems="flex-start"
@@ -356,7 +355,7 @@ export default function activityPlanner() {
                 justifyContent="center"
                 onPress={fetchRecommendations}
               >
-                <SizableText style={{ fontFamily: "Poppins", color: "#fff" }}>
+                <SizableText style={{ fontFamily: "Inter", color: "#fff" }}>
                   Generate
                 </SizableText>
               </Button>
@@ -403,7 +402,7 @@ export default function activityPlanner() {
                   <SizableText
                     marginBottom={2}
                     style={{
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       color: "#000",
                       fontSize: 16,
                       alignSelf: "center",
@@ -416,7 +415,7 @@ export default function activityPlanner() {
                   {recommendations.length === 0 ? (
                     <SizableText
                       style={{
-                        fontFamily: "Poppins",
+                        fontFamily: "Inter",
                         color: "#666",
                         fontSize: 14,
                         textAlign: "center",
@@ -445,9 +444,10 @@ export default function activityPlanner() {
                       >
                         <SizableText
                           style={{
-                            fontFamily: "Poppins",
+                            fontFamily: "Inter",
                             color: "#fff",
-                            fontSize: 13,
+                            fontSize: Math.min(13, width * 0.03),
+                            lineHeight: Math.min(13, width * 0.03) * 1.3,
                             textWrap: "wrap",
                             textAlign: "center",
                           }}
@@ -510,7 +510,7 @@ export default function activityPlanner() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -520,7 +520,7 @@ export default function activityPlanner() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
@@ -593,7 +593,7 @@ export default function activityPlanner() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -603,7 +603,7 @@ export default function activityPlanner() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
@@ -669,7 +669,7 @@ export default function activityPlanner() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -679,7 +679,7 @@ export default function activityPlanner() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,

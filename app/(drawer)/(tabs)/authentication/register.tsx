@@ -228,7 +228,7 @@ export default function register() {
         >
           <Dialog.Title
             style={{
-              fontFamily: "Poppins",
+              fontFamily: "Inter",
               color: "#fff",
               fontSize: 20,
               fontWeight: "700",
@@ -248,7 +248,7 @@ export default function register() {
             <YStack space={10}>
               <SizableText
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   lineHeight: 24,
                   color: "#fff",
                   fontSize: 14,
@@ -302,7 +302,7 @@ export default function register() {
                 borderWidth: 0,
               }}
             >
-              <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
+              <SizableText style={{ fontFamily: "Inter", color: "white" }}>
                 Accept
               </SizableText>
             </Button>
@@ -316,7 +316,7 @@ export default function register() {
                 borderColor: "#000",
               }}
             >
-              <SizableText style={{ fontFamily: "Poppins", color: "#5A5A4D" }}>
+              <SizableText style={{ fontFamily: "Inter", color: "#5A5A4D" }}>
                 Close
               </SizableText>
             </Button>
@@ -380,7 +380,7 @@ export default function register() {
                   fontSize: Math.min(23, width * 0.055),
                   lineHeight: Math.min(23, width * 0.055) * 1.3,
                   color: "#2B4433",
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   flexWrap: "wrap",
                   flexShrink: 1,
                   textAlign: "center",
@@ -389,68 +389,64 @@ export default function register() {
                 Sign Up
               </SizableText>
               <YStack space={10}>
-                <Input
-                  flex={1}
-                  placeholder="Enter your Name"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Poppins",
-                  }}
-                  value={name}
-                  onChangeText={setName}
-                />
-                <Input
-                  flex={1}
-                  placeholder="Enter your E-mail"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Poppins",
-                  }}
-                  value={email}
-                  onChangeText={setEmail}
-                />
-                <Input
-                  flex={1}
-                  placeholder="Enter your Password"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Poppins",
-                  }}
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                />
-                <Input
-                  flex={1}
-                  placeholder="Re-enter your Password"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Poppins",
-                  }}
-                  secureTextEntry
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                />
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your Name"
+                    value={name}
+                    onChangeText={setName}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your E-mail"
+                    value={email}
+                    onChangeText={setEmail}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your Password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Re-enter your Password"
+                    secureTextEntry
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
                 <XStack space={10}>
                   <SelectGender gender={gender} setGender={setGender} />
                   {Platform.OS === "web" ? (
@@ -458,7 +454,7 @@ export default function register() {
                       type="date"
                       style={{
                         flex: 1,
-                        fontFamily: "Poppins",
+                        fontFamily: "Inter",
                         backgroundColor: "#F7F5E6",
                         borderWidth: 1,
                         borderColor: "black",
@@ -488,7 +484,7 @@ export default function register() {
                       >
                         <SizableText
                           style={{
-                            fontFamily: "Poppins",
+                            fontFamily: "Inter",
                             color: dob ? "black" : "#0000006B",
                           }}
                         >
@@ -514,21 +510,20 @@ export default function register() {
                     </>
                   )}
                 </XStack>
-                <Input
-                  flex={1}
-                  placeholder="Referral Code (Optional)"
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Poppins",
-                  }}
-                  value={referralCode}
-                  onChangeText={setReferralCode}
-                />
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Referral Code (Optional)"
+                    value={referralCode}
+                    onChangeText={setReferralCode}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
               </YStack>
               <XStack justifyContent="center" alignItems="center" space={10}>
                 <Checkbox
@@ -549,14 +544,14 @@ export default function register() {
                 </Checkbox>
                 <Label
                   htmlFor="terms"
-                  style={{ fontFamily: "Poppins", color: "#5A5A4D" }}
+                  style={{ fontFamily: "Inter", color: "#5A5A4D" }}
                 >
                   I agree to the{" "}
                   <SizableText
                     style={{
                       color: "#4A7C59",
                       textDecorationLine: "underline",
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                     }}
                     onPress={() => setShowTerms(true)}
                   >
@@ -579,7 +574,7 @@ export default function register() {
                 borderRadius={17}
                 onPress={handleRegister}
               >
-                <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
+                <SizableText style={{ fontFamily: "Inter", color: "white" }}>
                   Register
                 </SizableText>
               </Button>
@@ -589,13 +584,13 @@ export default function register() {
                   onPress={() =>
                     router.push("/(drawer)/(tabs)/authentication/login")
                   }
-                  style={{ fontFamily: "Poppins", fontSize: 13 }}
+                  style={{ fontFamily: "Inter", fontSize: 13 }}
                   marginVertical={30}
                 >
                   <SizableText
                     style={{
                       color: "#2B4433",
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       fontSize: 13,
                     }}
                   >
@@ -658,7 +653,7 @@ export default function register() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -668,7 +663,7 @@ export default function register() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
@@ -724,7 +719,7 @@ export function SelectGender({
         <Select.Value
           placeholder="Gender"
           color={gender ? "black" : "#0000006B"}
-          style={{ fontFamily: "Poppins", fontSize: 13 }}
+          style={{ fontFamily: "Inter", fontSize: 13 }}
         />
       </Select.Trigger>
 
@@ -773,7 +768,7 @@ export function SelectGender({
         </Select.ScrollUpButton>
         <Select.Viewport minWidth={200}>
           <Select.Group>
-            <Select.Label style={{ fontFamily: "Poppins", color: "#2B4433" }}>Select Gender</Select.Label>
+            <Select.Label style={{ fontFamily: "Inter", color: "#2B4433" }}>Select Gender</Select.Label>
             {React.useMemo(
               () =>
                 Genders.map((item, i) => (
@@ -782,7 +777,7 @@ export function SelectGender({
                     key={item.name}
                     value={item.name.toLowerCase()}
                   >
-                    <Select.ItemText style={{ fontFamily: "Poppins" }}>{item.name}</Select.ItemText>
+                    <Select.ItemText style={{ fontFamily: "Inter" }}>{item.name}</Select.ItemText>
                     <Select.ItemIndicator marginLeft="auto">
                       <Check size={16} color="#4A7C59" />
                     </Select.ItemIndicator>
@@ -832,7 +827,7 @@ export function CheckboxWithLabel({
         </Checkbox.Indicator>
       </Checkbox>
 
-      <Label size={size} htmlFor={id} style={{ fontFamily: "Poppins" }}>
+      <Label size={size} htmlFor={id} style={{ fontFamily: "Inter" }}>
         {label}
       </Label>
     </XStack>

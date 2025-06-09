@@ -154,7 +154,7 @@ export default function Login() {
                   fontSize: Math.min(23, width * 0.055),
                   lineHeight: Math.min(23, width * 0.055) * 1.3,
                   color: "#2B4433",
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   flexWrap: "wrap",
                   flexShrink: 1,
                   textAlign: "center",
@@ -163,38 +163,36 @@ export default function Login() {
                 Sign In
               </SizableText>
               <YStack space={10}>
-                <Input
-                  flex={1}
-                  placeholder="Enter your E-mail"
-                  value={email}
-                  onChangeText={setEmail}
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Poppins",
-                  }}
-                />
-                <Input
-                  flex={1}
-                  placeholder="Enter your Password"
-                  secureTextEntry
-                  value={password}
-                  onChangeText={setPassword}
-                  style={{
-                    width: "100%",
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#000",
-                    padding: 10,
-                    backgroundColor: "#F7F5E6",
-                    fontFamily: "Poppins",
-                  }}
-                  onSubmitEditing={handleLogin}
-                />
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your E-mail"
+                    value={email}
+                    onChangeText={setEmail}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                  />
+                </XStack>
+                <XStack alignItems="center" space="$2">
+                  <Input
+                    flex={1}
+                    size="$3"
+                    placeholder="Enter your Password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                    style={{
+                      backgroundColor: "#F7F5E6",
+                      borderColor: "#000",
+                      fontFamily: "Inter",
+                    }}
+                    onSubmitEditing={handleLogin}
+                  />
+                </XStack>
               </YStack>
               <XStack justifyContent="center" alignItems="center">
                 <Anchor
@@ -204,7 +202,7 @@ export default function Login() {
                   marginVertical={6}
                   href="/forgot-password"
                   textAlign="center"
-                  style={{ fontFamily: "Poppins", fontSize: 13 }}
+                  style={{ fontFamily: "Inter", fontSize: 13 }}
                 >
                   Forgot your account?
                 </Anchor>
@@ -218,7 +216,7 @@ export default function Login() {
                 borderRadius={17}
                 onPress={handleLogin}
               >
-                <SizableText style={{ fontFamily: "Poppins", color: "white" }}>
+                <SizableText style={{ fontFamily: "Inter", color: "white" }}>
                   Login
                 </SizableText>
               </Button>
@@ -228,13 +226,13 @@ export default function Login() {
                   onPress={() =>
                     router.push("/(drawer)/(tabs)/authentication/register")
                   }
-                  style={{ fontFamily: "Poppins", fontSize: 13 }}
+                  style={{ fontFamily: "Inter", fontSize: 13 }}
                   marginVertical={40}
                 >
                   <SizableText
                     style={{
                       color: "#2B4433",
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       fontSize: 13,
                     }}
                   >
@@ -291,7 +289,7 @@ export default function Login() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -301,7 +299,7 @@ export default function Login() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
@@ -379,7 +377,7 @@ export default function Login() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -389,7 +387,7 @@ export default function Login() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,

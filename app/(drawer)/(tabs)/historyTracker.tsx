@@ -107,7 +107,7 @@ const PieChart = React.memo(({ expenses }: { expenses: Expense[] }) => {
               color="#fff"
               fontSize={12}
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 textAlign: "center",
               }}
               numberOfLines={1}
@@ -119,7 +119,7 @@ const PieChart = React.memo(({ expenses }: { expenses: Expense[] }) => {
               color="#fff"
               fontSize={12}
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 textAlign: "center",
                 fontWeight: "bold",
               }}
@@ -351,7 +351,7 @@ export default function HistoryTracker() {
                   fontSize: Math.min(22, width * 0.8),
                   lineHeight: Math.min(22, width * 0.8) * 1.1,
                   color: "#2B4433",
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   flexWrap: "wrap",
                   flexShrink: 1,
                   textAlign: "center",
@@ -372,7 +372,7 @@ export default function HistoryTracker() {
             ) : expenseData?.expenses.length === 0 ? (
               <SizableText
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#666",
                   textAlign: "center",
                   padding: 20,
@@ -386,7 +386,7 @@ export default function HistoryTracker() {
                 <YStack alignItems="center" marginVertical={20}>
                   <SizableText
                     style={{
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       fontWeight: "700",
                       fontSize: 25,
                       color: "#000",
@@ -403,7 +403,7 @@ export default function HistoryTracker() {
                       fontSize: Math.min(28, width * 0.08),
                       lineHeight: Math.min(28, width * 0.08) * 1.3,
                       color: "#4A7C59",
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       flexWrap: "wrap",
                       flexShrink: 1,
                       textAlign: "center",
@@ -473,7 +473,7 @@ export default function HistoryTracker() {
           >
             <Dialog.Title
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 fontWeight: "100",
                 fontSize: 20,
                 color: "#fff",
@@ -484,7 +484,7 @@ export default function HistoryTracker() {
             </Dialog.Title>
             <Dialog.Description
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 color: "#fff",
                 fontSize: 16,
                 marginBottom: 5,
@@ -579,7 +579,7 @@ export default function HistoryTracker() {
           >
             <Dialog.Title
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 fontWeight: "700",
                 fontSize: 20,
                 color: "#fff",
@@ -590,7 +590,7 @@ export default function HistoryTracker() {
             </Dialog.Title>
             <Dialog.Description
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 color: "#fff",
                 fontSize: 16,
                 marginBottom: 10,
@@ -659,7 +659,7 @@ export default function HistoryTracker() {
           >
             <Dialog.Title
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 fontWeight: "700",
                 fontSize: 20,
                 color: "#fff",
@@ -669,7 +669,7 @@ export default function HistoryTracker() {
             </Dialog.Title>
             <Dialog.Description
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 color: "#fff",
                 fontSize: 16,
                 marginBottom: 10,

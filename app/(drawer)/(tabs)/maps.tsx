@@ -183,7 +183,7 @@ export default function TabTwoScreen() {
                 fontSize: Math.min(32, width * 0.8),
                 lineHeight: Math.min(32, width * 0.8) * 1.3,
                 color: "#2B4433",
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 flexWrap: "wrap",
                 flexShrink: 1,
                 textAlign: "center",
@@ -228,7 +228,7 @@ export default function TabTwoScreen() {
           <YStack marginTop={10} justifyContent="center" alignItems="center">
             <SizableText
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 fontWeight: "700",
                 fontSize: 25,
                 color: "#000",
@@ -240,7 +240,7 @@ export default function TabTwoScreen() {
             {activities.length === 0 && (
               <SizableText
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#5A5A4D",
                   textAlign: "center",
                   padding: 20,
@@ -277,7 +277,7 @@ export default function TabTwoScreen() {
                 <YStack flex={1} space={width * 0.006}>
                   <SizableText
                     style={{
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       fontWeight: "600",
                       color: "#fff",
                       fontSize: 17,
@@ -287,7 +287,7 @@ export default function TabTwoScreen() {
                   </SizableText>
                   <SizableText
                     style={{
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       color: "#fff",
                       fontSize: 15,
                     }}
@@ -296,7 +296,7 @@ export default function TabTwoScreen() {
                   </SizableText>
                   <SizableText
                     style={{
-                      fontFamily: "Poppins",
+                      fontFamily: "Inter",
                       color: "#fff",
                       fontSize: 15,
                     }}
@@ -397,18 +397,18 @@ const styles = StyleSheet.create({
   textItem: {
     flex: 1,
     fontSize: 16,
-    fontFamily: "Poppins",
+    fontFamily: "Inter",
     color: "#2B4433",
   },
   placeholderStyle: {
     fontSize: 20,
-    fontFamily: "Poppins",
+    fontFamily: "Inter",
     color: "#2B4433",
     fontWeight: "600",
   },
   selectedTextStyle: {
     fontSize: 20,
-    fontFamily: "Poppins",
+    fontFamily: "Inter",
     color: "#2B4433",
     fontWeight: "600",
   },

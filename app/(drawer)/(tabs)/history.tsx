@@ -232,7 +232,7 @@ export default function History() {
                 fontSize: Math.min(32, width * 0.8),
                 lineHeight: Math.min(32, width * 0.8) * 1.3,
                 color: "#2B4433",
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 flexWrap: "wrap",
                 flexShrink: 1,
                 textAlign: "center",
@@ -253,7 +253,7 @@ export default function History() {
             ) : groupedExpenses.length === 0 ? (
               <SizableText
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#666",
                   textAlign: "center",
                   padding: 20,
@@ -291,7 +291,7 @@ export default function History() {
                           fontSize: Math.min(20, width * 0.08),
                           lineHeight: Math.min(20, width * 0.08) * 1.3,
                           color: "#4D4D4D",
-                          fontFamily: "Poppins",
+                          fontFamily: "Inter",
                           flexWrap: "wrap",
                           flexShrink: 1,
                         }}
@@ -304,7 +304,7 @@ export default function History() {
                           fontSize: Math.min(26, width * 0.08),
                           lineHeight: Math.min(26, width * 0.08) * 1.3,
                           color: "#4A7C59",
-                          fontFamily: "Poppins",
+                          fontFamily: "Inter",
                           flexWrap: "wrap",
                           flexShrink: 1,
                         }}
@@ -375,7 +375,7 @@ export default function History() {
           >
             <Dialog.Title
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 fontWeight: "700",
                 fontSize: 20,
                 color: "#fff",
@@ -385,7 +385,7 @@ export default function History() {
             </Dialog.Title>
             <Dialog.Description
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 color: "#fff",
                 fontSize: 16,
                 marginBottom: 10,

@@ -133,7 +133,7 @@ export default function promodetails() {
           >
             <SizableText
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 justifyContent: "center",
                 alignItems: "center",
                 color: "#2B4433",
@@ -150,7 +150,7 @@ export default function promodetails() {
               marginTop={8}
               width={"100%"}
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 backgroundColor: "#4A7C59",
                 padding: 10,
                 borderRadius: 15,
@@ -185,7 +185,7 @@ export default function promodetails() {
               style={{
                 color: "#2B4433",
                 textAlign: "center",
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 fontSize: 14,
               }}
             >

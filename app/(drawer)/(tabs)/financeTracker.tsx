@@ -94,7 +94,7 @@ const PieChart = React.memo(({ expenses }: PieChartProps) => {
               color="#fff"
               fontSize={12}
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 textAlign: "center",
               }}
               numberOfLines={1}
@@ -106,7 +106,7 @@ const PieChart = React.memo(({ expenses }: PieChartProps) => {
               color="#fff"
               fontSize={12}
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 textAlign: "center",
                 fontWeight: "bold",
               }}
@@ -314,7 +314,7 @@ export default function FinanceTracker() {
                 fontSize: Math.min(32, width * 0.8),
                 lineHeight: Math.min(32, width * 0.8) * 1.3,
                 color: "#2B4433",
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 flexWrap: "wrap",
                 flexShrink: 1,
                 textAlign: "center",
@@ -347,7 +347,7 @@ export default function FinanceTracker() {
           <YStack alignItems="center" marginVertical={20}>
             <SizableText
               style={{
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
                 fontWeight: "700",
                 fontSize: 25,
                 color: "#000",
@@ -368,7 +368,7 @@ export default function FinanceTracker() {
                 padding: 10,
                 marginBottom: height * 0.02,
                 backgroundColor: "#F7F5E6",
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
               }}
             />
             <Input
@@ -386,7 +386,7 @@ export default function FinanceTracker() {
                 padding: 10,
                 marginBottom: height * 0.02,
                 backgroundColor: "#F7F5E6",
-                fontFamily: "Poppins",
+                fontFamily: "Inter",
               }}
             />
             <XStack space={20} marginTop={10}>
@@ -465,7 +465,7 @@ export default function FinanceTracker() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -475,7 +475,7 @@ export default function FinanceTracker() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
@@ -548,7 +548,7 @@ export default function FinanceTracker() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -558,7 +558,7 @@ export default function FinanceTracker() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
@@ -636,7 +636,7 @@ export default function FinanceTracker() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -646,7 +646,7 @@ export default function FinanceTracker() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
@@ -715,7 +715,7 @@ export default function FinanceTracker() {
             >
               <Dialog.Title
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   fontWeight: "700",
                   fontSize: 20,
                   color: "#fff",
@@ -725,7 +725,7 @@ export default function FinanceTracker() {
               </Dialog.Title>
               <Dialog.Description
                 style={{
-                  fontFamily: "Poppins",
+                  fontFamily: "Inter",
                   color: "#fff",
                   fontSize: 16,
                   marginBottom: 10,
