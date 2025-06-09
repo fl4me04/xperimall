@@ -108,9 +108,19 @@ export default function promotion() {
                 elevation: 3,
               }}
             />
-            <SizableText style={{ fontSize: 22, fontWeight: "700", color: "#2B4433" }}>
-              Promotions
-            </SizableText>
+            <Text
+              style={{
+                fontSize: 28,
+                fontWeight: "bold",
+                color: "#2B4433",
+                marginLeft: 10,
+                textAlign: "center",
+                fontFamily: "Inter, sans-serif",
+                
+              }}
+            >
+              Promotion & Discounts
+            </Text>
             <XStack width={32} />
           </XStack>
 
@@ -120,11 +130,12 @@ export default function promotion() {
               {/* Category Title */}
               <Text
                 style={{
-                  fontSize: 18,
-                  fontWeight: "600",
-                  color: "#4A7C59",
-                  marginBottom: 10,
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  color: "#2B4433",
+                  marginBottom: 16,
                   textAlign: "center",
+                  fontFamily: "Inter, sans-serif",
                 }}
               >
                 {category.name}
@@ -139,47 +150,52 @@ export default function promotion() {
                   marginBottom={width * 0.04}
                 >
                   {row.map((promo) => (
-                    <Button
+                    <YStack
                       key={promo.id}
                       width={(width * 0.85 - width * 0.04) / 2}
-                      height={width * 0.5}
-                      borderRadius={16}
-                      padding={0}
-                      backgroundColor="transparent"
-                      onPress={() =>
-                        router.push({
-                          pathname: "/(drawer)/(tabs)/promodetails",
-                          params: { id: promo.id },
-                        })
-                      }
-                      style={{
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.1,
-                        shadowRadius: 4,
-                        elevation: 3,
-                      }}
+                      alignItems="center"
                     >
-                      <ZStack width="100%" height="100%" borderRadius={16} overflow="hidden">
+                      <Button
+                        width="100%"
+                        height={width * 0.5}
+                        borderRadius={12}
+                        padding={0}
+                        backgroundColor="#fff"
+                        onPress={() =>
+                          router.push({
+                            pathname: "/(drawer)/(tabs)/promodetails",
+                            params: { id: promo.id },
+                          })
+                        }
+                        style={{
+                          shadowColor: "#000",
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.1,
+                          shadowRadius: 4,
+                          elevation: 3,
+                          padding: 0,
+                          borderWidth: 0,
+                        }}
+                      >
                         <Image
                           source={promo.image}
                           resizeMode="cover"
-                          style={{ width: "100%", height: "100%" }}
+                          style={{ width: "100%", height: "100%", borderRadius: 12 }}
                         />
-                        <YStack
-                          position="absolute"
-                          bottom={0}
-                          width="100%"
-                          paddingVertical={8}
-                          paddingHorizontal={12}
-                          backgroundColor="rgba(0,0,0,0.4)"
-                        >
-                          <Text color="#fff" fontWeight="600" fontSize={14}>
-                            {promo.title}
-                          </Text>
-                        </YStack>
-                      </ZStack>
-                    </Button>
+                      </Button>
+                      <Text
+                        style={{
+                          marginTop: 8,
+                          fontWeight: "bold",
+                          fontSize: 15,
+                          color: "#2B4433",
+                          textAlign: "center",
+                          fontFamily: "Inter, sans-serif",
+                        }}
+                      >
+                        {promo.title}
+                      </Text>
+                    </YStack>
                   ))}
                   {row.length === 1 && (
                     <XStack width={(width * 0.85 - width * 0.04) / 2} />
