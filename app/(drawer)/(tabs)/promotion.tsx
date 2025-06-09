@@ -110,7 +110,7 @@ export default function promotion() {
             />
             <Text
               style={{
-                fontSize: 28,
+                fontSize: 40,
                 fontWeight: "bold",
                 color: "#2B4433",
                 marginLeft: 10,
