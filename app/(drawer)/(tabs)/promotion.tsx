@@ -126,7 +126,7 @@ export default function promotion() {
 
           {/* Content */}
           {promoCategories.map((category, idx) => (
-            <YStack key={idx} space={width * 0.03} marginTop={30} alignItems="center">
+            <YStack key={idx} space={width * 0.03} marginTop={10} alignItems="center">
               {/* Category Title */}
               <Text
                 style={{
