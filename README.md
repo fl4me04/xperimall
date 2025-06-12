@@ -1,50 +1,57 @@
-# Welcome to your Expo app 👋
+🏬 Xperimall
+Xperimall adalah aplikasi direktori mall digital yang dikembangkan secara internal. Aplikasi ini menyediakan fitur seperti daftar tenant, promo, perencana aktivitas, dan lainnya.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Proyek ini terdiri dari dua bagian utama:
 
-## Get started
+Frontend: React Native menggunakan Expo (SDK 52)
 
-1. Install dependencies
+Backend: Golang + MySQL
 
-   ```bash
-   npm install
-   ```
+🔗 Repository
+GitHub: https://github.com/fl4me04/xperimall.git
 
-2. Start the app
+📦 Langkah Awal
+bash
+Salin
+Edit
+git clone https://github.com/fl4me04/xperimall.git
+cd xperimall
+🖥️ Backend (Golang)
+📁 Lokasi
+/XperimallBackend
 
-   ```bash
-    npx expo start
-   ```
+▶️ Cara Menjalankan
+Pastikan sudah menginstall Go dan MySQL.
 
-In the output, you'll find options to open the app in a
+Jalankan backend:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+bash
+Salin
+Edit
+cd XperimallBackend
+go run main.go
+💡 Catatan: Pastikan konfigurasi koneksi database sudah sesuai di dalam kode (main.go atau file konfigurasi terkait).
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+📱 Frontend (React Native + Expo)
+📁 Lokasi
+Root directory (/)
 
-## Get a fresh project
+🧩 Install Dependencies
+bash
+Salin
+Edit
+npm install
+▶️ Jalankan App
+❗ Catatan penting:
+Aplikasi ini menggunakan Expo SDK 52, yang tidak kompatibel dengan Expo Go (sandbox app).
+Wajib menggunakan Android Studio Emulator atau iOS Simulator.
 
-When you're ready, run:
+Pastikan emulator aktif (misal: Android Studio).
 
-```bash
-npm run reset-project
-```
+Jalankan project:
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+bash
+Salin
+Edit
+npx expo start
+Pilih opsi: Run on Android emulator (atau iOS simulator jika di Mac).
