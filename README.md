@@ -73,4 +73,3 @@ Kemudian pilih opsi:
 
 ---
 
-Jika kamu ingin menambahkan dokumentasi API, `.env` sample, atau petunjuk deploy, tinggal bilang saja!
